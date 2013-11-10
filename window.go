@@ -5,10 +5,12 @@ import (
 	glfw "github.com/go-gl/glfw3"
 )
 
+// Window is an object that manages window creation and user input.
 type Window struct {
 	glfwWindow *glfw.Window
 }
 
+// Window.Open opens a new window ready to be drawn in.
 func (window *Window) Open(width int, height int, title string) error {
 
 	if !glfw.Init() {
@@ -26,23 +28,29 @@ func (window *Window) Open(width int, height int, title string) error {
 	return nil
 }
 
+// Window.Destroy closes the window and stops reading input.
 func (window *Window) Destroy() error {
 
 	glfw.Terminate()
 	return nil
 }
 
+// Window.ShouldClose returns whether or not the user has attempted to close
+// the window.
 func (window *Window) ShouldClose() bool {
 
 	return window.glfwWindow.ShouldClose()
 }
 
+// Window.UpdateDisplay updates the window to display whatever has been drawn
+// to the framebuffer
 func (window *Window) UpdateDisplay() error {
 
 	window.glfwWindow.SwapBuffers()
 	return nil
 }
 
+// Window.UpdateEvents updates events
 func (window *Window) UpdateEvents() error {
 
 	glfw.PollEvents()
