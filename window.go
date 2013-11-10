@@ -7,6 +7,8 @@ import (
 
 // Window is an object that manages window creation and user input.
 type Window struct {
+	Width      int
+	Height     int
 	glfwWindow *glfw.Window
 }
 
@@ -22,6 +24,9 @@ func (window *Window) Open(width int, height int, title string) error {
 	if err != nil {
 		return err
 	}
+
+	window.Width = width
+	window.Height = height
 
 	window.glfwWindow.MakeContextCurrent()
 
