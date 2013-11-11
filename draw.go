@@ -16,16 +16,19 @@ const (
 	TRIANGLES      = gl.TRIANGLES
 )
 
+// Renderable is an object that can be drawn on the screen
 type Renderable struct {
 	mode   int
 	size   int
 	buffer gl.Uint
 }
 
+// Draw is an object that handles data consistant with the whole session.
 type Draw struct {
 	va_shape int
 }
 
+// .Init sets up the drawing session for use.
 func (draw *Draw) Init(window Window) error {
 
 	runtime.LockOSThread()
@@ -42,6 +45,8 @@ func (draw *Draw) Init(window Window) error {
 	return nil
 }
 
+// .NewRenderable returns a new Renderable object based on the specified shape
+// type and verticies.
 func (draw *Draw) NewRenderable(mode int, verticies []float32) Renderable {
 
 	renderable := Renderable{mode, len(verticies), 0}
@@ -54,6 +59,8 @@ func (draw *Draw) NewRenderable(mode int, verticies []float32) Renderable {
 	return renderable
 }
 
+// .DrawVerticies draws a set of verticies in the shape of whatever the value
+// of mode is. This is a much slower solution than using the Renderable object.
 func DrawVerticies(mode int, verticies []float32) {
 
 	var buffer_id gl.Uint
@@ -70,6 +77,7 @@ func DrawVerticies(mode int, verticies []float32) {
 	gl.DisableVertexAttribArray(0)
 }
 
+// .DrawRenderable draws a Renderable
 func (draw *Draw) DrawRenderable(renderable Renderable) {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.buffer)
@@ -81,6 +89,8 @@ func (draw *Draw) DrawRenderable(renderable Renderable) {
 	gl.DisableVertexAttribArray(gl.Uint(draw.va_shape))
 }
 
+// .Clear clears the pixels on screen. This should probably be called before
+// every new frame.
 func Clear() {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 }
