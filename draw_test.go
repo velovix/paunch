@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+var draw Draw
+
 func TestInitDraw(t *testing.T) {
 
 	var window Window
@@ -12,7 +14,7 @@ func TestInitDraw(t *testing.T) {
 		t.Errorf(".Open(640, 480, \"Test\") returned %s", err)
 	}
 
-	err = InitDraw(window)
+	err = draw.Init(window)
 	if err != nil {
 		t.Errorf("InitDraw() returned %s", err)
 	}
@@ -20,10 +22,12 @@ func TestInitDraw(t *testing.T) {
 
 func TestDrawTriangles(t *testing.T) {
 
-	triangle := []DrawFloat{
+	triangle := []float32{
 		0.0, 0.0, 0.0,
 		1.0, 0.0, 0.0,
 		0.0, 1.0, 0.0}
 
-	Draw(TRIANGLES, triangle)
+	renderable := draw.NewRenderable(TRIANGLES, triangle)
+
+	draw.DrawRenderable(renderable)
 }
