@@ -2,6 +2,7 @@ package paunch
 
 import (
 	"errors"
+	"fmt"
 	gl "github.com/chsc/gogl/gl33"
 	"runtime"
 )
@@ -28,6 +29,20 @@ type Draw struct {
 	va_shape int
 }
 
+func checkForErrors() error {
+
+	var errList []gl.Enum
+	for err := gl.GetError(); err != gl.NO_ERROR; {
+		errList = append(errList, err)
+	}
+
+	if len(errList) == 0 {
+		return nil
+	} else {
+		return errors.New(fmt.Sprintln("OpenGL Error(s): ", errList))
+	}
+}
+
 // .Init sets up the drawing session for use.
 func (draw *Draw) Init(window Window) error {
 
@@ -42,12 +57,12 @@ func (draw *Draw) Init(window Window) error {
 
 	draw.va_shape = 0
 
-	return nil
+	return checkForErrors()
 }
 
 // .NewRenderable returns a new Renderable object based on the specified shape
 // type and verticies.
-func (draw *Draw) NewRenderable(mode int, verticies []float32) Renderable {
+func (draw *Draw) NewRenderable(mode int, verticies []float32) (Renderable, error) {
 
 	renderable := Renderable{mode, len(verticies), 0}
 
@@ -56,7 +71,7 @@ func (draw *Draw) NewRenderable(mode int, verticies []float32) Renderable {
 	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies[0]), gl.STATIC_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
-	return renderable
+	return renderable, checkForErrors()
 }
 
 // .DrawVerticies draws a set of verticies in the shape of whatever the value

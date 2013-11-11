@@ -27,7 +27,10 @@ func TestDrawTriangles(t *testing.T) {
 		1.0, 0.0, 0.0,
 		0.0, 1.0, 0.0}
 
-	renderable := draw.NewRenderable(TRIANGLES, triangle)
+	renderable, err := draw.NewRenderable(TRIANGLES, triangle)
+	if err != nil {
+		t.Errorf(".NewRenderable(TRIANGLE, triangle) returned %s", err)
+	}
 
 	draw.DrawRenderable(renderable)
 }
