@@ -14,8 +14,8 @@ const (
 
 // Effect is an object that manages shaders.
 type Effect struct {
-	shaders  []gl.Uint
-	programs []gl.Uint
+	shaders  map[string]gl.Uint
+	programs map[string]gl.Uint
 }
 
 func loadTextFile(filename string) ([]byte, error) {
@@ -28,8 +28,20 @@ func loadTextFile(filename string) ([]byte, error) {
 	return text, nil
 }
 
+func (effect *Effect) Init() error {
+
+	effect.shaders = make(map[string]gl.Uint)
+	effect.programs = make(map[string]gl.Uint)
+
+	return nil
+}
+
 // .NewEffect adds a new effect to the Effect object from a GLSL shader file.
-func (effect *Effect) NewEffect(mode int, name string) (int, error) {
+func (effect *Effect) NewEffect(mode int, name string) error {
+
+	if _, ok := effect.shaders[name]; ok {
+		return errors.New(fmt.Sprintf("Shader %s already exists", name))
+	}
 
 	filename := "shaders/" + name
 	if mode == VERTEX {
@@ -39,7 +51,7 @@ func (effect *Effect) NewEffect(mode int, name string) (int, error) {
 	}
 	scriptData, err := loadTextFile(filename)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	script := gl.GLString(string(scriptData))
@@ -50,21 +62,21 @@ func (effect *Effect) NewEffect(mode int, name string) (int, error) {
 	var status gl.Int
 	gl.GetShaderiv(shader_id, gl.COMPILE_STATUS, &status)
 	if status == gl.FALSE {
-		return 0, errors.New(fmt.Sprintf("Shader %s: Compile error", name))
+		return errors.New(fmt.Sprintf("Shader %s: Compile error", name))
 	}
 
-	effect.shaders = append(effect.shaders, shader_id)
+	effect.shaders[name] = shader_id
 
-	return len(effect.shaders) - 1, nil
+	return nil
 }
 
 // .NewEffectList adds a new effect list to the Effect object. Effect lists are
 // collections of effects to be applied to the renderer.
-func (effect *Effect) NewEffectList(effects []int) (int, error) {
+func (effect *Effect) NewEffectList(name string, effects []string) error {
 
-	for i, val := range effects {
-		if val >= len(effect.shaders) {
-			return 0, errors.New(fmt.Sprintf("Effect %d does not exist", i))
+	for _, val := range effects {
+		if _, ok := effect.shaders[val]; !ok {
+			return errors.New(fmt.Sprintf("Effect %s does not exist", val))
 		}
 	}
 
@@ -77,22 +89,22 @@ func (effect *Effect) NewEffectList(effects []int) (int, error) {
 	var status gl.Int
 	gl.GetProgramiv(program, gl.LINK_STATUS, &status)
 	if status == gl.FALSE {
-		return 0, errors.New("Error linking program")
+		return errors.New("Error linking program")
 	}
 
-	effect.programs = append(effect.programs, program)
+	effect.programs[name] = program
 
-	return len(effect.programs) - 1, checkForErrors()
+	return checkForErrors()
 }
 
 // .UseEffectList activates an effect list to be used on the following frames.
-func (effect *Effect) UseEffectList(effectList int) error {
+func (effect *Effect) UseEffectList(name string) error {
 
-	if effectList >= len(effect.programs) {
-		return errors.New(fmt.Sprintf("Effect list %d does not exist", effectList))
+	if _, ok := effect.programs[name]; !ok {
+		return errors.New(fmt.Sprintf("Effect list %s does not exist", name))
 	}
 
-	gl.UseProgram(effect.programs[effectList])
+	gl.UseProgram(effect.programs[name])
 
 	return checkForErrors()
 }
