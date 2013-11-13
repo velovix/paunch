@@ -23,11 +23,7 @@ type Renderable struct {
 	size            int
 	vertex_buffer   gl.Uint
 	texcoord_buffer gl.Uint
-}
-
-// Draw is an object that handles data consistant with the whole session.
-type Draw struct {
-	va_shape int
+	texture_id      gl.Uint
 }
 
 func checkForErrors() error {
@@ -44,8 +40,8 @@ func checkForErrors() error {
 	}
 }
 
-// .Init sets up the drawing session for use.
-func (draw *Draw) Init(window Window) error {
+// InitDraw sets up the drawing session for use.
+func InitDraw(window Window) error {
 
 	runtime.LockOSThread()
 
@@ -56,16 +52,14 @@ func (draw *Draw) Init(window Window) error {
 	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 	gl.Viewport(0, 0, gl.Sizei(window.Width), gl.Sizei(window.Height))
 
-	draw.va_shape = 0
-
 	return checkForErrors()
 }
 
-// .NewRenderable returns a new Renderable object based on the specified shape
+// NewRenderable returns a new Renderable object based on the specified shape
 // type and verticies.
-func (draw *Draw) NewRenderable(mode int, verticies []float32, texCoords []float32) (Renderable, error) {
+func NewRenderable(mode int, verticies []float32, texCoords []float32) (Renderable, error) {
 
-	renderable := Renderable{mode, len(verticies), 0, 0}
+	renderable := Renderable{mode, len(verticies), 0, 0, 0}
 
 	gl.GenBuffers(1, &renderable.vertex_buffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertex_buffer))
@@ -82,19 +76,19 @@ func (draw *Draw) NewRenderable(mode int, verticies []float32, texCoords []float
 	return renderable, checkForErrors()
 }
 
-// .DrawRenderable draws a Renderable
-func (draw *Draw) DrawRenderable(renderable Renderable) {
+// DrawRenderable draws a Renderable
+func DrawRenderable(renderable Renderable) {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertex_buffer)
-	gl.VertexAttribPointer(gl.Uint(draw.va_shape), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
+	gl.VertexAttribPointer(gl.Uint(0), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
-	gl.EnableVertexAttribArray(gl.Uint(draw.va_shape))
+	gl.EnableVertexAttribArray(gl.Uint(0))
 	gl.DrawArrays(gl.Enum(renderable.mode), 0, gl.Sizei(renderable.size))
-	gl.DisableVertexAttribArray(gl.Uint(draw.va_shape))
+	gl.DisableVertexAttribArray(gl.Uint(0))
 }
 
-// .Clear clears the pixels on screen. This should probably be called before
+// Clear clears the pixels on screen. This should probably be called before
 // every new frame.
 func Clear() {
 	gl.Clear(gl.COLOR_BUFFER_BIT)

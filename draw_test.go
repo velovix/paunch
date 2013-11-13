@@ -4,8 +4,6 @@ import (
 	"testing"
 )
 
-var draw Draw
-
 func TestInitDraw(t *testing.T) {
 
 	var window Window
@@ -14,7 +12,7 @@ func TestInitDraw(t *testing.T) {
 		t.Errorf("window.Open(640, 480, \"Test\") returned %s", err)
 	}
 
-	err = draw.Init(window)
+	err = InitDraw(window)
 	if err != nil {
 		t.Errorf("draw.Init() returned %s", err)
 	}
@@ -32,12 +30,12 @@ func TestDrawTriangles(t *testing.T) {
 		1.0, 0.0,
 		0.0, 1.0}
 
-	renderable, err := draw.NewRenderable(TRIANGLES, triangle, texCoords)
+	renderable, err := NewRenderable(TRIANGLES, triangle, texCoords)
 	if err != nil {
 		t.Errorf(".NewRenderable(TRIANGLE, triangle) returned %s", err)
 	}
 
-	draw.DrawRenderable(renderable)
+	DrawRenderable(renderable)
 
 	var effect Effect
 	effect.Init()
