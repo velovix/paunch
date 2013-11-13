@@ -27,7 +27,12 @@ func TestDrawTriangles(t *testing.T) {
 		1.0, 0.0,
 		0.0, 1.0}
 
-	renderable, err := draw.NewRenderable(TRIANGLES, triangle)
+	texCoords := []float32{
+		0.0, 0.0,
+		1.0, 0.0,
+		0.0, 1.0}
+
+	renderable, err := draw.NewRenderable(TRIANGLES, triangle, texCoords)
 	if err != nil {
 		t.Errorf(".NewRenderable(TRIANGLE, triangle) returned %s", err)
 	}

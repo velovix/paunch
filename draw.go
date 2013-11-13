@@ -19,9 +19,10 @@ const (
 
 // Renderable is an object that can be drawn on the screen
 type Renderable struct {
-	mode   int
-	size   int
-	buffer gl.Uint
+	mode            int
+	size            int
+	vertex_buffer   gl.Uint
+	texcoord_buffer gl.Uint
 }
 
 // Draw is an object that handles data consistant with the whole session.
@@ -62,14 +63,21 @@ func (draw *Draw) Init(window Window) error {
 
 // .NewRenderable returns a new Renderable object based on the specified shape
 // type and verticies.
-func (draw *Draw) NewRenderable(mode int, verticies []float32) (Renderable, error) {
+func (draw *Draw) NewRenderable(mode int, verticies []float32, texCoords []float32) (Renderable, error) {
 
-	renderable := Renderable{mode, len(verticies), 0}
+	renderable := Renderable{mode, len(verticies), 0, 0}
 
-	gl.GenBuffers(1, &renderable.buffer)
-	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.buffer))
+	gl.GenBuffers(1, &renderable.vertex_buffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertex_buffer))
 	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies[0]), gl.STATIC_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+
+	if texCoords != nil {
+		gl.GenBuffers(1, &renderable.texcoord_buffer)
+		gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.texcoord_buffer))
+		gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(texCoords)*4), gl.Pointer(&texCoords[0]), gl.STATIC_DRAW)
+		gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+	}
 
 	return renderable, checkForErrors()
 }
@@ -77,7 +85,7 @@ func (draw *Draw) NewRenderable(mode int, verticies []float32) (Renderable, erro
 // .DrawRenderable draws a Renderable
 func (draw *Draw) DrawRenderable(renderable Renderable) {
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.buffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertex_buffer)
 	gl.VertexAttribPointer(gl.Uint(draw.va_shape), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
