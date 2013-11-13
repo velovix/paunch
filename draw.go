@@ -74,24 +74,6 @@ func (draw *Draw) NewRenderable(mode int, verticies []float32) (Renderable, erro
 	return renderable, checkForErrors()
 }
 
-// .DrawVerticies draws a set of verticies in the shape of whatever the value
-// of mode is. This is a much slower solution than using the Renderable object.
-func DrawVerticies(mode int, verticies []float32) {
-
-	var buffer_id gl.Uint
-	gl.GenBuffers(1, &buffer_id)
-	gl.BindBuffer(gl.ARRAY_BUFFER, buffer_id)
-	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(verticies)*8), gl.Pointer(&verticies[0]), gl.STATIC_DRAW)
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
-	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
-
-	gl.EnableVertexAttribArray(0)
-
-	gl.DrawArrays(gl.Enum(mode), 0, gl.Sizei(len(verticies)))
-
-	gl.DisableVertexAttribArray(0)
-}
-
 // .DrawRenderable draws a Renderable
 func (draw *Draw) DrawRenderable(renderable Renderable) {
 
