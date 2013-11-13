@@ -23,9 +23,9 @@ func TestInitDraw(t *testing.T) {
 func TestDrawTriangles(t *testing.T) {
 
 	triangle := []float32{
-		0.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		0.0, 1.0, 0.0}
+		0.0, 0.0,
+		1.0, 0.0,
+		0.0, 1.0}
 
 	renderable, err := draw.NewRenderable(TRIANGLES, triangle)
 	if err != nil {

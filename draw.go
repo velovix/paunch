@@ -78,7 +78,7 @@ func (draw *Draw) NewRenderable(mode int, verticies []float32) (Renderable, erro
 func (draw *Draw) DrawRenderable(renderable Renderable) {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.buffer)
-	gl.VertexAttribPointer(gl.Uint(draw.va_shape), 3, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
+	gl.VertexAttribPointer(gl.Uint(draw.va_shape), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
 	gl.EnableVertexAttribArray(gl.Uint(draw.va_shape))
