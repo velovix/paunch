@@ -30,12 +30,10 @@ func TestDrawTriangles(t *testing.T) {
 		1.0, 0.0,
 		0.0, 1.0}
 
-	renderable, err := NewRenderable(TRIANGLES, triangle, texCoords)
+	renderable, err := NewRenderable(TRIANGLES, triangle)
 	if err != nil {
 		t.Errorf(".NewRenderable(TRIANGLE, triangle) returned %s", err)
 	}
-
-	DrawRenderable(renderable)
 
 	var effect Effect
 	effect.Init()
@@ -43,15 +41,22 @@ func TestDrawTriangles(t *testing.T) {
 	if err != nil {
 		t.Errorf(".NewEffect(VERTEX, \"basic\") returned %s", err)
 	}
-	err = effect.NewEffect(FRAGMENT, "white")
+	err = effect.NewEffect(FRAGMENT, "texture")
 	if err != nil {
-		t.Errorf(".NewEffect(FRAGMENT, \"white\") returned %s", err)
+		t.Errorf(".NewEffect(FRAGMENT, \"texture\") returned %s", err)
 	}
 
-	err = effect.NewEffectList("simple", []string{"basic", "white"})
+	err = effect.NewEffectList("simple", []string{"basic", "texture"})
 	if err != nil {
-		t.Errorf(".NewEffectList(\"simple\", []string{\"basic\", \"white\"}) returned %s", err)
+		t.Errorf(".NewEffectList(\"simple\", []string{\"basic\", \"texture\"}) returned %s", err)
 	}
 
 	effect.UseEffectList("simple")
+
+	err = renderable.Texture(texCoords, "img/test.png")
+	if err != nil {
+		t.Errorf(".Texture(texCoords, \"img/test.png\") returned %s", err)
+	}
+
+	DrawRenderable(renderable)
 }

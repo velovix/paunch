@@ -14,8 +14,10 @@ const (
 
 // Effect is an object that manages shaders.
 type Effect struct {
-	shaders  map[string]gl.Uint
-	programs map[string]gl.Uint
+	uniforms        map[string]gl.Int
+	shaders         map[string]gl.Uint
+	programs        map[string]gl.Uint
+	current_program string
 }
 
 func loadTextFile(filename string) ([]byte, error) {
@@ -28,12 +30,29 @@ func loadTextFile(filename string) ([]byte, error) {
 	return text, nil
 }
 
+func (effect *Effect) checkUniformVariable(program string, variable string) {
+
+	if _, ok := effect.uniforms[variable]; !ok {
+		effect.uniforms[variable] = gl.GetUniformLocation(effect.programs[program], gl.GLString(variable))
+	}
+}
+
 func (effect *Effect) Init() error {
 
+	effect.uniforms = make(map[string]gl.Int)
 	effect.shaders = make(map[string]gl.Uint)
 	effect.programs = make(map[string]gl.Uint)
 
 	return nil
+}
+
+// .SetVariablei sets a specified variable to the supplied integer to be passed
+// into an effects list.
+func (effect *Effect) SetVariablei(variable string, val int) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform1i(effect.uniforms[variable], gl.Int(val))
 }
 
 // .NewEffect adds a new effect to the Effect object from a GLSL shader file.
@@ -105,6 +124,9 @@ func (effect *Effect) UseEffectList(name string) error {
 	}
 
 	gl.UseProgram(effect.programs[name])
+
+	effect.current_program = name
+	effect.uniforms = make(map[string]gl.Int)
 
 	return checkForErrors()
 }

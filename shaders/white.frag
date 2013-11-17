@@ -1,7 +1,7 @@
 #version 330
 
 // Outputs
-out vec4 outputColor;
+smooth out vec4 outputColor;
 
 void main() {
 
