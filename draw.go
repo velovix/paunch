@@ -57,7 +57,15 @@ func imageToBytes(img image.Image) []byte {
 		bytes = append(bytes, byte(a))
 	}
 
-	return bytes
+	flippedBytes := make([]byte, width*height*4)
+	for i := 0; i < height*width*4; i += width * 4 {
+		pixrow := bytes[i : i+width*4]
+		for j, val := range pixrow {
+			flippedBytes[((width*(height-1)*4)-i)+j] = val
+		}
+	}
+
+	return flippedBytes
 }
 
 // InitDraw sets up the drawing session for use.
