@@ -46,13 +46,112 @@ func (effect *Effect) Init() error {
 	return nil
 }
 
-// .SetVariablei sets a specified variable to the supplied integer to be passed
+// SetVariablei sets a specified variable to the supplied integer to be passed
 // into an effects list.
 func (effect *Effect) SetVariablei(variable string, val int) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
 
 	gl.Uniform1i(effect.uniforms[variable], gl.Int(val))
+}
+
+// SetVariable2i sets a specified variable to the two supplied integers to be
+// passed into an effects list.
+func (effect *Effect) SetVariable2i(variable string, val1 int, val2 int) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform2i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2))
+}
+
+// SetVariable3i sets a specified variable to the three supplied integers to be
+// passed into an effects list.
+func (effect *Effect) SetVariable3i(variable string, val1 int, val2 int, val3 int) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform3i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2), gl.Int(val3))
+}
+
+// SetVariable4i sets a specified variable to the four supplied integers to be
+// passed into an effects list.
+func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 int, val4 int) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform4i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2), gl.Int(val3), gl.Int(val4))
+}
+
+// SetVariableui sets a specified variable to the supplied integer to be passed
+// into an effects list.
+func (effect *Effect) SetVariableui(variable string, val uint) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform1ui(effect.uniforms[variable], gl.Uint(val))
+}
+
+// SetVariable2ui sets a specified variable to the two supplied integers to be
+// passed into an effects list.
+func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform2ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2))
+}
+
+// SetVariable3ui sets a specified variable to the three supplied integers to
+// be passed into an effects list.
+func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3 uint) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform3ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2), gl.Uint(val3))
+}
+
+// SetVariable4ui sets a specified variable to the four supplied integers to
+// be passed into an effects list.
+func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3 uint, val4 uint) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform4ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2), gl.Uint(val3), gl.Uint(val4))
+}
+
+// SetVariablef sets a specified variable to the supplied integer to be passed
+// into an effects list.
+func (effect *Effect) SetVariablef(variable string, val float32) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform1f(effect.uniforms[variable], gl.Float(val))
+}
+
+// SetVariable2f sets a specified variable to the two supplied integers to
+// be passed into an effects list.
+func (effect *Effect) SetVariable2f(variable string, val1 float32, val2 float32) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform2f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2))
+}
+
+// SetVariable3f sets a specified variable to the three supplied integers to
+// be passed into an effects list.
+func (effect *Effect) SetVariable3f(variable string, val1 float32, val2 float32, val3 float32) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform3f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2), gl.Float(val3))
+}
+
+// SetVariable4f sets a specified variable to the four supplied integers to
+// be passed into an effects list.
+func (effect *Effect) SetVariable4f(variable string, val1 float32, val2 float32, val3 float32, val4 float32) {
+
+	effect.checkUniformVariable(effect.current_program, variable)
+
+	gl.Uniform4f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2), gl.Float(val3), gl.Float(val4))
 }
 
 // .NewEffect adds a new effect to the Effect object from a GLSL shader file.
