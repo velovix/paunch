@@ -37,6 +37,8 @@ func (effect *Effect) checkUniformVariable(program string, variable string) {
 	}
 }
 
+// Init() initializes the Effect object. This must be called before doing
+// anything else with the object.
 func (effect *Effect) Init() error {
 
 	effect.uniforms = make(map[string]gl.Int)
@@ -154,7 +156,7 @@ func (effect *Effect) SetVariable4f(variable string, val1 float32, val2 float32,
 	gl.Uniform4f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2), gl.Float(val3), gl.Float(val4))
 }
 
-// .NewEffect adds a new effect to the Effect object from a GLSL shader file.
+// NewEffect adds a new effect to the Effect object from a GLSL shader file.
 func (effect *Effect) NewEffect(mode int, name string) error {
 
 	if _, ok := effect.shaders[name]; ok {
@@ -188,7 +190,7 @@ func (effect *Effect) NewEffect(mode int, name string) error {
 	return nil
 }
 
-// .NewEffectList adds a new effect list to the Effect object. Effect lists are
+// NewEffectList adds a new effect list to the Effect object. Effect lists are
 // collections of effects to be applied to the renderer.
 func (effect *Effect) NewEffectList(name string, effects []string) error {
 
@@ -215,7 +217,7 @@ func (effect *Effect) NewEffectList(name string, effects []string) error {
 	return checkForErrors()
 }
 
-// .UseEffectList activates an effect list to be used on the following frames.
+// UseEffectList activates an effect list to be used on the following frames.
 func (effect *Effect) UseEffectList(name string) error {
 
 	if _, ok := effect.programs[name]; !ok {

@@ -97,7 +97,7 @@ func NewRenderable(mode int, verticies []float32) (Renderable, error) {
 	return renderable, checkForErrors()
 }
 
-// .Texture applies a texture from a 32-bit PNG file to a Renderable. The
+// Texture applies a texture from a 32-bit PNG file to a Renderable. The
 // Renderable will automatically be drawn with this texture.
 func (renderable *Renderable) Texture(coords []float32, filename string) error {
 
@@ -135,7 +135,7 @@ func (renderable *Renderable) Texture(coords []float32, filename string) error {
 	return checkForErrors()
 }
 
-// .DrawRenderable draws the Renderable
+// DrawRenderable draws the Renderable.
 func (renderable *Renderable) Draw() {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertex_buffer)
