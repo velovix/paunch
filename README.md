@@ -1,11 +1,17 @@
-Paunch Engine
-=============
+Paunch
+======
 
-Paunch Engine is a 2D game engine written in Go.
+Paunch is a 2D game engine written in Go.
+
+Development Status
+------------------
+Paunch is still heavily in development. As is, it's not really very useful to
+anyone. Please check back frequently, as work is being done on Paunch almost
+every day.
 
 Dependencies
 ------------
-Paunch Engine needs a few packages before being built.
+Paunch needs a few packages before being built.
 
 	go get github.com/chsc/gogl/gl33
 	go get github.com/go-gl/glfw3
@@ -17,4 +23,4 @@ Installation
 ------------
 Once you have the dependencies installed, just run go get!
 
-	go get github.com/Velovix/paunch-engine
+	go get github.com/Velovix/paunch
