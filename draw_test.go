@@ -58,5 +58,5 @@ func TestDrawTriangles(t *testing.T) {
 		t.Errorf(".Texture(texCoords, \"img/test.png\") returned %s", err)
 	}
 
-	DrawRenderable(renderable)
+	renderable.Draw()
 }

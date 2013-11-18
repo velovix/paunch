@@ -135,8 +135,8 @@ func (renderable *Renderable) Texture(coords []float32, filename string) error {
 	return checkForErrors()
 }
 
-// DrawRenderable draws a Renderable
-func DrawRenderable(renderable Renderable) {
+// .DrawRenderable draws the Renderable
+func (renderable *Renderable) Draw() {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertex_buffer)
 	gl.VertexAttribPointer(gl.Uint(0), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
