@@ -4,11 +4,13 @@
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec2 texcoord;
 
-// Output
+// Outputs
 smooth out vec2 f_texcoord;
 
 void main() {
 
-	gl_Position = position;
+	vec4 vertex = position;
+
 	f_texcoord = texcoord;
+	gl_Position = vertex;
 }

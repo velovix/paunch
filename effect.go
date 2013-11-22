@@ -5,6 +5,7 @@ import (
 	"fmt"
 	gl "github.com/chsc/gogl/gl33"
 	"io/ioutil"
+	"strings"
 )
 
 const (
@@ -15,19 +16,18 @@ const (
 // Effect is an object that manages shaders.
 type Effect struct {
 	uniforms        map[string]gl.Int
-	shaders         map[string]gl.Uint
 	programs        map[string]gl.Uint
 	current_program string
 }
 
-func loadTextFile(filename string) ([]byte, error) {
+func loadTextFile(filename string) (*gl.Char, error) {
 
 	text, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return []byte{}, err
+		return gl.GLString(""), err
 	}
 
-	return text, nil
+	return gl.GLString(string(text)), nil
 }
 
 func (effect *Effect) checkUniformVariable(program string, variable string) {
@@ -42,14 +42,13 @@ func (effect *Effect) checkUniformVariable(program string, variable string) {
 func (effect *Effect) Init() error {
 
 	effect.uniforms = make(map[string]gl.Int)
-	effect.shaders = make(map[string]gl.Uint)
 	effect.programs = make(map[string]gl.Uint)
 
 	return nil
 }
 
 // SetVariablei sets a specified variable to the supplied integer to be passed
-// into an effects list.
+// into an effect.
 func (effect *Effect) SetVariablei(variable string, val int) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -58,7 +57,7 @@ func (effect *Effect) SetVariablei(variable string, val int) {
 }
 
 // SetVariable2i sets a specified variable to the two supplied integers to be
-// passed into an effects list.
+// passed into an effect.
 func (effect *Effect) SetVariable2i(variable string, val1 int, val2 int) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -67,7 +66,7 @@ func (effect *Effect) SetVariable2i(variable string, val1 int, val2 int) {
 }
 
 // SetVariable3i sets a specified variable to the three supplied integers to be
-// passed into an effects list.
+// passed into an effect.
 func (effect *Effect) SetVariable3i(variable string, val1 int, val2 int, val3 int) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -76,7 +75,7 @@ func (effect *Effect) SetVariable3i(variable string, val1 int, val2 int, val3 in
 }
 
 // SetVariable4i sets a specified variable to the four supplied integers to be
-// passed into an effects list.
+// passed into an effect.
 func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 int, val4 int) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -85,7 +84,7 @@ func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 in
 }
 
 // SetVariableui sets a specified variable to the supplied integer to be passed
-// into an effects list.
+// into an effect.
 func (effect *Effect) SetVariableui(variable string, val uint) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -94,7 +93,7 @@ func (effect *Effect) SetVariableui(variable string, val uint) {
 }
 
 // SetVariable2ui sets a specified variable to the two supplied integers to be
-// passed into an effects list.
+// passed into an effect.
 func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -103,7 +102,7 @@ func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) {
 }
 
 // SetVariable3ui sets a specified variable to the three supplied integers to
-// be passed into an effects list.
+// be passed into an effect.
 func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3 uint) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -112,7 +111,7 @@ func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3
 }
 
 // SetVariable4ui sets a specified variable to the four supplied integers to
-// be passed into an effects list.
+// be passed into an effect.
 func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3 uint, val4 uint) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -121,7 +120,7 @@ func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3
 }
 
 // SetVariablef sets a specified variable to the supplied integer to be passed
-// into an effects list.
+// into an effect.
 func (effect *Effect) SetVariablef(variable string, val float32) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -130,7 +129,7 @@ func (effect *Effect) SetVariablef(variable string, val float32) {
 }
 
 // SetVariable2f sets a specified variable to the two supplied integers to
-// be passed into an effects list.
+// be passed into an effect.
 func (effect *Effect) SetVariable2f(variable string, val1 float32, val2 float32) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -139,7 +138,7 @@ func (effect *Effect) SetVariable2f(variable string, val1 float32, val2 float32)
 }
 
 // SetVariable3f sets a specified variable to the three supplied integers to
-// be passed into an effects list.
+// be passed into an effect.
 func (effect *Effect) SetVariable3f(variable string, val1 float32, val2 float32, val3 float32) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -148,7 +147,7 @@ func (effect *Effect) SetVariable3f(variable string, val1 float32, val2 float32,
 }
 
 // SetVariable4f sets a specified variable to the four supplied integers to
-// be passed into an effects list.
+// be passed into an effect.
 func (effect *Effect) SetVariable4f(variable string, val1 float32, val2 float32, val3 float32, val4 float32) {
 
 	effect.checkUniformVariable(effect.current_program, variable)
@@ -156,69 +155,106 @@ func (effect *Effect) SetVariable4f(variable string, val1 float32, val2 float32,
 	gl.Uniform4f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2), gl.Float(val3), gl.Float(val4))
 }
 
-// NewEffect adds a new effect to the Effect object from a GLSL shader file.
-func (effect *Effect) NewEffect(mode int, name string) error {
+func compileShader(shaderType int, scripts []*gl.Char) (gl.Uint, error) {
 
-	if _, ok := effect.shaders[name]; ok {
-		return errors.New(fmt.Sprintf("Shader %s already exists", name))
-	}
-
-	filename := "shaders/" + name
-	if mode == VERTEX {
-		filename += ".vert"
-	} else if mode == FRAGMENT {
-		filename += ".frag"
-	}
-	scriptData, err := loadTextFile(filename)
-	if err != nil {
-		return err
-	}
-
-	script := gl.GLString(string(scriptData))
-	shader_id := gl.CreateShader(gl.Enum(mode))
-	gl.ShaderSource(shader_id, 1, &script, nil)
+	shader_id := gl.CreateShader(gl.Enum(shaderType))
+	gl.ShaderSource(shader_id, gl.Sizei(len(scripts)), &scripts[0], nil)
 	gl.CompileShader(shader_id)
-
-	var status gl.Int
-	gl.GetShaderiv(shader_id, gl.COMPILE_STATUS, &status)
-	if status == gl.FALSE {
-		return errors.New(fmt.Sprintf("Shader %s: Compile error", name))
+	if err := checkShaderCompiled(shader_id, shaderType); err != nil {
+		return 0, err
 	}
 
-	effect.shaders[name] = shader_id
+	return shader_id, checkForErrors()
+}
+
+func checkShaderCompiled(id gl.Uint, shaderType int) error {
+
+	var shader string
+	if shaderType == VERTEX {
+		shader = "vertex"
+	} else {
+		shader = "fragment"
+	}
+	var status gl.Int
+	gl.GetShaderiv(id, gl.COMPILE_STATUS, &status)
+	if status == gl.FALSE {
+		var infoLogLength gl.Int
+		gl.GetShaderiv(id, gl.INFO_LOG_LENGTH, &infoLogLength)
+
+		infoLog := make([]gl.Char, infoLogLength+1)
+		gl.GetShaderInfoLog(id, gl.Sizei(infoLogLength), nil, &infoLog[0])
+
+		return errors.New(fmt.Sprintf("Shader %s: %s", shader, gl.GoString(&infoLog[0])))
+	}
 
 	return nil
 }
 
-// NewEffectList adds a new effect list to the Effect object. Effect lists are
-// collections of effects to be applied to the renderer.
-func (effect *Effect) NewEffectList(name string, effects []string) error {
+func checkIfShaderFile(name string) int {
 
-	for _, val := range effects {
-		if _, ok := effect.shaders[val]; !ok {
-			return errors.New(fmt.Sprintf("Effect %s does not exist", val))
+	split := strings.Split(name, ".")
+
+	if split[len(split)-1] == "vert" {
+		return VERTEX
+	} else if split[len(split)-1] == "frag" {
+		return FRAGMENT
+	}
+
+	return -1
+}
+
+// New adds a new effect to the Effect object from a folder of GLSL shader
+// files.
+func (effect *Effect) New(name, directory string) error {
+
+	program_id := gl.CreateProgram()
+
+	var vscript, fscript []*gl.Char
+
+	files, ioErr := ioutil.ReadDir("shaders/" + directory)
+	if ioErr != nil {
+		return ioErr
+	}
+	for _, val := range files {
+		name := val.Name()
+		if shaderType := checkIfShaderFile(name); !val.IsDir() && shaderType != -1 {
+			text, err := loadTextFile("shaders/" + directory + name)
+			if err != nil {
+				return err
+			}
+			if shaderType == VERTEX {
+				vscript = append(vscript, text)
+			} else if shaderType == FRAGMENT {
+				fscript = append(fscript, text)
+			}
 		}
 	}
 
-	program := gl.CreateProgram()
-	for _, val := range effects {
-		gl.AttachShader(program, effect.shaders[val])
+	vshader_id, vertErr := compileShader(VERTEX, vscript)
+	if vertErr != nil {
+		return vertErr
 	}
+	gl.AttachShader(program_id, vshader_id)
+	fshader_id, fragErr := compileShader(FRAGMENT, fscript)
+	if fragErr != nil {
+		return fragErr
+	}
+	gl.AttachShader(program_id, fshader_id)
 
-	gl.LinkProgram(program)
+	gl.LinkProgram(program_id)
 	var status gl.Int
-	gl.GetProgramiv(program, gl.LINK_STATUS, &status)
+	gl.GetProgramiv(program_id, gl.LINK_STATUS, &status)
 	if status == gl.FALSE {
 		return errors.New("Error linking program")
 	}
 
-	effect.programs[name] = program
+	effect.programs[name] = program_id
 
 	return checkForErrors()
 }
 
-// UseEffectList activates an effect list to be used on the following frames.
-func (effect *Effect) UseEffectList(name string) error {
+// Use activates an effect for the following draw commands.
+func (effect *Effect) Use(name string) error {
 
 	if _, ok := effect.programs[name]; !ok {
 		return errors.New(fmt.Sprintf("Effect list %s does not exist", name))
