@@ -26,7 +26,7 @@ type Renderable struct {
 	size            int
 	vertex_buffer   gl.Uint
 	texcoord_buffer gl.Uint
-	texture         gl.Uint
+	texture         []gl.Uint
 }
 
 func checkForErrors() error {
@@ -87,7 +87,7 @@ func InitDraw(window Window) error {
 // type and verticies.
 func NewRenderable(mode int, verticies []float32) (Renderable, error) {
 
-	renderable := Renderable{mode, len(verticies), 0, 0, 0}
+	renderable := Renderable{mode, len(verticies), 0, 0, nil}
 
 	gl.GenBuffers(1, &renderable.vertex_buffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertex_buffer))
@@ -98,8 +98,9 @@ func NewRenderable(mode int, verticies []float32) (Renderable, error) {
 }
 
 // Texture applies a texture from a 32-bit PNG file to a Renderable. The
-// Renderable will automatically be drawn with this texture.
-func (renderable *Renderable) Texture(coords []float32, filename string) error {
+// Renderable will automatically be drawn with this texture. The texture may
+// also be split into multiple smaller textures automatically if clip is > 1.
+func (renderable *Renderable) Texture(coords []float32, filename string, clip int) error {
 
 	file, err := os.Open(filename)
 	if err != nil {
@@ -117,26 +118,34 @@ func (renderable *Renderable) Texture(coords []float32, filename string) error {
 		return decodeErr
 	}
 
-	byteData := imageToBytes(data)
+	clipWidth := data.Bounds().Max.X - data.Bounds().Min.X
+	clipHeight := (data.Bounds().Max.Y - data.Bounds().Min.Y) / clip
 
-	gl.GenTextures(1, &renderable.texture)
-	gl.BindTexture(gl.TEXTURE_2D, renderable.texture)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA,
-		gl.Sizei(data.Bounds().Max.X-data.Bounds().Min.X),
-		gl.Sizei(data.Bounds().Max.Y-data.Bounds().Min.Y),
-		0, gl.RGBA, gl.UNSIGNED_BYTE,
-		gl.Pointer(&byteData[0]))
+	renderable.texture = make([]gl.Uint, clip)
+	gl.GenTextures(gl.Sizei(clip), &renderable.texture[0])
+
+	byteData := imageToBytes(data)
+	clips := make([][]byte, clip)
+	for i, _ := range clips {
+		clips[i] = byteData[i*(len(byteData)/len(clips)) : (i+1)*(len(byteData)/len(clips))]
+		gl.BindTexture(gl.TEXTURE_2D, renderable.texture[len(clips)-1-i])
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
+		gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA,
+			gl.Sizei(clipWidth), gl.Sizei(clipHeight),
+			0, gl.RGBA, gl.UNSIGNED_BYTE,
+			gl.Pointer(&clips[i][0]))
+	}
+
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 
 	return checkForErrors()
 }
 
-// DrawRenderable draws the Renderable.
-func (renderable *Renderable) Draw() {
+// Draw draws the Renderable.
+func (renderable *Renderable) Draw(frame int) {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertex_buffer)
 	gl.VertexAttribPointer(gl.Uint(0), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
@@ -149,7 +158,7 @@ func (renderable *Renderable) Draw() {
 		gl.VertexAttribPointer(gl.Uint(1), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
 		gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
-		gl.BindTexture(gl.TEXTURE_2D, renderable.texture)
+		gl.BindTexture(gl.TEXTURE_2D, renderable.texture[frame])
 		gl.EnableVertexAttribArray(gl.Uint(1))
 	}
 

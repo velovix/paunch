@@ -25,10 +25,10 @@ func TestDrawTriangles(t *testing.T) {
 		1.0, 0.0,
 		0.0, 1.0}
 
-	/*texCoords := []float32{
-	0.0, 0.0,
-	1.0, 0.0,
-	0.0, 1.0}*/
+	texCoords := []float32{
+		0.0, 0.0,
+		1.0, 0.0,
+		0.0, 1.0}
 
 	renderable, err := NewRenderable(TRIANGLES, triangle)
 	if err != nil {
@@ -50,10 +50,10 @@ func TestDrawTriangles(t *testing.T) {
 		t.Errorf(".New(\"texture\", \"texture\") returned %s", err)
 	}
 
-	/*err = renderable.Texture(texCoords, "img/test.png")
+	err = renderable.Texture(texCoords, "img/test.png", 2)
 	if err != nil {
 		t.Errorf(".Texture(texCoords, \"img/test.png\") returned %s", err)
-	}*/
+	}
 
-	renderable.Draw()
+	renderable.Draw(0)
 }
