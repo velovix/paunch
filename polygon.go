@@ -36,9 +36,9 @@ func NewPolygon(points []Point) Polygon {
 	return polygon
 }
 
-func isPointOnPolygon(point Point, polygon Polygon) bool {
+func (polygon Polygon) OnPoint(point Point) bool {
 
-	if !isPointOnBounding(point, polygon.bounds) {
+	if !point.OnBounding(polygon.bounds) {
 		return false
 	}
 
@@ -46,7 +46,7 @@ func isPointOnPolygon(point Point, polygon Polygon) bool {
 
 	intersects := 0
 	for _, val := range polygon.lines {
-		if isLineOnLine(ray, val) {
+		if ray.OnLine(val) {
 			intersects++
 		}
 	}
@@ -58,21 +58,21 @@ func isPointOnPolygon(point Point, polygon Polygon) bool {
 	}
 }
 
-func isBoundingOnPolygon(bounding Bounding, polygon Polygon) bool {
+func (polygon Polygon) OnBounding(bounding Bounding) bool {
 
-	if !isBoundingOnBounding(bounding, polygon.bounds) {
+	if !bounding.OnBounding(polygon.bounds) {
 		return false
 	}
 
-	if isPointOnPolygon(bounding.Start, polygon) || isPointOnPolygon(bounding.End, polygon) ||
-		isPointOnPolygon(NewPoint(bounding.Start.X, bounding.End.Y), polygon) ||
-		isPointOnPolygon(NewPoint(bounding.End.X, bounding.Start.Y), polygon) {
+	if polygon.OnPoint(bounding.Start) || polygon.OnPoint(bounding.End) ||
+		polygon.OnPoint(NewPoint(bounding.Start.X, bounding.End.Y)) ||
+		polygon.OnPoint(NewPoint(bounding.End.X, bounding.Start.Y)) {
 		return true
 	}
 
 	boundLines := bounding.getLines()
 	for _, val := range boundLines {
-		if isLineOnPolygon(val, polygon) {
+		if polygon.OnLine(val) {
 			return true
 		}
 	}
@@ -80,14 +80,14 @@ func isBoundingOnPolygon(bounding Bounding, polygon Polygon) bool {
 	return false
 }
 
-func isLineOnPolygon(line Line, polygon Polygon) bool {
+func (polygon Polygon) OnLine(line Line) bool {
 
-	if !isBoundingOnBounding(line.bounds, polygon.bounds) {
+	if !line.bounds.OnBounding(polygon.bounds) {
 		return false
 	}
 
 	for _, val := range polygon.lines {
-		if isLineOnLine(line, val) {
+		if line.OnLine(val) {
 			return true
 		}
 	}
@@ -95,17 +95,32 @@ func isLineOnPolygon(line Line, polygon Polygon) bool {
 	return false
 }
 
-func isPolygonOnPolygon(polygon1, polygon2 Polygon) bool {
+func (polygon1 Polygon) OnPolygon(polygon2 Polygon) bool {
 
-	if !isBoundingOnBounding(polygon1.bounds, polygon2.bounds) {
+	if !polygon1.bounds.OnBounding(polygon2.bounds) {
 		return false
 	}
 
 	for _, val := range polygon1.lines {
-		if isLineOnPolygon(val, polygon2) {
+		if polygon2.OnLine(val) {
 			return true
 		}
 	}
 
 	return false
+}
+
+func (line Line) OnPolygon(polygon Polygon) bool {
+
+	return polygon.OnLine(line)
+}
+
+func (bounding Bounding) OnPolygon(polygon Polygon) bool {
+
+	return polygon.OnBounding(bounding)
+}
+
+func (point Point) OnPolygon(polygon Polygon) bool {
+
+	return polygon.OnPoint(point)
 }

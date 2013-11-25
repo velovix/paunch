@@ -37,7 +37,7 @@ func (bounding Bounding) getLines() []Line {
 	return line
 }
 
-func isPointOnLine(point Point, line Line) bool {
+func (line Line) OnPoint(point Point) bool {
 
 	if math.IsInf(line.M, 0) {
 		if point.Y >= line.bounds.Start.Y && point.Y <= line.bounds.End.Y &&
@@ -48,7 +48,7 @@ func isPointOnLine(point Point, line Line) bool {
 		}
 	}
 
-	if !isPointOnBounding(point, line.bounds) {
+	if !point.OnBounding(line.bounds) {
 		return false
 	}
 
@@ -59,19 +59,19 @@ func isPointOnLine(point Point, line Line) bool {
 	return false
 }
 
-func isBoundingOnLine(bounding Bounding, line Line) bool {
+func (line Line) OnBounding(bounding Bounding) bool {
 
-	if !isBoundingOnBounding(bounding, line.bounds) {
+	if !bounding.OnBounding(line.bounds) {
 		return false
 	}
 
-	if isPointOnBounding(line.Start, bounding) || isPointOnBounding(line.End, bounding) {
+	if line.Start.OnBounding(bounding) || line.End.OnBounding(bounding) {
 		return true
 	}
 
 	boundLines := bounding.getLines()
 	for _, val := range boundLines {
-		if isLineOnLine(line, val) {
+		if line.OnLine(val) {
 			return true
 		}
 	}
@@ -79,9 +79,9 @@ func isBoundingOnLine(bounding Bounding, line Line) bool {
 	return false
 }
 
-func isLineOnLine(line1, line2 Line) bool {
+func (line1 Line) OnLine(line2 Line) bool {
 
-	if !isBoundingOnBounding(line1.bounds, line2.bounds) {
+	if !line1.bounds.OnBounding(line2.bounds) {
 		return false
 	}
 
@@ -106,9 +106,19 @@ func isLineOnLine(line1, line2 Line) bool {
 	x := dx1 / dxy2
 	y := dy1 / dxy2
 
-	if isPointOnLine(NewPoint(x, y), line1) && isPointOnLine(NewPoint(x, y), line2) {
+	if line1.OnPoint(NewPoint(x, y)) && line2.OnPoint(NewPoint(x, y)) {
 		return true
 	}
 
 	return false
+}
+
+func (bounding Bounding) OnLine(line Line) bool {
+
+	return line.OnBounding(bounding)
+}
+
+func (point Point) OnLine(line Line) bool {
+
+	return line.OnPoint(point)
 }

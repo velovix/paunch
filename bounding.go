@@ -26,7 +26,7 @@ func NewBounding(start Point, end Point) Bounding {
 	return Bounding{Start: checkStart, End: checkEnd}
 }
 
-func isPointOnBounding(point Point, bounding Bounding) bool {
+func (bounding Bounding) OnPoint(point Point) bool {
 
 	if point.X >= bounding.Start.X && point.X <= bounding.End.X &&
 		point.Y >= bounding.Start.Y && point.Y <= bounding.End.Y {
@@ -36,7 +36,7 @@ func isPointOnBounding(point Point, bounding Bounding) bool {
 	return false
 }
 
-func isBoundingOnBounding(bounding1, bounding2 Bounding) bool {
+func (bounding1 Bounding) OnBounding(bounding2 Bounding) bool {
 
 	if bounding1.Start.X > bounding2.End.X || bounding1.End.X < bounding2.Start.X ||
 		bounding1.Start.Y > bounding1.End.Y || bounding1.End.Y < bounding2.Start.Y {
@@ -44,4 +44,9 @@ func isBoundingOnBounding(bounding1, bounding2 Bounding) bool {
 	}
 
 	return true
+}
+
+func (point Point) OnBounding(bounding Bounding) bool {
+
+	return bounding.OnPoint(point)
 }

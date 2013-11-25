@@ -10,7 +10,7 @@ func NewPoint(x, y float64) Point {
 	return Point{X: x, Y: y}
 }
 
-func isPointOnPoint(point1, point2 Point) bool {
+func (point1 Point) OnPoint(point2 Point) bool {
 
 	if point1.X == point2.X && point1.Y == point2.Y {
 		return true
