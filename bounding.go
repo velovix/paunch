@@ -1,10 +1,12 @@
 package paunch
 
+// Bounding is an object that represents a bounding box.
 type Bounding struct {
 	Start Point
 	End   Point
 }
 
+// NewBounding creates a new Bounding object.
 func NewBounding(start Point, end Point) Bounding {
 
 	var checkStart, checkEnd Point
@@ -26,6 +28,7 @@ func NewBounding(start Point, end Point) Bounding {
 	return Bounding{Start: checkStart, End: checkEnd}
 }
 
+// OnPoint checks if a Point is on the Bounding object.
 func (bounding Bounding) OnPoint(point Point) bool {
 
 	if point.X >= bounding.Start.X && point.X <= bounding.End.X &&
@@ -36,6 +39,7 @@ func (bounding Bounding) OnPoint(point Point) bool {
 	return false
 }
 
+// OnBounding checks if a Bounding is on the Bounding object.
 func (bounding1 Bounding) OnBounding(bounding2 Bounding) bool {
 
 	if bounding1.Start.X > bounding2.End.X || bounding1.End.X < bounding2.Start.X ||
@@ -46,6 +50,7 @@ func (bounding1 Bounding) OnBounding(bounding2 Bounding) bool {
 	return true
 }
 
+// OnBounding checks if a Bounding is on the Point object.
 func (point Point) OnBounding(bounding Bounding) bool {
 
 	return bounding.OnPoint(point)

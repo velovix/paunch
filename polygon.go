@@ -1,10 +1,13 @@
 package paunch
 
+// Polygon is an object that represents a series of connected Lines that form
+// a shape.
 type Polygon struct {
 	lines  []Line
 	bounds Bounding
 }
 
+// NewPolygon creates a new Polygon object.
 func NewPolygon(points []Point) Polygon {
 
 	var polygon Polygon
@@ -36,6 +39,7 @@ func NewPolygon(points []Point) Polygon {
 	return polygon
 }
 
+// OnPoint checks if a Point is on the Polygon object.
 func (polygon Polygon) OnPoint(point Point) bool {
 
 	if !point.OnBounding(polygon.bounds) {
@@ -58,6 +62,7 @@ func (polygon Polygon) OnPoint(point Point) bool {
 	}
 }
 
+// OnBounding checks if a Bounding is on the Polygon object.
 func (polygon Polygon) OnBounding(bounding Bounding) bool {
 
 	if !bounding.OnBounding(polygon.bounds) {
@@ -80,6 +85,7 @@ func (polygon Polygon) OnBounding(bounding Bounding) bool {
 	return false
 }
 
+// OnLine checks if a Line is on the Polygon object.
 func (polygon Polygon) OnLine(line Line) bool {
 
 	if !line.bounds.OnBounding(polygon.bounds) {
@@ -95,6 +101,7 @@ func (polygon Polygon) OnLine(line Line) bool {
 	return false
 }
 
+// OnPolygon checks if a Polygon is on the Polygon object.
 func (polygon1 Polygon) OnPolygon(polygon2 Polygon) bool {
 
 	if !polygon1.bounds.OnBounding(polygon2.bounds) {
@@ -110,16 +117,19 @@ func (polygon1 Polygon) OnPolygon(polygon2 Polygon) bool {
 	return false
 }
 
+// OnPolygon checks if a Polygon is on the Line object.
 func (line Line) OnPolygon(polygon Polygon) bool {
 
 	return polygon.OnLine(line)
 }
 
+// OnPolygon checks if a Polygon is on the Bounding object.
 func (bounding Bounding) OnPolygon(polygon Polygon) bool {
 
 	return polygon.OnBounding(bounding)
 }
 
+// OnPolygon checks if a Polygon is on the Point object.
 func (point Point) OnPolygon(polygon Polygon) bool {
 
 	return polygon.OnPoint(point)

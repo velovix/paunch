@@ -4,6 +4,7 @@ import (
 	"math"
 )
 
+// Line is an object that represents a line segment.
 type Line struct {
 	Start  Point
 	End    Point
@@ -13,6 +14,7 @@ type Line struct {
 	B float64
 }
 
+// NewLine creates a new line object. This is absolutely necissary before use.
 func NewLine(start, end Point) Line {
 
 	line := Line{Start: start, End: end}
@@ -37,6 +39,7 @@ func (bounding Bounding) getLines() []Line {
 	return line
 }
 
+// OnPoint checks if a Point is on the Line object.
 func (line Line) OnPoint(point Point) bool {
 
 	if math.IsInf(line.M, 0) {
@@ -59,6 +62,7 @@ func (line Line) OnPoint(point Point) bool {
 	return false
 }
 
+// OnBounding checks if a Bounding is on the Line object.
 func (line Line) OnBounding(bounding Bounding) bool {
 
 	if !bounding.OnBounding(line.bounds) {
@@ -79,6 +83,7 @@ func (line Line) OnBounding(bounding Bounding) bool {
 	return false
 }
 
+// OnLine checks if a line is on the Line object.
 func (line1 Line) OnLine(line2 Line) bool {
 
 	if !line1.bounds.OnBounding(line2.bounds) {
@@ -113,11 +118,13 @@ func (line1 Line) OnLine(line2 Line) bool {
 	return false
 }
 
+// OnLine checks if a Line is on the Bounding object.
 func (bounding Bounding) OnLine(line Line) bool {
 
 	return line.OnBounding(bounding)
 }
 
+// OnLine checks if a Line is on the Point object.
 func (point Point) OnLine(line Line) bool {
 
 	return line.OnPoint(point)
