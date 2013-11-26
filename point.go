@@ -21,9 +21,3 @@ func (point1 Point) OnPoint(point2 Point) bool {
 
 	return false
 }
-
-// GetSlope returns the slope created by two points.
-func GetSlope(point1, point2 Point) float64 {
-
-	return (point2.Y - point1.Y) / (point2.X - point1.X)
-}

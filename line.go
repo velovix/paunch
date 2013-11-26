@@ -21,7 +21,7 @@ func NewLine(start, end Point) Line {
 
 	line.bounds = NewBounding(line.Start, line.End)
 
-	line.M = GetSlope(line.Start, line.End)
+	line.M = getSlope(line.Start.X, line.Start.Y, line.End.X, line.End.Y)
 	line.B = line.Start.Y - (line.M * line.Start.X)
 
 	return line
@@ -90,23 +90,23 @@ func (line1 Line) OnLine(line2 Line) bool {
 		return false
 	}
 
-	dx1 := FindDeterminate(
-		FindDeterminate(line1.Start.X, line1.Start.Y, line1.End.X, line1.End.Y),
-		FindDeterminate(line1.Start.X, 1, line1.End.X, 1),
-		FindDeterminate(line2.Start.X, line2.Start.Y, line2.End.X, line2.End.Y),
-		FindDeterminate(line2.Start.X, 1, line2.End.X, 1))
+	dx1 := findDeterminate(
+		findDeterminate(line1.Start.X, line1.Start.Y, line1.End.X, line1.End.Y),
+		findDeterminate(line1.Start.X, 1, line1.End.X, 1),
+		findDeterminate(line2.Start.X, line2.Start.Y, line2.End.X, line2.End.Y),
+		findDeterminate(line2.Start.X, 1, line2.End.X, 1))
 
-	dxy2 := FindDeterminate(
-		FindDeterminate(line1.Start.X, 1, line1.End.X, 1),
-		FindDeterminate(line1.Start.Y, 1, line1.End.Y, 1),
-		FindDeterminate(line2.Start.X, 1, line2.End.X, 1),
-		FindDeterminate(line2.Start.Y, 1, line2.End.Y, 1))
+	dxy2 := findDeterminate(
+		findDeterminate(line1.Start.X, 1, line1.End.X, 1),
+		findDeterminate(line1.Start.Y, 1, line1.End.Y, 1),
+		findDeterminate(line2.Start.X, 1, line2.End.X, 1),
+		findDeterminate(line2.Start.Y, 1, line2.End.Y, 1))
 
-	dy1 := FindDeterminate(
-		FindDeterminate(line1.Start.X, line1.Start.Y, line1.End.X, line1.End.Y),
-		FindDeterminate(line1.Start.Y, 1, line1.End.Y, 1),
-		FindDeterminate(line2.Start.X, line2.Start.Y, line2.End.X, line2.End.Y),
-		FindDeterminate(line2.Start.Y, 1, line2.End.Y, 1))
+	dy1 := findDeterminate(
+		findDeterminate(line1.Start.X, line1.Start.Y, line1.End.X, line1.End.Y),
+		findDeterminate(line1.Start.Y, 1, line1.End.Y, 1),
+		findDeterminate(line2.Start.X, line2.Start.Y, line2.End.X, line2.End.Y),
+		findDeterminate(line2.Start.Y, 1, line2.End.Y, 1))
 
 	x := dx1 / dxy2
 	y := dy1 / dxy2
