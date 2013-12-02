@@ -145,7 +145,7 @@ func (renderable *Renderable) Texture(coords []float32, filename string, clip in
 }
 
 // Draw draws the Renderable.
-func (renderable *Renderable) Draw(frame int) {
+func (renderable *Renderable) Draw(frame int) error {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertex_buffer)
 	gl.VertexAttribPointer(gl.Uint(0), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
@@ -168,10 +168,14 @@ func (renderable *Renderable) Draw(frame int) {
 	gl.DisableVertexAttribArray(gl.Uint(1))
 
 	gl.BindTexture(gl.TEXTURE_2D, 0)
+
+	return checkForErrors()
 }
 
 // Clear clears the pixels on screen. This should probably be called before
 // every new frame.
-func Clear() {
+func Clear() error {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
+
+	return checkForErrors()
 }
