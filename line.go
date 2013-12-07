@@ -27,6 +27,15 @@ func NewLine(start, end Point) Line {
 	return line
 }
 
+// Move moves the Line object a specified distance.
+func (line Line) Move(x, y float64) {
+
+	line.Start.Move(x, y)
+	line.End.Move(x, y)
+
+	line.bounds.Move(x, y)
+}
+
 func (bounding Bounding) getLines() []Line {
 
 	line := make([]Line, 4)

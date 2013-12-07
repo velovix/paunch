@@ -8,6 +8,7 @@ type Collision interface {
 	OnBounding(Bounding) bool
 	OnLine(Line) bool
 	OnPolygon(Polygon) bool
+	Move(x, y float64)
 }
 
 // NewCollision creates a new collision object who's type is determined

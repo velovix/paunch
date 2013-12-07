@@ -12,6 +12,13 @@ func NewPoint(x, y float64) Point {
 	return Point{X: x, Y: y}
 }
 
+// Move moves the Point object a specified distance.
+func (point Point) Move(x, y float64) {
+
+	point.X += x
+	point.Y += y
+}
+
 // OnPoint checks if a Point is on the Point object.
 func (point1 Point) OnPoint(point2 Point) bool {
 

@@ -39,6 +39,16 @@ func NewPolygon(points []Point) Polygon {
 	return polygon
 }
 
+// Move moves the Polygon object a specified distance.
+func (polygon Polygon) Move(x, y float64) {
+
+	for i, _ := range polygon.lines {
+		polygon.lines[i].Move(x, y)
+	}
+
+	polygon.bounds.Move(x, y)
+}
+
 // OnPoint checks if a Point is on the Polygon object.
 func (polygon Polygon) OnPoint(point Point) bool {
 

@@ -28,6 +28,13 @@ func NewBounding(start Point, end Point) Bounding {
 	return Bounding{Start: checkStart, End: checkEnd}
 }
 
+// Move moves the Bounding object a specified distance.
+func (bounding Bounding) Move(x, y float64) {
+
+	bounding.Start.Move(x, y)
+	bounding.End.Move(x, y)
+}
+
 // OnPoint checks if a Point is on the Bounding object.
 func (bounding Bounding) OnPoint(point Point) bool {
 
