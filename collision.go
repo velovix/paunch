@@ -29,6 +29,7 @@ func NewCollision(points []*Point, objType int) Collision {
 	}
 }
 
+// Collides checks if two Collision objects are overlapping.
 func Collides(collision1, collision2 Collision) bool {
 
 	switch collision2.(type) {
