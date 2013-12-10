@@ -6,18 +6,18 @@ import (
 
 // Line is an object that represents a line segment.
 type Line struct {
-	Start  Point
-	End    Point
-	bounds Bounding
+	Start  *Point
+	End    *Point
+	bounds *Bounding
 
 	M float64
 	B float64
 }
 
 // NewLine creates a new line object. This is absolutely necissary before use.
-func NewLine(start, end Point) Line {
+func NewLine(start, end *Point) *Line {
 
-	line := Line{Start: start, End: end}
+	line := &Line{Start: start, End: end}
 
 	line.bounds = NewBounding(line.Start, line.End)
 
@@ -28,7 +28,7 @@ func NewLine(start, end Point) Line {
 }
 
 // Move moves the Line object a specified distance.
-func (line Line) Move(x, y float64) {
+func (line *Line) Move(x, y float64) {
 
 	line.Start.Move(x, y)
 	line.End.Move(x, y)
@@ -36,9 +36,9 @@ func (line Line) Move(x, y float64) {
 	line.bounds.Move(x, y)
 }
 
-func (bounding Bounding) getLines() []Line {
+func (bounding *Bounding) getLines() []*Line {
 
-	line := make([]Line, 4)
+	line := make([]*Line, 4)
 
 	line[0] = NewLine(NewPoint(bounding.Start.X, bounding.Start.Y), NewPoint(bounding.End.X, bounding.Start.Y))
 	line[1] = NewLine(NewPoint(bounding.End.X, bounding.Start.Y), NewPoint(bounding.End.X, bounding.End.Y))
@@ -49,7 +49,7 @@ func (bounding Bounding) getLines() []Line {
 }
 
 // OnPoint checks if a Point is on the Line object.
-func (line Line) OnPoint(point Point) bool {
+func (line *Line) OnPoint(point *Point) bool {
 
 	if math.IsInf(line.M, 0) {
 		if point.Y >= line.bounds.Start.Y && point.Y <= line.bounds.End.Y &&
@@ -72,7 +72,7 @@ func (line Line) OnPoint(point Point) bool {
 }
 
 // OnBounding checks if a Bounding is on the Line object.
-func (line Line) OnBounding(bounding Bounding) bool {
+func (line *Line) OnBounding(bounding *Bounding) bool {
 
 	if !bounding.OnBounding(line.bounds) {
 		return false
@@ -93,7 +93,7 @@ func (line Line) OnBounding(bounding Bounding) bool {
 }
 
 // OnLine checks if a line is on the Line object.
-func (line1 Line) OnLine(line2 Line) bool {
+func (line1 *Line) OnLine(line2 *Line) bool {
 
 	if !line1.bounds.OnBounding(line2.bounds) {
 		return false
@@ -128,13 +128,13 @@ func (line1 Line) OnLine(line2 Line) bool {
 }
 
 // OnLine checks if a Line is on the Bounding object.
-func (bounding Bounding) OnLine(line Line) bool {
+func (bounding *Bounding) OnLine(line *Line) bool {
 
 	return line.OnBounding(bounding)
 }
 
 // OnLine checks if a Line is on the Point object.
-func (point Point) OnLine(line Line) bool {
+func (point *Point) OnLine(line *Line) bool {
 
 	return line.OnPoint(point)
 }

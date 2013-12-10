@@ -96,7 +96,7 @@ func TestLineOnLine(t *testing.T) {
 
 func TestIsPointOnPolygon(t *testing.T) {
 
-	polygon := NewPolygon([]Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)})
+	polygon := NewPolygon([]*Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)})
 	point1 := NewPoint(1.0, 1.0)
 	point2 := NewPoint(3.0, 4.0)
 
@@ -111,7 +111,7 @@ func TestIsPointOnPolygon(t *testing.T) {
 
 func TestIsBoundingOnPolygon(t *testing.T) {
 
-	polygon := NewPolygon([]Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)})
+	polygon := NewPolygon([]*Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)})
 	bounding1 := NewBounding(NewPoint(1.0, 1.0), NewPoint(3.0, 2.0))
 	bounding2 := NewBounding(NewPoint(3.0, 4.0), NewPoint(6.0, 6.0))
 
@@ -126,7 +126,7 @@ func TestIsBoundingOnPolygon(t *testing.T) {
 
 func TestIsLineOnPolygon(t *testing.T) {
 
-	polygon := NewPolygon([]Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)})
+	polygon := NewPolygon([]*Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)})
 	line1 := NewLine(NewPoint(1.0, 1.0), NewPoint(3.0, 2.0))
 	line2 := NewLine(NewPoint(3.0, 4.0), NewPoint(6.0, 6.0))
 
@@ -141,9 +141,9 @@ func TestIsLineOnPolygon(t *testing.T) {
 
 func TestIsPolygonOnPolygon(t *testing.T) {
 
-	polygon := NewPolygon([]Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)})
-	polygon1 := NewPolygon([]Point{NewPoint(1.0, 1.0), NewPoint(3.0, 1.0), NewPoint(2.0, 7.0)})
-	polygon2 := NewPolygon([]Point{NewPoint(7.0, 7.0), NewPoint(10.0, 7.0), NewPoint(8.0, 10.0)})
+	polygon := NewPolygon([]*Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)})
+	polygon1 := NewPolygon([]*Point{NewPoint(1.0, 1.0), NewPoint(3.0, 1.0), NewPoint(2.0, 7.0)})
+	polygon2 := NewPolygon([]*Point{NewPoint(7.0, 7.0), NewPoint(10.0, 7.0), NewPoint(8.0, 10.0)})
 
 	if !polygon.OnPolygon(polygon1) {
 		t.Errorf("polygon.OnPolygon returned false when true is expected")
@@ -156,9 +156,9 @@ func TestIsPolygonOnPolygon(t *testing.T) {
 
 func TestShapes(t *testing.T) {
 
-	collision := NewCollision([]Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)}, POLYGON)
-	collision1 := NewCollision([]Point{NewPoint(1.0, 1.0), NewPoint(3.0, 2.0)}, LINE)
-	collision2 := NewCollision([]Point{NewPoint(3.0, 4.0), NewPoint(6.0, 6.0)}, LINE)
+	collision := NewCollision([]*Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)}, POLYGON)
+	collision1 := NewCollision([]*Point{NewPoint(1.0, 1.0), NewPoint(3.0, 2.0)}, LINE)
+	collision2 := NewCollision([]*Point{NewPoint(3.0, 4.0), NewPoint(6.0, 6.0)}, LINE)
 
 	if !Collides(collision, collision1) {
 		t.Errorf("Collides returned false when true is expected")

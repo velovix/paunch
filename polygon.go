@@ -1,23 +1,31 @@
 package paunch
 
+import (
+	"math"
+)
+
 // Polygon is an object that represents a series of connected Lines that form
 // a shape.
 type Polygon struct {
-	lines  []Line
-	bounds Bounding
+	lines  []*Line
+	bounds *Bounding
 }
 
 // NewPolygon creates a new Polygon object.
-func NewPolygon(points []Point) Polygon {
+func NewPolygon(points []*Point) *Polygon {
 
 	var polygon Polygon
-	polygon.lines = make([]Line, len(points))
+	polygon.lines = make([]*Line, len(points))
 
-	min := points[0]
-	max := points[0]
+	min := NewPoint(math.Inf(1), math.Inf(1))
+	max := NewPoint(math.Inf(-1), math.Inf(-1))
 
-	for i := 1; i < len(points); i++ {
-		polygon.lines[i] = NewLine(points[i-1], points[i])
+	for i := 0; i < len(points); i++ {
+		if i < len(points)-1 {
+			polygon.lines[i] = NewLine(points[i], points[i+1])
+		} else {
+			polygon.lines[i] = NewLine(points[i], points[0])
+		}
 
 		if points[i].X > max.X {
 			max.X = points[i].X
@@ -32,15 +40,13 @@ func NewPolygon(points []Point) Polygon {
 			min.Y = points[i].Y
 		}
 	}
-	polygon.lines[len(points)-1] = NewLine(points[len(points)-1], points[0])
 
 	polygon.bounds = NewBounding(min, max)
-
-	return polygon
+	return &polygon
 }
 
 // Move moves the Polygon object a specified distance.
-func (polygon Polygon) Move(x, y float64) {
+func (polygon *Polygon) Move(x, y float64) {
 
 	for i, _ := range polygon.lines {
 		polygon.lines[i].Move(x, y)
@@ -50,7 +56,7 @@ func (polygon Polygon) Move(x, y float64) {
 }
 
 // OnPoint checks if a Point is on the Polygon object.
-func (polygon Polygon) OnPoint(point Point) bool {
+func (polygon *Polygon) OnPoint(point *Point) bool {
 
 	if !point.OnBounding(polygon.bounds) {
 		return false
@@ -73,7 +79,7 @@ func (polygon Polygon) OnPoint(point Point) bool {
 }
 
 // OnBounding checks if a Bounding is on the Polygon object.
-func (polygon Polygon) OnBounding(bounding Bounding) bool {
+func (polygon *Polygon) OnBounding(bounding *Bounding) bool {
 
 	if !bounding.OnBounding(polygon.bounds) {
 		return false
@@ -96,7 +102,7 @@ func (polygon Polygon) OnBounding(bounding Bounding) bool {
 }
 
 // OnLine checks if a Line is on the Polygon object.
-func (polygon Polygon) OnLine(line Line) bool {
+func (polygon *Polygon) OnLine(line *Line) bool {
 
 	if !line.bounds.OnBounding(polygon.bounds) {
 		return false
@@ -112,7 +118,7 @@ func (polygon Polygon) OnLine(line Line) bool {
 }
 
 // OnPolygon checks if a Polygon is on the Polygon object.
-func (polygon1 Polygon) OnPolygon(polygon2 Polygon) bool {
+func (polygon1 *Polygon) OnPolygon(polygon2 *Polygon) bool {
 
 	if !polygon1.bounds.OnBounding(polygon2.bounds) {
 		return false
@@ -128,19 +134,19 @@ func (polygon1 Polygon) OnPolygon(polygon2 Polygon) bool {
 }
 
 // OnPolygon checks if a Polygon is on the Line object.
-func (line Line) OnPolygon(polygon Polygon) bool {
+func (line *Line) OnPolygon(polygon *Polygon) bool {
 
 	return polygon.OnLine(line)
 }
 
 // OnPolygon checks if a Polygon is on the Bounding object.
-func (bounding Bounding) OnPolygon(polygon Polygon) bool {
+func (bounding *Bounding) OnPolygon(polygon *Polygon) bool {
 
 	return polygon.OnBounding(bounding)
 }
 
 // OnPolygon checks if a Polygon is on the Point object.
-func (point Point) OnPolygon(polygon Polygon) bool {
+func (point *Point) OnPolygon(polygon *Polygon) bool {
 
 	return polygon.OnPoint(point)
 }
