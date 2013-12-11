@@ -11,24 +11,6 @@ type Collision interface {
 	Move(x, y float64)
 }
 
-// NewCollision creates a new collision object who's type is determined
-// automatically based on how many Points are given. (1: Point, 2: Line)
-func NewCollision(points []*Point, objType int) Collision {
-
-	switch objType {
-	case POINT:
-		return Collision(points[0])
-	case BOUNDING:
-		return Collision(NewBounding(points[0], points[1]))
-	case LINE:
-		return Collision(NewLine(points[0], points[1]))
-	case POLYGON:
-		return Collision(NewPolygon(points))
-	default:
-		return nil
-	}
-}
-
 // Collides checks if two Collision objects are overlapping.
 func Collides(collision1, collision2 Collision) bool {
 
