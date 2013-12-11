@@ -156,9 +156,9 @@ func TestIsPolygonOnPolygon(t *testing.T) {
 
 func TestShapes(t *testing.T) {
 
-	collision := NewCollision([]*Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)}, POLYGON)
-	collision1 := NewCollision([]*Point{NewPoint(1.0, 1.0), NewPoint(3.0, 2.0)}, LINE)
-	collision2 := NewCollision([]*Point{NewPoint(3.0, 4.0), NewPoint(6.0, 6.0)}, LINE)
+	collision := NewPolygon([]*Point{NewPoint(0.0, 0.0), NewPoint(3.0, 0.1), NewPoint(2.0, 4.0), NewPoint(0.0, 4.0)})
+	collision1 := NewLine(NewPoint(1.0, 1.0), NewPoint(3.0, 2.0))
+	collision2 := NewLine(NewPoint(3.0, 4.0), NewPoint(6.0, 6.0))
 
 	if !Collides(collision, collision1) {
 		t.Errorf("Collides returned false when true is expected")
