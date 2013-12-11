@@ -8,7 +8,6 @@ type Collision interface {
 	OnBounding(*Bounding) bool
 	OnLine(*Line) bool
 	OnPolygon(*Polygon) bool
-	Move(x, y float64)
 }
 
 // Collides checks if two Collision objects are overlapping.
