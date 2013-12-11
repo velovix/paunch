@@ -14,6 +14,7 @@ type Renderable struct {
 	vertex_buffer   gl.Uint
 	texcoord_buffer gl.Uint
 	texture         []gl.Uint
+	verticies       []float32
 }
 
 func imageToBytes(img image.Image) []byte {
@@ -45,7 +46,7 @@ func imageToBytes(img image.Image) []byte {
 // type and verticies.
 func NewRenderable(mode int, verticies []float32) (Renderable, error) {
 
-	renderable := Renderable{mode, len(verticies), 0, 0, nil}
+	renderable := Renderable{mode, len(verticies), 0, 0, nil, verticies}
 
 	gl.GenBuffers(1, &renderable.vertex_buffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertex_buffer))
@@ -68,7 +69,7 @@ func (renderable *Renderable) Texture(coords []float32, filename string, clip in
 
 	gl.GenBuffers(1, &renderable.texcoord_buffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.texcoord_buffer))
-	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(coords)*4), gl.Pointer(&coords[0]), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(coords)*4), gl.Pointer(&coords[0]), gl.STREAM_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
 	data, decodeErr := png.Decode(file)
@@ -128,4 +129,17 @@ func (renderable *Renderable) Draw(frame int) error {
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 
 	return checkForErrors()
+}
+
+// Move moves the Renderable a specified distance.
+func (renderable *Renderable) Move(x, y float64) {
+
+	for i := 0; i < len(renderable.verticies); i += 2 {
+		renderable.verticies[i] += float32(x)
+		renderable.verticies[i+1] += float32(y)
+	}
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertex_buffer)
+	gl.BufferSubData(gl.ARRAY_BUFFER, 0, gl.Sizeiptr(len(renderable.verticies)*4), gl.Pointer(&renderable.verticies[0]))
+	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 }
