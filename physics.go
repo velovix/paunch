@@ -72,7 +72,7 @@ func (physics *Physics) Calculate() {
 		physics.accel.Y += val.Y
 	}
 
-	for i, _ := range physics.movers {
+	for i := range physics.movers {
 		physics.movers[i].Move(physics.accel.X, physics.accel.Y)
 	}
 

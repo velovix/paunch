@@ -9,12 +9,12 @@ import (
 
 // Renderable is an object that can be drawn on the screen
 type Renderable struct {
-	mode            int
-	size            int
-	vertex_buffer   gl.Uint
-	texcoord_buffer gl.Uint
-	texture         []gl.Uint
-	verticies       []float32
+	mode           int
+	size           int
+	vertexBuffer   gl.Uint
+	texcoordBuffer gl.Uint
+	texture        []gl.Uint
+	verticies      []float32
 }
 
 func imageToBytes(img image.Image) []byte {
@@ -48,8 +48,8 @@ func NewRenderable(mode int, verticies []float32) (Renderable, error) {
 
 	renderable := Renderable{mode, len(verticies), 0, 0, nil, verticies}
 
-	gl.GenBuffers(1, &renderable.vertex_buffer)
-	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertex_buffer))
+	gl.GenBuffers(1, &renderable.vertexBuffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertexBuffer))
 	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies[0]), gl.STATIC_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
@@ -67,8 +67,8 @@ func (renderable *Renderable) Texture(coords []float32, filename string, clip in
 	}
 	defer file.Close()
 
-	gl.GenBuffers(1, &renderable.texcoord_buffer)
-	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.texcoord_buffer))
+	gl.GenBuffers(1, &renderable.texcoordBuffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.texcoordBuffer))
 	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(coords)*4), gl.Pointer(&coords[0]), gl.STREAM_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
@@ -85,7 +85,7 @@ func (renderable *Renderable) Texture(coords []float32, filename string, clip in
 
 	byteData := imageToBytes(data)
 	clips := make([][]byte, clip)
-	for i, _ := range clips {
+	for i := range clips {
 		clips[i] = byteData[i*(len(byteData)/len(clips)) : (i+1)*(len(byteData)/len(clips))]
 		gl.BindTexture(gl.TEXTURE_2D, renderable.texture[len(clips)-1-i])
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -106,14 +106,14 @@ func (renderable *Renderable) Texture(coords []float32, filename string, clip in
 // Draw draws the Renderable.
 func (renderable *Renderable) Draw(frame int) error {
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertex_buffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertexBuffer)
 	gl.VertexAttribPointer(gl.Uint(0), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
-	if renderable.texcoord_buffer != 0 {
+	if renderable.texcoordBuffer != 0 {
 		gl.ActiveTexture(gl.TEXTURE0)
 
-		gl.BindBuffer(gl.ARRAY_BUFFER, renderable.texcoord_buffer)
+		gl.BindBuffer(gl.ARRAY_BUFFER, renderable.texcoordBuffer)
 		gl.VertexAttribPointer(gl.Uint(1), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
 		gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
@@ -139,7 +139,7 @@ func (renderable *Renderable) Move(x, y float64) {
 		renderable.verticies[i+1] += float32(y)
 	}
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertex_buffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertexBuffer)
 	gl.BufferSubData(gl.ARRAY_BUFFER, 0, gl.Sizeiptr(len(renderable.verticies)*4), gl.Pointer(&renderable.verticies[0]))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 }

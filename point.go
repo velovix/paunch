@@ -20,9 +20,9 @@ func (point *Point) Move(x, y float64) {
 }
 
 // OnPoint checks if a Point is on the Point object.
-func (point1 *Point) OnPoint(point2 *Point) bool {
+func (point *Point) OnPoint(point2 *Point) bool {
 
-	if point1.X == point2.X && point1.Y == point2.Y {
+	if point.X == point2.X && point.Y == point2.Y {
 		return true
 	}
 

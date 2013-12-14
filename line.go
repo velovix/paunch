@@ -53,18 +53,18 @@ func (line *Line) OnPoint(point *Point) bool {
 
 	if math.IsInf(line.M, 0) {
 		if point.Y >= line.bounds.Start.Y && point.Y <= line.bounds.End.Y &&
-			math.Abs(point.X-line.Start.X) < TOLERANCE {
+			math.Abs(point.X-line.Start.X) < tolerance {
 			return true
-		} else {
-			return false
 		}
+
+		return false
 	}
 
 	if !point.OnBounding(line.bounds) {
 		return false
 	}
 
-	if math.Abs(point.Y-((line.M*point.X)+line.B)) < TOLERANCE {
+	if math.Abs(point.Y-((line.M*point.X)+line.B)) < tolerance {
 		return true
 	}
 
@@ -93,34 +93,34 @@ func (line *Line) OnBounding(bounding *Bounding) bool {
 }
 
 // OnLine checks if a line is on the Line object.
-func (line1 *Line) OnLine(line2 *Line) bool {
+func (line *Line) OnLine(line2 *Line) bool {
 
-	if !line1.bounds.OnBounding(line2.bounds) {
+	if !line.bounds.OnBounding(line2.bounds) {
 		return false
 	}
 
 	dx1 := findDeterminate(
-		findDeterminate(line1.Start.X, line1.Start.Y, line1.End.X, line1.End.Y),
-		findDeterminate(line1.Start.X, 1, line1.End.X, 1),
+		findDeterminate(line.Start.X, line.Start.Y, line.End.X, line.End.Y),
+		findDeterminate(line.Start.X, 1, line.End.X, 1),
 		findDeterminate(line2.Start.X, line2.Start.Y, line2.End.X, line2.End.Y),
 		findDeterminate(line2.Start.X, 1, line2.End.X, 1))
 
 	dxy2 := findDeterminate(
-		findDeterminate(line1.Start.X, 1, line1.End.X, 1),
-		findDeterminate(line1.Start.Y, 1, line1.End.Y, 1),
+		findDeterminate(line.Start.X, 1, line.End.X, 1),
+		findDeterminate(line.Start.Y, 1, line.End.Y, 1),
 		findDeterminate(line2.Start.X, 1, line2.End.X, 1),
 		findDeterminate(line2.Start.Y, 1, line2.End.Y, 1))
 
 	dy1 := findDeterminate(
-		findDeterminate(line1.Start.X, line1.Start.Y, line1.End.X, line1.End.Y),
-		findDeterminate(line1.Start.Y, 1, line1.End.Y, 1),
+		findDeterminate(line.Start.X, line.Start.Y, line.End.X, line.End.Y),
+		findDeterminate(line.Start.Y, 1, line.End.Y, 1),
 		findDeterminate(line2.Start.X, line2.Start.Y, line2.End.X, line2.End.Y),
 		findDeterminate(line2.Start.Y, 1, line2.End.Y, 1))
 
 	x := dx1 / dxy2
 	y := dy1 / dxy2
 
-	if line1.OnPoint(NewPoint(x, y)) && line2.OnPoint(NewPoint(x, y)) {
+	if line.OnPoint(NewPoint(x, y)) && line2.OnPoint(NewPoint(x, y)) {
 		return true
 	}
 

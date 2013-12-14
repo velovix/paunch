@@ -7,14 +7,15 @@ import (
 	"runtime"
 )
 
+// Constants defining different shapes that can be created with a Renderable.
 const (
-	POINTS         = gl.POINTS
-	LINE_STRIP     = gl.LINE_STRIP
-	LINE_LOOP      = gl.LINE_LOOP
-	LINES          = gl.LINES
-	TRIANGLE_STRIP = gl.TRIANGLE_STRIP
-	TRIANGLE_FAN   = gl.TRIANGLE_FAN
-	TRIANGLES      = gl.TRIANGLES
+	Points        = gl.POINTS
+	LineStrip     = gl.LINE_STRIP
+	LineLoop      = gl.LINE_LOOP
+	Lines         = gl.LINES
+	TriangleStrip = gl.TRIANGLE_STRIP
+	TriangleFan   = gl.TRIANGLE_FAN
+	Triangles     = gl.TRIANGLES
 )
 
 func checkForErrors() error {
@@ -26,9 +27,9 @@ func checkForErrors() error {
 
 	if len(errList) == 0 {
 		return nil
-	} else {
-		return errors.New(fmt.Sprintln("OpenGL Error(s): ", errList))
 	}
+
+	return errors.New(fmt.Sprintln("OpenGL Error(s): ", errList))
 }
 
 // InitDraw sets up the drawing session for use.
@@ -37,7 +38,7 @@ func InitDraw(window Window) error {
 	runtime.LockOSThread()
 
 	if err := gl.Init(); err != nil {
-		return errors.New("Error initializing OpenGL")
+		return errors.New("initializing OpenGL")
 	}
 
 	gl.ClearColor(0.0, 0.0, 0.0, 1.0)

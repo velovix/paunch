@@ -67,7 +67,7 @@ func TestDrawRenderable(t *testing.T) {
 		1.0, 0.0,
 		0.0, 1.0}
 
-	renderable, err := NewRenderable(TRIANGLES, triangle)
+	renderable, err := NewRenderable(Triangles, triangle)
 	if err != nil {
 		t.Errorf("NewRenderable(TRIANGLE, triangle) returned %s", err)
 	}
@@ -96,7 +96,7 @@ func TestDrawTexturedRenderable(t *testing.T) {
 		1.0, 0.0,
 		0.0, 1.0}
 
-	renderable, err := NewRenderable(TRIANGLES, triangles)
+	renderable, err := NewRenderable(Triangles, triangles)
 	if err != nil {
 		t.Errorf("NewRenderable(TRIANGLE, triangles) returned %s", err)
 	}

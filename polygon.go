@@ -48,7 +48,7 @@ func NewPolygon(points []*Point) *Polygon {
 // Move moves the Polygon object a specified distance.
 func (polygon *Polygon) Move(x, y float64) {
 
-	for i, _ := range polygon.lines {
+	for i := range polygon.lines {
 		polygon.lines[i].Move(x, y)
 	}
 
@@ -73,9 +73,9 @@ func (polygon *Polygon) OnPoint(point *Point) bool {
 
 	if intersects%2 == 0 {
 		return false
-	} else {
-		return true
 	}
+
+	return true
 }
 
 // OnBounding checks if a Bounding is on the Polygon object.
@@ -118,13 +118,13 @@ func (polygon *Polygon) OnLine(line *Line) bool {
 }
 
 // OnPolygon checks if a Polygon is on the Polygon object.
-func (polygon1 *Polygon) OnPolygon(polygon2 *Polygon) bool {
+func (polygon *Polygon) OnPolygon(polygon2 *Polygon) bool {
 
-	if !polygon1.bounds.OnBounding(polygon2.bounds) {
+	if !polygon.bounds.OnBounding(polygon2.bounds) {
 		return false
 	}
 
-	for _, val := range polygon1.lines {
+	for _, val := range polygon.lines {
 		if polygon2.OnLine(val) {
 			return true
 		}

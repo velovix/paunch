@@ -16,7 +16,7 @@ type Window struct {
 func (window *Window) Open(width int, height int, title string) error {
 
 	if !glfw.Init() {
-		return errors.New("Could not initialize GLFW")
+		return errors.New("initializing GLFW")
 	}
 
 	var err error

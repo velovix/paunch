@@ -47,10 +47,10 @@ func (bounding *Bounding) OnPoint(point *Point) bool {
 }
 
 // OnBounding checks if a Bounding is on the Bounding object.
-func (bounding1 *Bounding) OnBounding(bounding2 *Bounding) bool {
+func (bounding *Bounding) OnBounding(bounding2 *Bounding) bool {
 
-	if bounding1.Start.X > bounding2.End.X || bounding1.End.X < bounding2.Start.X ||
-		bounding1.Start.Y > bounding1.End.Y || bounding1.End.Y < bounding2.Start.Y {
+	if bounding.Start.X > bounding2.End.X || bounding.End.X < bounding2.Start.X ||
+		bounding.Start.Y > bounding.End.Y || bounding.End.Y < bounding2.Start.Y {
 		return false
 	}
 

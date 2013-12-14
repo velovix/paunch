@@ -1,3 +1,3 @@
 package paunch
 
-const TOLERANCE = 0.01
+const tolerance = 0.01
