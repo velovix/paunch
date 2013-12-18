@@ -4,5 +4,7 @@ package paunch
 // Used to make keeping track of multiple objects easier by automating the
 // process of calling methods when common events happen.
 type Actor interface {
+	GetColliders() []Collider
+	OnCollision(c1, c2 Collider, culprit Actor)
 	Draw()
 }

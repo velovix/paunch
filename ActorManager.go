@@ -1,9 +1,5 @@
 package paunch
 
-import (
-	"fmt"
-)
-
 // ActorManager triggers methods with the On- prefix when appropriate given the
 // Actors supplied to it.
 type ActorManager struct {
@@ -20,7 +16,6 @@ func NewActorManager() ActorManager {
 func (actorManager *ActorManager) Add(actor Actor) {
 
 	actorManager.actors = append(actorManager.actors, actor)
-	fmt.Println(actorManager.actors)
 }
 
 // Remove removes all instances of the supplied Actor from the ActorManager.
@@ -38,19 +33,42 @@ func (actorManager *ActorManager) Remove(actor Actor) bool {
 
 			actorManager.actors = temp
 
-			fmt.Println(actorManager.actors)
 			return true
 		}
 	}
 
-	fmt.Println(actorManager.actors)
 	return false
+}
+
+func checkActorCollisions(actor1, actor2 Actor) (bool, Collider, Collider) {
+
+	c1 := actor1.GetColliders()
+	c2 := actor2.GetColliders()
+
+	for _, val := range c1 {
+		for _, val2 := range c2 {
+			if Collides(val, val2) {
+				return true, val, val2
+			}
+		}
+	}
+
+	return false, nil, nil
 }
 
 // Run calls all relevant methods of the Actors supplied to the ActorManager.
 func (actorManager ActorManager) Run() {
 
-	for _, val := range actorManager.actors {
+	for i, val := range actorManager.actors {
+
+		for j, val2 := range actorManager.actors {
+			if i == j {
+				continue
+			}
+			if ok, c1, c2 := checkActorCollisions(val, val2); ok {
+				val.OnCollision(c1, c2, val2)
+			}
+		}
 
 		val.Draw()
 	}
