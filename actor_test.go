@@ -19,6 +19,13 @@ func (obj *testActorObject) OnCollision(objectCollider, culpritCollider Collider
 	obj.id = 1
 }
 
+func (obj *testActorObject) OnKeyboard(key, action int) {
+
+	if key == KeyUp && action == KeyPress {
+		obj.id = 2
+	}
+}
+
 func (obj *testActorObject) Draw() {
 
 }
@@ -66,5 +73,19 @@ func TestActorManagerCollisions(t *testing.T) {
 
 	if test3.id == 1 {
 		t.Errorf("method OnCollision triggered incorrectly.")
+	}
+}
+
+func TestActorManagerKeyboardInput(t *testing.T) {
+
+	var actorManager ActorManager
+
+	test := testActorObject{NewPoint(0.0, 0.0), 0}
+	actorManager.Add(&test)
+
+	actorManager.keyEvent(int(KeyUp), int(KeyPress))
+
+	if test.id != 2 {
+		t.Errorf("method OnKeyboard not triggered")
 	}
 }

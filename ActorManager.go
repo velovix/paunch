@@ -40,6 +40,13 @@ func (actorManager *ActorManager) Remove(actor Actor) bool {
 	return false
 }
 
+func (actorManager ActorManager) keyEvent(key, action int) {
+
+	for i := range actorManager.actors {
+		actorManager.actors[i].OnKeyboard(key, action)
+	}
+}
+
 func checkActorCollisions(actor1, actor2 Actor) (bool, Collider, Collider) {
 
 	c1 := actor1.GetColliders()

@@ -7,13 +7,22 @@ import (
 
 // Window is an object that manages window creation and user input.
 type Window struct {
-	Width      int
-	Height     int
+	Width  int
+	Height int
+
+	actorManager *ActorManager
+
 	glfwWindow *glfw.Window
 }
 
+var glfwToWindow map[*glfw.Window]*Window
+
 // Open opens a new window ready to be drawn in.
 func (window *Window) Open(width int, height int, title string) error {
+
+	if glfwToWindow == nil {
+		glfwToWindow = make(map[*glfw.Window]*Window)
+	}
 
 	if !glfw.Init() {
 		return errors.New("initializing GLFW")
@@ -28,7 +37,11 @@ func (window *Window) Open(width int, height int, title string) error {
 	window.Width = width
 	window.Height = height
 
+	window.glfwWindow.SetKeyCallback(keyboardCallback)
+
 	window.glfwWindow.MakeContextCurrent()
+
+	glfwToWindow[window.glfwWindow] = window
 
 	return nil
 }
@@ -60,4 +73,18 @@ func (window *Window) UpdateEvents() error {
 
 	glfw.PollEvents()
 	return nil
+}
+
+// SetActorManager sets the Actor Manager the Window object sends input events
+// to.
+func (window *Window) SetActorManager(actorManager *ActorManager) {
+
+	window.actorManager = actorManager
+}
+
+func keyboardCallback(window *glfw.Window, glfwKey glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+
+	if glfwToWindow[window].actorManager != nil {
+		glfwToWindow[window].actorManager.keyEvent(int(glfwKey), int(action))
+	}
 }

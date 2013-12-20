@@ -6,5 +6,6 @@ package paunch
 type Actor interface {
 	GetColliders() []Collider
 	OnCollision(c1, c2 Collider, culprit Actor)
+	OnKeyboard(key, action int)
 	Draw()
 }
