@@ -6,11 +6,27 @@ import (
 
 const tolerance = 0.01
 
-// Constants for key action types.
+// Constants for action types.
 const (
-	KeyPress   = int(glfw.Press)
-	KeyRelease = int(glfw.Release)
-	KeyHold    = int(glfw.Repeat)
+	Press   = int(glfw.Press)
+	Release = int(glfw.Release)
+	Hold    = int(glfw.Repeat)
+)
+
+// Constants defining mouse button values.
+const (
+	MouseButton1      = int(glfw.MouseButton1)
+	MouseButton2      = int(glfw.MouseButton2)
+	MouseButton3      = int(glfw.MouseButton3)
+	MouseButton4      = int(glfw.MouseButton4)
+	MouseButton5      = int(glfw.MouseButton5)
+	MouseButton6      = int(glfw.MouseButton6)
+	MouseButton7      = int(glfw.MouseButton7)
+	MouseButton8      = int(glfw.MouseButton8)
+	MouseButtonLast   = int(glfw.MouseButtonLast)
+	MouseButtonLeft   = int(glfw.MouseButtonLeft)
+	MouseButtonRight  = int(glfw.MouseButtonRight)
+	MouseButtonMiddle = int(glfw.MouseButtonMiddle)
 )
 
 // Constants defining key values.

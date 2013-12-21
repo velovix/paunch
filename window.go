@@ -3,6 +3,7 @@ package paunch
 import (
 	"errors"
 	glfw "github.com/go-gl/glfw3"
+	"math"
 )
 
 // Window is an object that manages window creation and user input.
@@ -38,6 +39,7 @@ func (window *Window) Open(width int, height int, title string) error {
 	window.Height = height
 
 	window.glfwWindow.SetKeyCallback(keyboardCallback)
+	window.glfwWindow.SetMouseButtonCallback(mouseButtonCallback)
 
 	window.glfwWindow.MakeContextCurrent()
 
@@ -86,5 +88,21 @@ func keyboardCallback(window *glfw.Window, glfwKey glfw.Key, scancode int, actio
 
 	if glfwToWindow[window].actorManager != nil {
 		glfwToWindow[window].actorManager.keyEvent(int(glfwKey), int(action))
+	}
+}
+
+func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
+
+	if glfwToWindow[window].actorManager != nil {
+		x, y := window.GetCursorPosition()
+
+		glfwToWindow[window].actorManager.mouseButtonEvent(int(button), int(action), int(math.Floor(x)), int(math.Floor(y)))
+	}
+}
+
+func mousePositionCallback(window *glfw.Window, x, y float64) {
+
+	if glfwToWindow[window].actorManager != nil {
+		glfwToWindow[window].actorManager.mousePositionEvent(int(math.Floor(x)), int(math.Floor(y)))
 	}
 }

@@ -47,6 +47,20 @@ func (actorManager ActorManager) keyEvent(key, action int) {
 	}
 }
 
+func (actorManager ActorManager) mouseButtonEvent(button, action, x, y int) {
+
+	for i := range actorManager.actors {
+		actorManager.actors[i].OnMouseButton(button, action, x, y)
+	}
+}
+
+func (actorManager ActorManager) mousePositionEvent(x, y int) {
+
+	for i := range actorManager.actors {
+		actorManager.actors[i].OnMousePosition(x, y)
+	}
+}
+
 func checkActorCollisions(actor1, actor2 Actor) (bool, Collider, Collider) {
 
 	c1 := actor1.GetColliders()
