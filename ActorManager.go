@@ -43,25 +43,31 @@ func (actorManager *ActorManager) Remove(actor Actor) bool {
 func (actorManager ActorManager) keyEvent(key, action int) {
 
 	for i := range actorManager.actors {
-		actorManager.actors[i].OnKeyboard(key, action)
+		if val, ok := actorManager.actors[i].(ActorKeyboarder); ok {
+			val.OnKeyboard(key, action)
+		}
 	}
 }
 
 func (actorManager ActorManager) mouseButtonEvent(button, action, x, y int) {
 
 	for i := range actorManager.actors {
-		actorManager.actors[i].OnMouseButton(button, action, x, y)
+		if val, ok := actorManager.actors[i].(ActorMouseButtoner); ok {
+			val.OnMouseButton(button, action, x, y)
+		}
 	}
 }
 
 func (actorManager ActorManager) mousePositionEvent(x, y int) {
 
 	for i := range actorManager.actors {
-		actorManager.actors[i].OnMousePosition(x, y)
+		if val, ok := actorManager.actors[i].(ActorMousePositioner); ok {
+			val.OnMousePosition(x, y)
+		}
 	}
 }
 
-func checkActorCollisions(actor1, actor2 Actor) (bool, Collider, Collider) {
+func checkActorCollisions(actor1, actor2 ActorCollider) (bool, Collider, Collider) {
 
 	c1 := actor1.GetColliders()
 	c2 := actor2.GetColliders()
@@ -82,15 +88,22 @@ func (actorManager ActorManager) Run() {
 
 	for i, val := range actorManager.actors {
 
-		for j, val2 := range actorManager.actors {
-			if i == j {
-				continue
-			}
-			if ok, c1, c2 := checkActorCollisions(val, val2); ok {
-				val.OnCollision(c1, c2, val2)
+		if colliderVal, ok := val.(ActorCollider); ok {
+			for j, val2 := range actorManager.actors {
+				if i == j {
+					continue
+				}
+
+				if colliderVal2, ok2 := val2.(ActorCollider); ok2 {
+					if collided, c1, c2 := checkActorCollisions(colliderVal, colliderVal2); collided {
+						colliderVal.OnCollision(c1, c2, colliderVal2)
+					}
+				}
 			}
 		}
 
-		val.Draw()
+		if drawer, ok := val.(ActorDrawer); ok {
+			drawer.Draw()
+		}
 	}
 }
