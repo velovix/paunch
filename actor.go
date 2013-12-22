@@ -41,6 +41,15 @@ type ActorMousePositioner interface {
 	OnMousePosition(x, y int)
 }
 
+// ActorMouseEnterWindower is an interface that requires methods that allow an
+// ActorManager to call on the OnMouseEnterWindow method of an Actor when a
+// mouse enters or leaves a window. Actor-implementing objects that also
+// implement this interface will automatically be called when appropriate after
+// being added to an ActorManager.
+type ActorMouseEnterWindower interface {
+	OnMouseEnterWindow(x, y int, entered bool)
+}
+
 // ActorDrawer is an interface that requires methods that allow an ActorManager
 // to draw an actor at every frame. Actor-implementing objects that also
 // implement this interface will be autmatically called on every frame.

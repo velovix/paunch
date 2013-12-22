@@ -67,6 +67,15 @@ func (actorManager ActorManager) mousePositionEvent(x, y int) {
 	}
 }
 
+func (actorManager ActorManager) mouseEnterWindowEvent(x, y int, entered bool) {
+
+	for i := range actorManager.actors {
+		if val, ok := actorManager.actors[i].(ActorMouseEnterWindower); ok {
+			val.OnMouseEnterWindow(x, y, entered)
+		}
+	}
+}
+
 func checkActorCollisions(actor1, actor2 ActorCollider) (bool, Collider, Collider) {
 
 	c1 := actor1.GetColliders()

@@ -40,6 +40,13 @@ func (obj *testActorObject) OnMousePosition(x, y int) {
 	}
 }
 
+func (obj *testActorObject) OnMouseEnterWindow(x, y int, entered bool) {
+
+	if x == 0 && y == 0 && entered {
+		obj.id = 5
+	}
+}
+
 func (obj *testActorObject) Draw() {
 
 }
@@ -129,5 +136,19 @@ func TestActorManagerMousePosition(t *testing.T) {
 
 	if test.id != 4 {
 		t.Errorf("method OnMousePosition not triggered")
+	}
+}
+
+func TestActorMouseEnterWindow(t *testing.T) {
+
+	var actorManager ActorManager
+
+	test := testActorObject{NewPoint(0.0, 0.0), 0}
+	actorManager.Add(&test)
+
+	actorManager.mouseEnterWindowEvent(0, 0, true)
+
+	if test.id != 5 {
+		t.Errorf("method OnMouseEnterWindow not triggered")
 	}
 }
