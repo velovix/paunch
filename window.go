@@ -40,6 +40,8 @@ func (window *Window) Open(width int, height int, title string) error {
 
 	window.glfwWindow.SetKeyCallback(keyboardCallback)
 	window.glfwWindow.SetMouseButtonCallback(mouseButtonCallback)
+	window.glfwWindow.SetCursorPositionCallback(mousePositionCallback)
+	window.glfwWindow.SetCursorEnterCallback(mouseEnterWindowCallback)
 
 	window.glfwWindow.MakeContextCurrent()
 
@@ -104,5 +106,14 @@ func mousePositionCallback(window *glfw.Window, x, y float64) {
 
 	if glfwToWindow[window].actorManager != nil {
 		glfwToWindow[window].actorManager.mousePositionEvent(int(math.Floor(x)), int(math.Floor(y)))
+	}
+}
+
+func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
+
+	if glfwToWindow[window].actorManager != nil {
+		x, y := window.GetCursorPosition()
+
+		glfwToWindow[window].actorManager.mouseEnterWindowEvent(int(math.Floor(x)), int(math.Floor(y)), entered)
 	}
 }
