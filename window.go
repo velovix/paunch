@@ -117,3 +117,10 @@ func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
 		glfwToWindow[window].actorManager.mouseEnterWindowEvent(int(math.Floor(x)), int(math.Floor(y)), entered)
 	}
 }
+
+func windowFocusCallback(window *glfw.Window, focused bool) {
+
+	if glfwToWindow[window].actorManager != nil {
+		glfwToWindow[window].actorManager.windowFocusEvent(focused)
+	}
+}

@@ -50,6 +50,15 @@ type ActorMouseEnterWindower interface {
 	OnMouseEnterWindow(x, y int, entered bool)
 }
 
+// ActorWindowFocuser in an interface that requires methods that allow an
+// ActorManager to call on the OnWindowFocus method of an Actor when the user
+// changes the focus of a window. Actor-implementing objects that also
+// implement this interface will automatically be called when appropriate after
+// being added to an ActorManager.
+type ActorWindowFocuser interface {
+	OnWindowFocus(focused bool)
+}
+
 // ActorDrawer is an interface that requires methods that allow an ActorManager
 // to draw an actor at every frame. Actor-implementing objects that also
 // implement this interface will be autmatically called on every frame.

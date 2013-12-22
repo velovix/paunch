@@ -76,6 +76,15 @@ func (actorManager ActorManager) mouseEnterWindowEvent(x, y int, entered bool) {
 	}
 }
 
+func (actorManager ActorManager) windowFocusEvent(focused bool) {
+
+	for i := range actorManager.actors {
+		if val, ok := actorManager.actors[i].(ActorWindowFocuser); ok {
+			val.OnWindowFocus(focused)
+		}
+	}
+}
+
 func checkActorCollisions(actor1, actor2 ActorCollider) (bool, Collider, Collider) {
 
 	c1 := actor1.GetColliders()

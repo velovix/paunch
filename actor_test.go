@@ -47,6 +47,13 @@ func (obj *testActorObject) OnMouseEnterWindow(x, y int, entered bool) {
 	}
 }
 
+func (obj *testActorObject) OnWindowFocus(focused bool) {
+
+	if focused {
+		obj.id = 6
+	}
+}
+
 func (obj *testActorObject) Draw() {
 
 }
@@ -150,5 +157,19 @@ func TestActorMouseEnterWindow(t *testing.T) {
 
 	if test.id != 5 {
 		t.Errorf("method OnMouseEnterWindow not triggered")
+	}
+}
+
+func TestActorWindowFocused(t *testing.T) {
+
+	var actorManager ActorManager
+
+	test := testActorObject{NewPoint(0.0, 0.0), 0}
+	actorManager.Add(&test)
+
+	actorManager.windowFocusEvent(true)
+
+	if test.id != 6 {
+		t.Errorf("method OnWindowFocus not triggered")
 	}
 }
