@@ -14,6 +14,8 @@ type Window struct {
 	actorManager *ActorManager
 
 	glfwWindow *glfw.Window
+
+	keyStates [512]bool
 }
 
 var glfwToWindow map[*glfw.Window]*Window
@@ -75,6 +77,12 @@ func (window *Window) UpdateDisplay() error {
 // UpdateEvents updates events.
 func (window *Window) UpdateEvents() error {
 
+	for i, val := range window.keyStates {
+		if val && window.actorManager != nil {
+			window.actorManager.keyEvent(i, Hold)
+		}
+	}
+
 	glfw.PollEvents()
 	return nil
 }
@@ -87,6 +95,12 @@ func (window *Window) SetActorManager(actorManager *ActorManager) {
 }
 
 func keyboardCallback(window *glfw.Window, glfwKey glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+
+	if action == glfw.Repeat {
+		return
+	}
+
+	glfwToWindow[window].keyStates[int(glfwKey)] = (action == glfw.Press)
 
 	if glfwToWindow[window].actorManager != nil {
 		glfwToWindow[window].actorManager.keyEvent(int(glfwKey), int(action))

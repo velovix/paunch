@@ -101,7 +101,7 @@ func checkActorCollisions(actor1, actor2 ActorCollider) (bool, Collider, Collide
 	return false, nil, nil
 }
 
-// Tick runs all non-input non-graphics tasks on the ActorManager's Actors.
+// Tick runs all non-graphics tasks on the ActorManager's Actors.
 func (actorManager ActorManager) Tick() {
 
 	for i, val := range actorManager.actors {
@@ -126,7 +126,7 @@ func (actorManager ActorManager) Tick() {
 	}
 }
 
-// Draw runs all graphics-related tasks
+// Draw runs all graphics-related tasks on the ActorManager's Actors.
 func (actorManager ActorManager) Draw() {
 
 	for _, val := range actorManager.actors {
