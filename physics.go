@@ -54,12 +54,18 @@ func (physics *Physics) Accelerate(force Point) {
 	physics.accel.Y += force.Y
 }
 
-// SetAcceleration sets the acceleration of the Physics object to the specified
-// values.
-func (physics *Physics) SetAcceleration(force Point) {
+// SetXAcceleration sets the X acceleration of the Physics object to a
+// specified value.
+func (physics *Physics) SetXAcceleration(force float64) {
 
-	physics.accel.X = force.X
-	physics.accel.Y = force.Y
+	physics.accel.X = force
+}
+
+// SetYAcceleration sets the Y acceleration of the Physics object to a
+// specified value.
+func (physics *Physics) SetYAcceleration(force float64) {
+
+	physics.accel.Y = force
 }
 
 // SetFriction sets the friction value of the Physics object. Friction is a
