@@ -50,7 +50,7 @@ func (bounding *Bounding) OnPoint(point *Point) bool {
 func (bounding *Bounding) OnBounding(bounding2 *Bounding) bool {
 
 	if bounding.Start.X > bounding2.End.X || bounding.End.X < bounding2.Start.X ||
-		bounding.Start.Y > bounding.End.Y || bounding.End.Y < bounding2.Start.Y {
+		bounding.Start.Y > bounding2.End.Y || bounding.End.Y < bounding2.Start.Y {
 		return false
 	}
 
