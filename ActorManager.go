@@ -126,7 +126,7 @@ func (actorManager ActorManager) Tick() {
 	}
 }
 
-// Graphics runs all graphics-related tasks
+// Draw runs all graphics-related tasks
 func (actorManager ActorManager) Draw() {
 
 	for _, val := range actorManager.actors {
