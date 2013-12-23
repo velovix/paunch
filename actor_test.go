@@ -54,8 +54,16 @@ func (obj *testActorObject) OnWindowFocus(focused bool) {
 	}
 }
 
-func (obj *testActorObject) Draw() {
+func (obj *testActorObject) OnDraw() {
 
+	obj.id = 7
+}
+
+func (obj *testActorObject) OnTick() {
+
+	if obj.id == 0 {
+		obj.id = 8
+	}
 }
 
 func TestActorManager(t *testing.T) {
@@ -171,5 +179,33 @@ func TestActorWindowFocused(t *testing.T) {
 
 	if test.id != 6 {
 		t.Errorf("method OnWindowFocus not triggered")
+	}
+}
+
+func TestActorDraw(t *testing.T) {
+
+	var actorManager ActorManager
+
+	test := testActorObject{NewPoint(0.0, 0.0), 0}
+	actorManager.Add(&test)
+
+	actorManager.Draw()
+
+	if test.id != 7 {
+		t.Errorf("method OnDraw not triggered")
+	}
+}
+
+func TestActorTick(t *testing.T) {
+
+	var actorManager ActorManager
+
+	test := testActorObject{NewPoint(0.0, 0.0), 0}
+	actorManager.Add(&test)
+
+	actorManager.Tick()
+
+	if test.id != 8 {
+		t.Errorf("method OnTick not triggered")
 	}
 }

@@ -63,5 +63,14 @@ type ActorWindowFocuser interface {
 // to draw an actor at every frame. Actor-implementing objects that also
 // implement this interface will be autmatically called on every frame.
 type ActorDrawer interface {
-	Draw()
+	OnDraw()
+}
+
+// ActorTicker is an interface that requires methods that allow an ActorManager
+// to call on the OnTick method with every tick of the ActorManager.
+// Actor-implementing objects that also implement this interface will
+// automatically be called when appropriate after being added to an
+// ActorManager.
+type ActorTicker interface {
+	OnTick()
 }

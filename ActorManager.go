@@ -119,15 +119,19 @@ func (actorManager ActorManager) Tick() {
 				}
 			}
 		}
+
+		if ticker, ok := val.(ActorTicker); ok {
+			ticker.OnTick()
+		}
 	}
 }
 
 // Graphics runs all graphics-related tasks
-func (actorManager ActorManager) Graphics() {
+func (actorManager ActorManager) Draw() {
 
 	for _, val := range actorManager.actors {
 		if drawer, ok := val.(ActorDrawer); ok {
-			drawer.Draw()
+			drawer.OnDraw()
 		}
 	}
 }
