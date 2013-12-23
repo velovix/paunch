@@ -54,6 +54,14 @@ func (physics *Physics) Accelerate(force Point) {
 	physics.accel.Y += force.Y
 }
 
+// SetAcceleration sets the acceleration of the Physics object to the specified
+// values.
+func (physics *Physics) SetAcceleration(force Point) {
+
+	physics.accel.X = force.X
+	physics.accel.Y = force.Y
+}
+
 // SetFriction sets the friction value of the Physics object. Friction is a
 // force that enfluences acceleration to move toward zero. This might be used
 // to simulate the natural slowdown of an object rubbing against a surface.
