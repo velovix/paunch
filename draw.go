@@ -44,6 +44,9 @@ func InitDraw(window Window) error {
 	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 	gl.Viewport(0, 0, gl.Sizei(window.Width), gl.Sizei(window.Height))
 
+	gl.Enable(gl.BLEND)
+	gl.BlendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ZERO)
+
 	return checkForErrors()
 }
 
