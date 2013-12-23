@@ -4,23 +4,27 @@ import (
 	"math"
 )
 
+type physicsPoint struct {
+	x, y float64
+}
+
 // Physics is an object meant to make the movement of multiple related movers,
 // such as a Renderable and a Collision, easier. It also allows for easy
 // management of multiple forces of movement at once.
 type Physics struct {
 	movers []Mover
 
-	accel    Point
-	friction Point
+	accel    physicsPoint
+	friction physicsPoint
 
-	forces map[string]Point
+	forces map[string]physicsPoint
 }
 
 // NewPhysics creates a new Physics object.
 func NewPhysics() Physics {
 
 	var physics Physics
-	physics.forces = make(map[string]Point)
+	physics.forces = make(map[string]physicsPoint)
 
 	return physics
 }
@@ -35,9 +39,9 @@ func (physics *Physics) AttachMover(mover Mover) {
 // AddConstForce adds a constant force to the Physics object, which is taken
 // into account every time the Calculate method is called. This might be used
 // to simulate gravity or other such forces.
-func (physics *Physics) AddConstForce(name string, force Point) {
+func (physics *Physics) AddConstForce(name string, forceX, forceY float64) {
 
-	physics.forces[name] = force
+	physics.forces[name] = physicsPoint{forceX, forceY}
 }
 
 // DeleteConstForce removes a constant force from the Physics object.
@@ -48,32 +52,32 @@ func (physics *Physics) DeleteConstForce(name string) {
 
 // Accelerate exerts a specified force upon the Physics object the next time
 // the Calculate method is called.
-func (physics *Physics) Accelerate(force Point) {
+func (physics *Physics) Accelerate(forceX, forceY float64) {
 
-	physics.accel.X += force.X
-	physics.accel.Y += force.Y
+	physics.accel.x += forceX
+	physics.accel.y += forceY
 }
 
 // SetXAcceleration sets the X acceleration of the Physics object to a
 // specified value.
 func (physics *Physics) SetXAcceleration(force float64) {
 
-	physics.accel.X = force
+	physics.accel.x = force
 }
 
 // SetYAcceleration sets the Y acceleration of the Physics object to a
 // specified value.
 func (physics *Physics) SetYAcceleration(force float64) {
 
-	physics.accel.Y = force
+	physics.accel.y = force
 }
 
 // SetFriction sets the friction value of the Physics object. Friction is a
 // force that enfluences acceleration to move toward zero. This might be used
 // to simulate the natural slowdown of an object rubbing against a surface.
-func (physics *Physics) SetFriction(force Point) {
+func (physics *Physics) SetFriction(forceX, forceY float64) {
 
-	physics.friction = force
+	physics.friction = physicsPoint{forceX, forceY}
 }
 
 // Calculate moves the Physics object given any specified constant forces,
@@ -82,26 +86,26 @@ func (physics *Physics) SetFriction(force Point) {
 func (physics *Physics) Calculate() {
 
 	for _, val := range physics.forces {
-		physics.accel.X += val.X
-		physics.accel.Y += val.Y
+		physics.accel.x += val.x
+		physics.accel.y += val.y
 	}
 
 	for i := range physics.movers {
-		physics.movers[i].Move(physics.accel.X, physics.accel.Y)
+		physics.movers[i].Move(physics.accel.x, physics.accel.y)
 	}
 
-	if math.Abs(physics.accel.X) >= math.Abs(physics.friction.X) {
-		if physics.accel.X > 0 {
-			physics.accel.X -= physics.friction.X
+	if math.Abs(physics.accel.x) >= math.Abs(physics.friction.x) {
+		if physics.accel.x > 0 {
+			physics.accel.x -= physics.friction.x
 		} else {
-			physics.accel.X += physics.friction.X
+			physics.accel.x += physics.friction.x
 		}
 	}
-	if math.Abs(physics.accel.Y) >= math.Abs(physics.friction.Y) {
-		if physics.accel.Y > 0 {
-			physics.accel.Y -= physics.friction.Y
+	if math.Abs(physics.accel.y) >= math.Abs(physics.friction.y) {
+		if physics.accel.y > 0 {
+			physics.accel.y -= physics.friction.y
 		} else {
-			physics.accel.Y += physics.friction.Y
+			physics.accel.y += physics.friction.y
 		}
 	}
 }
