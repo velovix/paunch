@@ -93,7 +93,7 @@ func TestActorManagerCollisions(t *testing.T) {
 	actorManager.Add(&test2)
 	actorManager.Add(&test3)
 
-	actorManager.Run()
+	actorManager.Tick()
 
 	if test1.id != 1 || test2.id != 1 {
 		t.Errorf("method OnCollision not triggered")

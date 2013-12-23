@@ -101,8 +101,8 @@ func checkActorCollisions(actor1, actor2 ActorCollider) (bool, Collider, Collide
 	return false, nil, nil
 }
 
-// Run calls all relevant methods of the Actors supplied to the ActorManager.
-func (actorManager ActorManager) Run() {
+// Tick runs all non-input non-graphics tasks on the ActorManager's Actors.
+func (actorManager ActorManager) Tick() {
 
 	for i, val := range actorManager.actors {
 
@@ -119,7 +119,13 @@ func (actorManager ActorManager) Run() {
 				}
 			}
 		}
+	}
+}
 
+// Graphics runs all graphics-related tasks
+func (actorManager ActorManager) Graphics() {
+
+	for _, val := range actorManager.actors {
 		if drawer, ok := val.(ActorDrawer); ok {
 			drawer.Draw()
 		}
