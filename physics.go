@@ -100,12 +100,17 @@ func (physics *Physics) Calculate() {
 		} else {
 			physics.accel.x += physics.friction.x
 		}
+	} else {
+		physics.accel.x = 0
 	}
+
 	if math.Abs(physics.accel.y) >= math.Abs(physics.friction.y) {
 		if physics.accel.y > 0 {
 			physics.accel.y -= physics.friction.y
 		} else {
 			physics.accel.y += physics.friction.y
 		}
+	} else {
+		physics.accel.y = 0
 	}
 }
