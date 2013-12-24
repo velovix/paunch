@@ -56,6 +56,40 @@ func NewRenderable(mode int, verticies []float32) (Renderable, error) {
 	return renderable, checkForErrors()
 }
 
+// NewRenderableSurface returns a new rectangular, textured Renderable.
+func NewRenderableSurface(x, y, width, height float32, filename string, clip int) (Renderable, error) {
+
+	vertCoords := []float32{
+		x, y,
+		x + width, y,
+		x, y + height,
+
+		x + width, y + height,
+		x + width, y,
+		x, y + height}
+
+	renderable, err := NewRenderable(Triangles, vertCoords)
+	if err != nil {
+		return renderable, err
+	}
+
+	texCoords := []float32{
+		0, 0,
+		1, 0,
+		0, 1,
+
+		1, 1,
+		1, 0,
+		0, 1}
+
+	err = renderable.Texture(texCoords, filename, clip)
+	if err != nil {
+		return renderable, err
+	}
+
+	return renderable, nil
+}
+
 // Texture applies a texture from a 32-bit PNG file to a Renderable. The
 // Renderable will automatically be drawn with this texture. The texture may
 // also be split into multiple smaller textures automatically if clip is > 1.

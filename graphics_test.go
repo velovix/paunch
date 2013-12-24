@@ -112,6 +112,19 @@ func TestDrawTexturedRenderable(t *testing.T) {
 	}
 }
 
+func TestDrawSurfaceRenderable(t *testing.T) {
+
+	renderable, err := NewRenderableSurface(0, 0, 1, 1, "img/test.png", 2)
+	if err != nil {
+		t.Errorf("NewRenderable(0, 0, 1, 1 \"img/test.png\", 2) returned %s", err)
+	}
+
+	err = renderable.Draw(0)
+	if err != nil {
+		t.Errorf("renderable.Draw(0) returned %s", err)
+	}
+}
+
 func TestEffects(t *testing.T) {
 
 	var effect Effect
