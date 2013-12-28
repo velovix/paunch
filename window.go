@@ -44,6 +44,7 @@ func (window *Window) Open(width int, height int, title string) error {
 	window.glfwWindow.SetMouseButtonCallback(mouseButtonCallback)
 	window.glfwWindow.SetCursorPositionCallback(mousePositionCallback)
 	window.glfwWindow.SetCursorEnterCallback(mouseEnterWindowCallback)
+	window.glfwWindow.SetFocusCallback(windowFocusCallback)
 
 	window.glfwWindow.MakeContextCurrent()
 
