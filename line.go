@@ -1,6 +1,7 @@
 package paunch
 
 import (
+	"errors"
 	"math"
 )
 
@@ -34,6 +35,44 @@ func (line *Line) Move(x, y float64) {
 	line.End.Move(x, y)
 
 	line.bounds.Move(x, y)
+}
+
+// GetPointFromX returns a Point on the Line that corresponds to the given X
+// value. If the given X value is outside the area of the line, the method will
+// return the nearest Point and an error. If the slope of the line is
+// undefined, the method will return the highest Point on the Line and an
+// error.
+func (line *Line) GetPointFromX(x float64) (*Point, error) {
+
+	if x < line.Start.X {
+		return NewPoint(line.Start.X, line.Start.Y), errors.New("x value is outside Line range")
+	} else if x > line.End.X {
+		return NewPoint(line.End.X, line.End.Y), errors.New("x value is outside Line range")
+	}
+
+	if math.IsInf(line.M, 0) {
+		return NewPoint(line.End.X, line.End.Y), errors.New("no valid Point found on Line with undefined slope")
+	}
+
+	return NewPoint(x, (line.M*x)+line.B), nil
+}
+
+// GetPointFromY returns a Point on the Line that corresponds to the given Y
+// value. If the given Y value is outside the area of the line, the method will
+// return the nearest Point and an error.
+func (line *Line) GetPointFromY(y float64) (*Point, error) {
+
+	if y < line.Start.Y {
+		return NewPoint(line.Start.X, line.Start.Y), errors.New("y value is outside Line range")
+	} else if y > line.End.Y {
+		return NewPoint(line.End.X, line.End.Y), errors.New("y value is outside Line range")
+	}
+
+	if math.IsInf(line.M, 0) {
+		return NewPoint(line.Start.X, y), nil
+	}
+
+	return NewPoint((y-line.B)/line.M, y), nil
 }
 
 func (bounding *Bounding) getLines() []*Line {
