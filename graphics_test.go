@@ -62,7 +62,7 @@ func TestInitDraw(t *testing.T) {
 
 func TestDrawRenderable(t *testing.T) {
 
-	triangle := []float32{
+	triangle := []float64{
 		0.0, 0.0,
 		1.0, 0.0,
 		0.0, 1.0}
@@ -80,7 +80,7 @@ func TestDrawRenderable(t *testing.T) {
 
 func TestDrawTexturedRenderable(t *testing.T) {
 
-	triangles := []float32{
+	triangles := []float64{
 		0.0, 0.0,
 		1.0, 0.0,
 		0.0, 1.0,
@@ -88,7 +88,7 @@ func TestDrawTexturedRenderable(t *testing.T) {
 		1.0, 0.0,
 		0.0, 1.0}
 
-	texCoords := []float32{
+	texCoords := []float64{
 		0.0, 0.0,
 		1.0, 0.0,
 		0.0, 1.0,

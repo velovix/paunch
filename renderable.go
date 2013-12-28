@@ -44,22 +44,27 @@ func imageToBytes(img image.Image) []byte {
 
 // NewRenderable returns a new Renderable object based on the specified shape
 // type and verticies.
-func NewRenderable(mode int, verticies []float32) (Renderable, error) {
+func NewRenderable(mode int, verticies []float64) (Renderable, error) {
 
-	renderable := Renderable{mode, len(verticies), 0, 0, nil, verticies}
+	verticies32 := make([]float32, len(verticies))
+	for i, val := range verticies {
+		verticies32[i] = float32(val)
+	}
+
+	renderable := Renderable{mode, len(verticies), 0, 0, nil, verticies32}
 
 	gl.GenBuffers(1, &renderable.vertexBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertexBuffer))
-	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies[0]), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies32[0]), gl.STATIC_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
 	return renderable, checkForErrors()
 }
 
 // NewRenderableSurface returns a new rectangular, textured Renderable.
-func NewRenderableSurface(x, y, width, height float32, filename string, clip int) (Renderable, error) {
+func NewRenderableSurface(x, y, width, height float64, filename string, clip int) (Renderable, error) {
 
-	vertCoords := []float32{
+	vertCoords := []float64{
 		x, y,
 		x + width, y,
 		x, y + height,
@@ -73,7 +78,7 @@ func NewRenderableSurface(x, y, width, height float32, filename string, clip int
 		return renderable, err
 	}
 
-	texCoords := []float32{
+	texCoords := []float64{
 		0, 0,
 		1, 0,
 		0, 1,
@@ -93,7 +98,7 @@ func NewRenderableSurface(x, y, width, height float32, filename string, clip int
 // Texture applies a texture from a 32-bit PNG file to a Renderable. The
 // Renderable will automatically be drawn with this texture. The texture may
 // also be split into multiple smaller textures automatically if clip is > 1.
-func (renderable *Renderable) Texture(coords []float32, filename string, clip int) error {
+func (renderable *Renderable) Texture(coords []float64, filename string, clip int) error {
 
 	file, err := os.Open(filename)
 	if err != nil {
@@ -101,9 +106,14 @@ func (renderable *Renderable) Texture(coords []float32, filename string, clip in
 	}
 	defer file.Close()
 
+	coords32 := make([]float32, len(coords))
+	for i, val := range coords {
+		coords32[i] = float32(val)
+	}
+
 	gl.GenBuffers(1, &renderable.texcoordBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.texcoordBuffer))
-	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(coords)*4), gl.Pointer(&coords[0]), gl.STREAM_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(coords32)*4), gl.Pointer(&coords32[0]), gl.STREAM_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
 	data, decodeErr := png.Decode(file)
