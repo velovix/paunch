@@ -58,6 +58,12 @@ func (physics *Physics) Move(x, y float64) {
 	}
 }
 
+// GetAcceleration returns the X and Y acceleration of the Physics object.
+func (physics *Physics) GetAcceleration() (float64, float64) {
+
+	return physics.accel.x, physics.accel.y
+}
+
 // Accelerate exerts a specified force upon the Physics object the next time
 // the Calculate method is called.
 func (physics *Physics) Accelerate(forceX, forceY float64) {
