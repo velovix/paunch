@@ -15,7 +15,7 @@ type Window struct {
 
 	glfwWindow *glfw.Window
 
-	keyStates [512]bool
+	keyStates map[int]bool
 }
 
 var glfwToWindow map[*glfw.Window]*Window
@@ -26,6 +26,8 @@ func (window *Window) Open(width int, height int, title string) error {
 	if glfwToWindow == nil {
 		glfwToWindow = make(map[*glfw.Window]*Window)
 	}
+
+	window.keyStates = make(map[int]bool)
 
 	if !glfw.Init() {
 		return errors.New("initializing GLFW")
