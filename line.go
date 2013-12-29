@@ -75,6 +75,33 @@ func (line *Line) GetPointFromY(y float64) (*Point, error) {
 	return NewPoint((y-line.B)/line.M, y), nil
 }
 
+// DistanceToTangentPoint returns a Point with values equal to the distance
+// a given Point is from the closest tangent Point on the given side of the
+// Line.
+func (line *Line) DistanceToTangentPoint(point *Point, side Direction) *Point {
+
+	switch side {
+	case Up:
+		x := point.X
+		tangent, _ := line.GetPointFromX(x)
+		return getPointDistance(point, tangent)
+	case Down:
+		x := point.X
+		tangent, _ := line.GetPointFromX(x)
+		return getPointDistance(point, tangent)
+	case Left:
+		y := point.Y
+		tangent, _ := line.GetPointFromY(y)
+		return getPointDistance(point, tangent)
+	case Right:
+		y := point.Y
+		tangent, _ := line.GetPointFromY(y)
+		return getPointDistance(point, tangent)
+	default:
+		return NewPoint(0, 0)
+	}
+}
+
 func (bounding *Bounding) getLines() []*Line {
 
 	line := make([]*Line, 4)

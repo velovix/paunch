@@ -55,6 +55,53 @@ func (polygon *Polygon) Move(x, y float64) {
 	polygon.bounds.Move(x, y)
 }
 
+// DistanceToTangentPoint returns a Point with values equal to the distance
+// a given Point is from the closest tangent Point on the given side of the
+// Polygon.
+func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) *Point {
+
+	switch side {
+	case Up:
+		top := NewPoint(point.X, math.Inf(-1))
+		for _, val := range polygon.lines {
+			linePnt, err := val.GetPointFromX(point.X)
+			if linePnt.Y > top.Y && (err == nil || (point.X < polygon.bounds.Start.X || point.X > polygon.bounds.End.X)) {
+				top = linePnt
+			}
+		}
+		return getPointDistance(point, top)
+	case Down:
+		bottom := NewPoint(point.X, math.Inf(1))
+		for _, val := range polygon.lines {
+			linePnt, err := val.GetPointFromX(point.X)
+			if linePnt.Y < bottom.Y && (err == nil || (point.X < polygon.bounds.Start.X || point.X > polygon.bounds.End.X)) {
+				bottom = linePnt
+			}
+		}
+		return getPointDistance(point, bottom)
+	case Left:
+		left := NewPoint(math.Inf(1), point.Y)
+		for _, val := range polygon.lines {
+			linePnt, err := val.GetPointFromY(point.Y)
+			if linePnt.X < left.X && (err == nil || (point.Y < polygon.bounds.Start.Y || point.Y > polygon.bounds.End.Y)) {
+				left = linePnt
+			}
+		}
+		return getPointDistance(point, left)
+	case Right:
+		right := NewPoint(math.Inf(-1), point.Y)
+		for _, val := range polygon.lines {
+			linePnt, err := val.GetPointFromY(point.Y)
+			if linePnt.X > right.X && (err == nil || (point.Y < polygon.bounds.Start.Y || point.Y > polygon.bounds.End.Y)) {
+				right = linePnt
+			}
+		}
+		return getPointDistance(point, right)
+	default:
+		return NewPoint(0, 0)
+	}
+}
+
 // OnPoint checks if a Point is on the Polygon object.
 func (polygon *Polygon) OnPoint(point *Point) bool {
 

@@ -168,3 +168,40 @@ func TestShapes(t *testing.T) {
 		t.Errorf("Collides returned true when false is expected")
 	}
 }
+
+func TestDistanceToTangentPointOnPoint(t *testing.T) {
+
+	tangent := NewPoint(3.0, 5.0).DistanceToTangentPoint(NewPoint(5.0, 6.0), Left)
+
+	if tangent.X != 2.0 || tangent.Y != 1.0 {
+		t.Errorf("method DistanceToTangentPoint returns invalid values when used on a Point (%f, %f)", tangent.X, tangent.Y)
+	}
+}
+
+func TestDistanceToTangentPointOnBounding(t *testing.T) {
+
+	tangent := NewBounding(NewPoint(0.0, 0.0), NewPoint(3.0, 5.0)).DistanceToTangentPoint(NewPoint(2.0, 6.0), Up)
+
+	if tangent.X != 0.0 || tangent.Y != -1.0 {
+		t.Errorf("method DistanceToTangentPoint returns invalid values when used on a Bounding (%f, %f)", tangent.X, tangent.Y)
+	}
+}
+
+func TestDistanceToTangentPointOnLine(t *testing.T) {
+
+	tangent := NewLine(NewPoint(0.0, 0.0), NewPoint(3.0, 3.0)).DistanceToTangentPoint(NewPoint(1.0, 2.0), Up)
+
+	if tangent.X != 0.0 || tangent.Y != -1.0 {
+		t.Errorf("method DistanceToTangentPoint returns invalid values when used on a Line (%f, %f)", tangent.X, tangent.Y)
+	}
+}
+
+func TestDistanceToTangentPointOnPolygon(t *testing.T) {
+
+	polygon := NewPolygon([]*Point{NewPoint(0.0, 0.0), NewPoint(5.0, 1.0), NewPoint(4.0, 3.0), NewPoint(-1.0, 2.0)})
+	tangent := polygon.DistanceToTangentPoint(NewPoint(3.9, 6.0), Up)
+
+	if tangent.X != 0.0 || tangent.Y != -5.22 {
+		t.Errorf("method DistanceToTangentPoint returns invalid values when used on a Polygon (%f, %f)", tangent.X, tangent.Y)
+	}
+}

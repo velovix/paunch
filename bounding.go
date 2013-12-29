@@ -35,6 +35,49 @@ func (bounding *Bounding) Move(x, y float64) {
 	bounding.End.Move(x, y)
 }
 
+// DistanceToTangentPoint returns a Point with values equal to the distance
+// a given Point is from the closest tangent Point on the given side of the
+// Bounding.
+func (bounding *Bounding) DistanceToTangentPoint(point *Point, side Direction) *Point {
+
+	switch side {
+	case Up:
+		x := point.X
+		if point.X < bounding.Start.X {
+			x = bounding.Start.X
+		} else if point.X > bounding.End.X {
+			x = bounding.End.X
+		}
+		return getPointDistance(point, NewPoint(x, bounding.End.Y))
+	case Down:
+		x := point.X
+		if point.X < bounding.Start.X {
+			x = bounding.Start.X
+		} else if point.X > bounding.End.X {
+			x = bounding.End.X
+		}
+		return getPointDistance(point, NewPoint(x, bounding.Start.Y))
+	case Left:
+		y := point.Y
+		if point.Y < bounding.Start.Y {
+			y = bounding.Start.Y
+		} else if point.Y > bounding.End.Y {
+			y = bounding.End.Y
+		}
+		return getPointDistance(point, NewPoint(bounding.Start.X, y))
+	case Right:
+		y := point.Y
+		if point.Y < bounding.Start.Y {
+			y = bounding.Start.Y
+		} else if point.Y > bounding.End.Y {
+			y = bounding.End.Y
+		}
+		return getPointDistance(point, NewPoint(bounding.End.X, y))
+	default:
+		return NewPoint(0, 0)
+	}
+}
+
 // OnPoint checks if a Point is on the Bounding object.
 func (bounding *Bounding) OnPoint(point *Point) bool {
 

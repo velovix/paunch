@@ -6,6 +6,15 @@ import (
 
 const tolerance = 0.01
 
+// Constants for directions
+const (
+	_ = iota
+	Up
+	Down
+	Left
+	Right
+)
+
 // Constants for action types.
 const (
 	Press   = int(glfw.Press)

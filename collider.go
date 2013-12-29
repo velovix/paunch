@@ -8,6 +8,7 @@ type Collider interface {
 	OnBounding(*Bounding) bool
 	OnLine(*Line) bool
 	OnPolygon(*Polygon) bool
+	DistanceToTangentPoint(*Point, Direction) *Point
 }
 
 // Collides checks if two Collider-satisfying objects are overlapping.
