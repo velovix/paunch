@@ -50,6 +50,7 @@ func (physics *Physics) DeleteConstForce(name string) {
 	delete(physics.forces, name)
 }
 
+// Move moves all the members of the Physics object a specified distance.
 func (physics *Physics) Move(x, y float64) {
 
 	for _, val := range physics.movers {
