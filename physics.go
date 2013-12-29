@@ -50,6 +50,13 @@ func (physics *Physics) DeleteConstForce(name string) {
 	delete(physics.forces, name)
 }
 
+func (physics *Physics) Move(x, y float64) {
+
+	for _, val := range physics.movers {
+		val.Move(x, y)
+	}
+}
+
 // Accelerate exerts a specified force upon the Physics object the next time
 // the Calculate method is called.
 func (physics *Physics) Accelerate(forceX, forceY float64) {
