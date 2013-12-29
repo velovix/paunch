@@ -20,7 +20,7 @@ type ActorCollider interface {
 // automatically be called when appropriate after being added to an
 // ActorManager.
 type ActorKeyboarder interface {
-	OnKeyboard(key, action int)
+	OnKeyboard(key Key, action Action)
 }
 
 // ActorMouseButtoner is an interface that requires methods that allow an
@@ -29,7 +29,7 @@ type ActorKeyboarder interface {
 // interface will automatically be called when appropriate after being added to
 // an ActorManager.
 type ActorMouseButtoner interface {
-	OnMouseButton(button, action, x, y int)
+	OnMouseButton(button MouseButton, action Action, x, y int)
 }
 
 // ActorMousePositioner is an interface that requires methods that allow an

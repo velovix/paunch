@@ -19,14 +19,14 @@ func (obj *testActorObject) OnCollision(objectCollider, culpritCollider Collider
 	obj.id = 1
 }
 
-func (obj *testActorObject) OnKeyboard(key, action int) {
+func (obj *testActorObject) OnKeyboard(key Key, action Action) {
 
 	if key == KeyUp && action == Press {
 		obj.id = 2
 	}
 }
 
-func (obj *testActorObject) OnMouseButton(button, action, x, y int) {
+func (obj *testActorObject) OnMouseButton(button MouseButton, action Action, x, y int) {
 
 	if button == MouseButtonMiddle && action == Press && x == 5 && y == 5 {
 		obj.id = 3
@@ -119,7 +119,7 @@ func TestActorManagerKeyboardInput(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.keyEvent(int(KeyUp), int(Press))
+	actorManager.keyEvent(KeyUp, Press)
 
 	if test.id != 2 {
 		t.Errorf("method OnKeyboard not triggered")
@@ -133,7 +133,7 @@ func TestActorManagerMouseInput(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.mouseButtonEvent(int(MouseButtonMiddle), int(Press), 5, 5)
+	actorManager.mouseButtonEvent(MouseButtonMiddle, Press, 5, 5)
 
 	if test.id != 3 {
 		t.Errorf("method OnMouseButton not triggered")

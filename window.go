@@ -80,7 +80,7 @@ func (window *Window) UpdateEvents() error {
 
 	for i, val := range window.keyStates {
 		if val && window.actorManager != nil {
-			window.actorManager.keyEvent(i, Hold)
+			window.actorManager.keyEvent(Key(i), Hold)
 		}
 	}
 
@@ -104,7 +104,7 @@ func keyboardCallback(window *glfw.Window, glfwKey glfw.Key, scancode int, actio
 	glfwToWindow[window].keyStates[int(glfwKey)] = (action == glfw.Press)
 
 	if glfwToWindow[window].actorManager != nil {
-		glfwToWindow[window].actorManager.keyEvent(int(glfwKey), int(action))
+		glfwToWindow[window].actorManager.keyEvent(Key(glfwKey), Action(action))
 	}
 }
 
@@ -113,7 +113,7 @@ func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action gl
 	if glfwToWindow[window].actorManager != nil {
 		x, y := window.GetCursorPosition()
 
-		glfwToWindow[window].actorManager.mouseButtonEvent(int(button), int(action), int(math.Floor(x)), int(math.Floor(y)))
+		glfwToWindow[window].actorManager.mouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), int(math.Floor(y)))
 	}
 }
 

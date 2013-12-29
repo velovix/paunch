@@ -40,7 +40,7 @@ func (actorManager *ActorManager) Remove(actor Actor) bool {
 	return false
 }
 
-func (actorManager ActorManager) keyEvent(key, action int) {
+func (actorManager ActorManager) keyEvent(key Key, action Action) {
 
 	for i := range actorManager.actors {
 		if val, ok := actorManager.actors[i].(ActorKeyboarder); ok {
@@ -49,7 +49,7 @@ func (actorManager ActorManager) keyEvent(key, action int) {
 	}
 }
 
-func (actorManager ActorManager) mouseButtonEvent(button, action, x, y int) {
+func (actorManager ActorManager) mouseButtonEvent(button MouseButton, action Action, x, y int) {
 
 	for i := range actorManager.actors {
 		if val, ok := actorManager.actors[i].(ActorMouseButtoner); ok {
