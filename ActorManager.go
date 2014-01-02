@@ -85,44 +85,60 @@ func (actorManager ActorManager) windowFocusEvent(focused bool) {
 	}
 }
 
-func checkActorCollisions(actor1, actor2 ActorCollider) (bool, Collider, Collider) {
+func (actorManager ActorManager) runCollisions(actor Actor) {
 
-	c1 := actor1.GetColliders()
-	c2 := actor2.GetColliders()
+	actorCollider, ok := actor.(ActorCollider)
+	if !ok {
+		return
+	}
+	colliders1 := actorCollider.GetColliders()
 
-	for _, val := range c1 {
-		for _, val2 := range c2 {
-			if Collides(val, val2) {
-				return true, val, val2
+	for _, val := range actorManager.actors {
+		if actor == val {
+			continue
+		}
+
+		actorCollider2, ok2 := val.(ActorCollider)
+		if !ok2 {
+			continue
+		}
+		colliders2 := actorCollider2.GetColliders()
+
+		for _, col1 := range colliders1 {
+			for _, col2 := range colliders2 {
+				if Collides(col1, col2) {
+					actorCollider.OnCollision(col1, col2, val)
+				}
 			}
 		}
 	}
+}
 
-	return false, nil, nil
+func (actorManager ActorManager) runTicks(actor Actor) {
+
+	actorTicker, ok := actor.(ActorTicker)
+	if !ok {
+		return
+	}
+	actorTicker.OnTick()
+}
+
+func (actorManager ActorManager) runDraws(actor Actor) {
+
+	actorDrawer, ok := actor.(ActorDrawer)
+	if !ok {
+		return
+	}
+	actorDrawer.OnDraw()
 }
 
 // Tick runs all non-graphics tasks on the ActorManager's Actors.
 func (actorManager ActorManager) Tick() {
 
-	for i, val := range actorManager.actors {
+	for _, val := range actorManager.actors {
 
-		if colliderVal, ok := val.(ActorCollider); ok {
-			for j, val2 := range actorManager.actors {
-				if i == j {
-					continue
-				}
-
-				if colliderVal2, ok2 := val2.(ActorCollider); ok2 {
-					if collided, c1, c2 := checkActorCollisions(colliderVal, colliderVal2); collided {
-						colliderVal.OnCollision(c1, c2, colliderVal2)
-					}
-				}
-			}
-		}
-
-		if ticker, ok := val.(ActorTicker); ok {
-			ticker.OnTick()
-		}
+		actorManager.runCollisions(val)
+		actorManager.runTicks(val)
 	}
 }
 
@@ -130,8 +146,6 @@ func (actorManager ActorManager) Tick() {
 func (actorManager ActorManager) Draw() {
 
 	for _, val := range actorManager.actors {
-		if drawer, ok := val.(ActorDrawer); ok {
-			drawer.OnDraw()
-		}
+		actorManager.runDraws(val)
 	}
 }
