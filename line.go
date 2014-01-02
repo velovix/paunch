@@ -35,6 +35,8 @@ func (line *Line) Move(x, y float64) {
 	line.End.Move(x, y)
 
 	line.bounds.Move(x, y)
+
+	line.B = line.Start.Y - (line.M * line.Start.X)
 }
 
 // GetPointFromX returns a Point on the Line that corresponds to the given X
