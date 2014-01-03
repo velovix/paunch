@@ -5,20 +5,26 @@ import (
 	gl "github.com/chsc/gogl/gl33"
 )
 
+// LineGetPointFromErrorType are the types of errors a LineGetPointFromError
+// can represent.
 type LineGetPointFromErrorType int
 
+// LineGetPointFromError error type IDs.
 const (
 	_ LineGetPointFromErrorType = iota
 	OutsideLineRangeError
 	UndefinedSlopeError
 )
 
+// LineGetPointFromError is an error-implementing object returned by methods
+// GetPointFromX and GetPointFromY.
 type LineGetPointFromError struct {
 	Number float64
 	Line   *Line
 	Type   LineGetPointFromErrorType
 }
 
+// Error returns a descriptive string.
 func (err LineGetPointFromError) Error() string {
 
 	switch err.Type {
@@ -27,14 +33,17 @@ func (err LineGetPointFromError) Error() string {
 	case UndefinedSlopeError:
 		return "no valid Point found on Line with undefined slope"
 	default:
-		return "undefined error"
+		return fmt.Sprintf("unknown error %i", err.Type)
 	}
 }
 
+// OpenGLError is an error-implementing object describing sets of OpenGL
+// errors.
 type OpenGLError struct {
 	ErrorCodes []gl.Enum
 }
 
+// Error returns a descriptive string.
 func (err OpenGLError) Error() string {
 
 	message := "openGL errors: "
