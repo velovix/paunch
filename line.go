@@ -1,7 +1,6 @@
 package paunch
 
 import (
-	"errors"
 	"math"
 )
 
@@ -47,13 +46,13 @@ func (line *Line) Move(x, y float64) {
 func (line *Line) GetPointFromX(x float64) (*Point, error) {
 
 	if x < line.Start.X {
-		return NewPoint(line.Start.X, line.Start.Y), errors.New("x value is outside Line range")
+		return NewPoint(line.Start.X, line.Start.Y), LineGetPointFromError{x, line, OutsideLineRangeError}
 	} else if x > line.End.X {
-		return NewPoint(line.End.X, line.End.Y), errors.New("x value is outside Line range")
+		return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{x, line, OutsideLineRangeError}
 	}
 
 	if math.IsInf(line.M, 0) {
-		return NewPoint(line.End.X, line.End.Y), errors.New("no valid Point found on Line with undefined slope")
+		return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{x, line, UndefinedSlopeError}
 	}
 
 	return NewPoint(x, (line.M*x)+line.B), nil
@@ -65,9 +64,9 @@ func (line *Line) GetPointFromX(x float64) (*Point, error) {
 func (line *Line) GetPointFromY(y float64) (*Point, error) {
 
 	if y < line.Start.Y {
-		return NewPoint(line.Start.X, line.Start.Y), errors.New("y value is outside Line range")
+		return NewPoint(line.Start.X, line.Start.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
 	} else if y > line.End.Y {
-		return NewPoint(line.End.X, line.End.Y), errors.New("y value is outside Line range")
+		return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
 	}
 
 	if math.IsInf(line.M, 0) {
