@@ -17,7 +17,7 @@ type Line struct {
 // NewLine creates a new line object. This is absolutely necissary before use.
 func NewLine(start, end *Point) *Line {
 
-	line := &Line{Start: start, End: end}
+	line := &Line{Start: NewPoint(start.X, start.Y), End: NewPoint(end.X, end.Y)}
 
 	line.bounds = NewBounding(line.Start, line.End)
 
