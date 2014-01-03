@@ -2,7 +2,6 @@ package paunch
 
 import (
 	"errors"
-	"fmt"
 	gl "github.com/chsc/gogl/gl33"
 	"runtime"
 )
@@ -20,16 +19,16 @@ const (
 
 func checkForErrors() error {
 
-	var errList []gl.Enum
-	for err := gl.GetError(); err != gl.NO_ERROR; {
-		errList = append(errList, err)
+	err := OpenGLError{make([]gl.Enum, 0)}
+	for errNumb := gl.GetError(); errNumb != gl.NO_ERROR; {
+		err.ErrorCodes = append(err.ErrorCodes, errNumb)
 	}
 
-	if len(errList) == 0 {
+	if len(err.ErrorCodes) == 0 {
 		return nil
 	}
 
-	return errors.New(fmt.Sprintln("OpenGL Error(s): ", errList))
+	return err
 }
 
 // InitDraw sets up the drawing session for use.
