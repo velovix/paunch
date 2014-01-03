@@ -7,7 +7,7 @@ import (
 // Polygon is an object that represents a series of connected Lines that form
 // a shape.
 type Polygon struct {
-	lines  []*Line
+	Lines  []*Line
 	bounds *Bounding
 }
 
@@ -15,16 +15,16 @@ type Polygon struct {
 func NewPolygon(points []*Point) *Polygon {
 
 	var polygon Polygon
-	polygon.lines = make([]*Line, len(points))
+	polygon.Lines = make([]*Line, len(points))
 
 	min := NewPoint(math.Inf(1), math.Inf(1))
 	max := NewPoint(math.Inf(-1), math.Inf(-1))
 
 	for i := 0; i < len(points); i++ {
 		if i < len(points)-1 {
-			polygon.lines[i] = NewLine(points[i], points[i+1])
+			polygon.Lines[i] = NewLine(points[i], points[i+1])
 		} else {
-			polygon.lines[i] = NewLine(points[i], points[0])
+			polygon.Lines[i] = NewLine(points[i], points[0])
 		}
 
 		if points[i].X > max.X {
@@ -48,8 +48,8 @@ func NewPolygon(points []*Point) *Polygon {
 // Move moves the Polygon object a specified distance.
 func (polygon *Polygon) Move(x, y float64) {
 
-	for i := range polygon.lines {
-		polygon.lines[i].Move(x, y)
+	for _, val := range polygon.Lines {
+		val.Move(x, y)
 	}
 
 	polygon.bounds.Move(x, y)
@@ -63,7 +63,7 @@ func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) *Po
 	switch side {
 	case Up:
 		top := NewPoint(point.X, math.Inf(-1))
-		for _, val := range polygon.lines {
+		for _, val := range polygon.Lines {
 			linePnt, err := val.GetPointFromX(point.X)
 			if gpfErr, ok := err.(LineGetPointFromError); linePnt.Y > top.Y && (!ok || gpfErr.Type != OutsideLineRangeError) {
 				top = linePnt
@@ -72,7 +72,7 @@ func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) *Po
 		return getPointDistance(point, top)
 	case Down:
 		bottom := NewPoint(point.X, math.Inf(1))
-		for _, val := range polygon.lines {
+		for _, val := range polygon.Lines {
 			linePnt, err := val.GetPointFromX(point.X)
 			if gpfErr, ok := err.(LineGetPointFromError); linePnt.Y < bottom.Y && (!ok || gpfErr.Type != OutsideLineRangeError) {
 				bottom = linePnt
@@ -81,7 +81,7 @@ func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) *Po
 		return getPointDistance(point, bottom)
 	case Left:
 		left := NewPoint(math.Inf(1), point.Y)
-		for _, val := range polygon.lines {
+		for _, val := range polygon.Lines {
 			linePnt, err := val.GetPointFromY(point.Y)
 			if gpfErr, ok := err.(LineGetPointFromError); linePnt.X < left.X && (!ok || gpfErr.Type != OutsideLineRangeError) {
 				left = linePnt
@@ -90,7 +90,7 @@ func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) *Po
 		return getPointDistance(point, left)
 	case Right:
 		right := NewPoint(math.Inf(-1), point.Y)
-		for _, val := range polygon.lines {
+		for _, val := range polygon.Lines {
 			linePnt, err := val.GetPointFromY(point.Y)
 			if gpfErr, ok := err.(LineGetPointFromError); linePnt.X > right.X && (!ok || gpfErr.Type != OutsideLineRangeError) {
 				right = linePnt
@@ -112,7 +112,7 @@ func (polygon *Polygon) OnPoint(point *Point) bool {
 	ray := NewLine(point, NewPoint(point.X+999, point.Y))
 
 	intersects := 0
-	for _, val := range polygon.lines {
+	for _, val := range polygon.Lines {
 		if ray.OnLine(val) {
 			intersects++
 		}
@@ -155,7 +155,7 @@ func (polygon *Polygon) OnLine(line *Line) bool {
 		return false
 	}
 
-	for _, val := range polygon.lines {
+	for _, val := range polygon.Lines {
 		if line.OnLine(val) {
 			return true
 		}
@@ -171,7 +171,7 @@ func (polygon *Polygon) OnPolygon(polygon2 *Polygon) bool {
 		return false
 	}
 
-	for _, val := range polygon.lines {
+	for _, val := range polygon.Lines {
 		if polygon2.OnLine(val) {
 			return true
 		}
