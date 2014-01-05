@@ -6,6 +6,16 @@ import (
 
 const tolerance = 0.01
 
+// Axis corresponds to an axis value.
+type Axis int
+
+// Axis IDs
+const (
+	_ Axis = iota
+	X
+	Y
+)
+
 // Direction corresponds to a directional value.
 type Direction int
 

@@ -72,18 +72,16 @@ func (physics *Physics) Accelerate(forceX, forceY float64) {
 	physics.accel.y += forceY
 }
 
-// SetXAcceleration sets the X acceleration of the Physics object to a
-// specified value.
-func (physics *Physics) SetXAcceleration(force float64) {
+// SetAcceleration sets the acceleration of the Physics object on the specified
+// axis.
+func (physics *Physics) SetAcceleration(force float64, axis Axis) {
 
-	physics.accel.x = force
-}
-
-// SetYAcceleration sets the Y acceleration of the Physics object to a
-// specified value.
-func (physics *Physics) SetYAcceleration(force float64) {
-
-	physics.accel.y = force
+	switch axis {
+	case X:
+		physics.accel.x = force
+	case Y:
+		physics.accel.y = force
+	}
 }
 
 // SetFriction sets the friction value of the Physics object. Friction is a
