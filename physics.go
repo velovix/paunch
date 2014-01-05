@@ -15,15 +15,18 @@ type Physics struct {
 	movers []Mover
 
 	accel    physicsPoint
+	maxAccel physicsPoint
 	friction physicsPoint
 
-	forces map[string]physicsPoint
+	usingMaxAccel map[Axis]bool
+	forces        map[string]physicsPoint
 }
 
 // NewPhysics creates a new Physics object.
 func NewPhysics() Physics {
 
 	var physics Physics
+	physics.usingMaxAccel = make(map[Axis]bool)
 	physics.forces = make(map[string]physicsPoint)
 
 	return physics
@@ -84,6 +87,21 @@ func (physics *Physics) SetAcceleration(force float64, axis Axis) {
 	}
 }
 
+// SetMaxAcceleration sets the maximum allowed acceleration of the Physics
+// object on the specified axis. In situations where the object would normally
+// go faster than the specified value, it will be set to the value instead.
+func (physics *Physics) SetMaxAcceleration(force float64, axis Axis) {
+
+	switch axis {
+	case X:
+		physics.maxAccel.x = force
+	case Y:
+		physics.maxAccel.y = force
+	}
+
+	physics.usingMaxAccel[axis] = true
+}
+
 // SetFriction sets the friction value of the Physics object. Friction is a
 // force that enfluences acceleration to move toward zero. This might be used
 // to simulate the natural slowdown of an object rubbing against a surface.
@@ -100,6 +118,21 @@ func (physics *Physics) Calculate() {
 	for _, val := range physics.forces {
 		physics.accel.x += val.x
 		physics.accel.y += val.y
+	}
+
+	if math.Abs(physics.accel.x) > physics.maxAccel.x && physics.usingMaxAccel[X] {
+		if physics.accel.x > 0 {
+			physics.accel.x = physics.maxAccel.x
+		} else {
+			physics.accel.x = -physics.maxAccel.x
+		}
+	}
+	if math.Abs(physics.accel.y) > physics.maxAccel.y && physics.usingMaxAccel[Y] {
+		if physics.accel.y > 0 {
+			physics.accel.y = physics.maxAccel.y
+		} else {
+			physics.accel.y = -physics.maxAccel.y
+		}
 	}
 
 	for i := range physics.movers {
