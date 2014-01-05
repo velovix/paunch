@@ -72,10 +72,12 @@ func (line *Line) GetPointFromX(x float64) (*Point, error) {
 // return the nearest Point and an error.
 func (line *Line) GetPointFromY(y float64) (*Point, error) {
 
-	if y < line.Start.Y {
-		return NewPoint(line.Start.X, line.Start.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
-	} else if y > line.End.Y {
-		return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
+	if y < line.bounds.Start.Y || y > line.bounds.End.Y {
+		if math.Abs(line.Start.Y-y) < math.Abs(line.End.Y-y) {
+			return NewPoint(line.Start.X, line.Start.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
+		} else {
+			return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
+		}
 	}
 
 	if math.IsInf(line.M, 0) {
