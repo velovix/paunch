@@ -75,9 +75,9 @@ func (line *Line) GetPointFromY(y float64) (*Point, error) {
 	if y < line.bounds.Start.Y || y > line.bounds.End.Y {
 		if math.Abs(line.Start.Y-y) < math.Abs(line.End.Y-y) {
 			return NewPoint(line.Start.X, line.Start.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
-		} else {
-			return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
 		}
+
+		return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
 	}
 
 	if math.IsInf(line.M, 0) {
