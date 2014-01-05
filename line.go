@@ -17,7 +17,16 @@ type Line struct {
 // NewLine creates a new line object. This is absolutely necissary before use.
 func NewLine(start, end *Point) *Line {
 
-	line := &Line{Start: NewPoint(start.X, start.Y), End: NewPoint(end.X, end.Y)}
+	var calcStart, calcEnd *Point
+	if start.X > end.X {
+		calcStart = NewPoint(end.X, end.Y)
+		calcEnd = NewPoint(start.X, start.Y)
+	} else {
+		calcStart = NewPoint(start.X, start.Y)
+		calcEnd = NewPoint(end.X, end.Y)
+	}
+
+	line := &Line{Start: calcStart, End: calcEnd}
 
 	line.bounds = NewBounding(line.Start, line.End)
 
@@ -45,9 +54,9 @@ func (line *Line) Move(x, y float64) {
 // error.
 func (line *Line) GetPointFromX(x float64) (*Point, error) {
 
-	if x < line.Start.X {
+	if x < line.bounds.Start.X {
 		return NewPoint(line.Start.X, line.Start.Y), LineGetPointFromError{x, line, OutsideLineRangeError}
-	} else if x > line.End.X {
+	} else if x > line.bounds.End.X {
 		return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{x, line, OutsideLineRangeError}
 	}
 
