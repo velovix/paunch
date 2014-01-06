@@ -34,6 +34,7 @@ Features
 - Fast, optomized collision detection
 - Flexibly handle complex object movement with multiple forces
 - Easy event management through object polling
+- Easy menu management
 - More to come!
 
 To Do
@@ -41,5 +42,4 @@ To Do
 - Music and sound effect support
 - Joystick handling
 - Support for pre-3.0 OpenGL versions
-- System for making menu programming easier
 - Probably more...
