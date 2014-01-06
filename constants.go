@@ -21,8 +21,8 @@ type Direction int
 
 // Direction IDs
 const (
-	_            = iota
-	Up Direction = iota
+	_ Direction = iota
+	Up
 	Down
 	Left
 	Right
