@@ -199,9 +199,9 @@ func TestDistanceToTangentPointOnLine(t *testing.T) {
 func TestDistanceToTangentPointOnPolygon(t *testing.T) {
 
 	polygon := NewPolygon([]*Point{NewPoint(0.0, 0.0), NewPoint(5.0, 1.0), NewPoint(4.0, 3.0), NewPoint(-1.0, 2.0)})
-	tangent := polygon.DistanceToTangentPoint(NewPoint(3.9, 6.0), Up)
+	tangent := polygon.DistanceToTangentPoint(NewPoint(4.0, 6.0), Up)
 
-	if tangent.X != 0.0 || tangent.Y != -5.22 {
+	if tangent.X != 0.0 || tangent.Y != -3.0 {
 		t.Errorf("method DistanceToTangentPoint returns invalid values when used on a Polygon (%f, %f)", tangent.X, tangent.Y)
 	}
 }
