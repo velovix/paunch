@@ -94,6 +94,15 @@ func (actorManager ActorManager) joystickButtonEvent(button int, action Action) 
 	}
 }
 
+func (actorManager ActorManager) joystickAxisEvent(device int, value float64) {
+
+	for i := range actorManager.actors {
+		if val, ok := actorManager.actors[i].(ActorJoystickAxiser); ok {
+			val.OnJoystickAxis(device, value)
+		}
+	}
+}
+
 func (actorManager ActorManager) runCollisions(actor Actor) {
 
 	actorCollider, ok := actor.(ActorCollider)

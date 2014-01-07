@@ -73,6 +73,13 @@ func (obj *testActorObject) OnJoystickButton(button int, action Action) {
 	}
 }
 
+func (obj *testActorObject) OnJoystickAxis(device int, value float64) {
+
+	if device == 0 && value == 0.5 {
+		obj.id = 10
+	}
+}
+
 func TestActorManager(t *testing.T) {
 
 	actorManager := NewActorManager()
@@ -228,5 +235,19 @@ func TestActorJoystickButton(t *testing.T) {
 
 	if test.id != 9 {
 		t.Errorf("method OnJoystickButton not triggered")
+	}
+}
+
+func TestActorJoystickAxis(t *testing.T) {
+
+	actorManager := NewActorManager()
+
+	test := testActorObject{NewPoint(0.0, 0.0), 0}
+	actorManager.Add(&test)
+
+	actorManager.joystickAxisEvent(0, 0.5)
+
+	if test.id != 10 {
+		t.Errorf("method OnJoystickAxis not triggered")
 	}
 }

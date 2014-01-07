@@ -68,6 +68,16 @@ type ActorJoystickButtoner interface {
 	OnJoystickButton(button int, action Action)
 }
 
+// ActorJoystickAxiser is an interface that requires methods that allow an
+// ActorManager to call on the OnJoystickAxis method of an Actor when the
+// user has at least on analog device on their joystick.
+// Actor-implementing objects that also implement this interface will
+// automatically be called when appropriate after being added to an
+// ActorManager.
+type ActorJoystickAxiser interface {
+	OnJoystickAxis(device int, value float64)
+}
+
 // ActorDrawer is an interface that requires methods that allow an ActorManager
 // to draw an actor at every frame. Actor-implementing objects that also
 // implement this interface will be autmatically called on every frame.

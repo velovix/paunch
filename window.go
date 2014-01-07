@@ -15,9 +15,10 @@ type Window struct {
 
 	glfwWindow *glfw.Window
 
-	keyStates    map[int]bool
-	joyBtnStates map[int]bool
-	isJoystick   bool
+	keyStates     map[int]bool
+	joyBtnStates  map[int]bool
+	joyAxisStates map[int]float32
+	isJoystick    bool
 }
 
 var glfwToWindow map[*glfw.Window]*Window
@@ -31,6 +32,7 @@ func (window *Window) Open(width int, height int, title string) error {
 
 	window.keyStates = make(map[int]bool)
 	window.joyBtnStates = make(map[int]bool)
+	window.joyAxisStates = make(map[int]float32)
 
 	if !glfw.Init() {
 		return errors.New("initializing GLFW")
@@ -87,6 +89,12 @@ func (window *Window) UpdateDisplay() error {
 // UpdateEvents updates events.
 func (window *Window) UpdateEvents() error {
 
+	glfw.PollEvents()
+
+	if window.actorManager == nil {
+		return nil
+	}
+
 	for i, val := range window.keyStates {
 		if val && window.actorManager != nil {
 			window.actorManager.keyEvent(Key(i), Hold)
@@ -110,9 +118,17 @@ func (window *Window) UpdateEvents() error {
 				window.actorManager.joystickButtonEvent(i, Hold)
 			}
 		}
+
+		axes, err2 := glfw.GetJoystickAxes(glfw.Joystick1)
+		if err2 != nil {
+			panic(err2)
+		}
+
+		for i, val := range axes {
+			window.actorManager.joystickAxisEvent(i, float64(val))
+		}
 	}
 
-	glfw.PollEvents()
 	return nil
 }
 
