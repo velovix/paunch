@@ -66,6 +66,13 @@ func (obj *testActorObject) OnTick() {
 	}
 }
 
+func (obj *testActorObject) OnJoystickButton(button int, action Action) {
+
+	if button == 1 && action == Press {
+		obj.id = 9
+	}
+}
+
 func TestActorManager(t *testing.T) {
 
 	var actorManager ActorManager
@@ -207,5 +214,19 @@ func TestActorTick(t *testing.T) {
 
 	if test.id != 8 {
 		t.Errorf("method OnTick not triggered")
+	}
+}
+
+func TestActorJoystickButton(t *testing.T) {
+
+	var actorManager ActorManager
+
+	test := testActorObject{NewPoint(0.0, 0.0), 0}
+	actorManager.Add(&test)
+
+	actorManager.joystickButtonEvent(1, Press)
+
+	if test.id != 9 {
+		t.Errorf("method OnJoystickButton not triggered")
 	}
 }

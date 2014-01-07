@@ -59,6 +59,15 @@ type ActorWindowFocuser interface {
 	OnWindowFocus(focused bool)
 }
 
+// ActorJoystickButtoner is an interface that requires methods that allow an
+// ActorManager to call on the OnJoystickButton method of an Actor when the
+// user presses, holds, or releases a joystick button. Actor-implementing
+// objects that also implement this interface will automatically be called when
+// appropriate after being added to an ActorManager.
+type ActorJoystickButtoner interface {
+	OnJoystickButton(button int, action Action)
+}
+
 // ActorDrawer is an interface that requires methods that allow an ActorManager
 // to draw an actor at every frame. Actor-implementing objects that also
 // implement this interface will be autmatically called on every frame.

@@ -85,6 +85,15 @@ func (actorManager ActorManager) windowFocusEvent(focused bool) {
 	}
 }
 
+func (actorManager ActorManager) joystickButtonEvent(button int, action Action) {
+
+	for i := range actorManager.actors {
+		if val, ok := actorManager.actors[i].(ActorJoystickButtoner); ok {
+			val.OnJoystickButton(button, action)
+		}
+	}
+}
+
 func (actorManager ActorManager) runCollisions(actor Actor) {
 
 	actorCollider, ok := actor.(ActorCollider)

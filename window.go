@@ -15,7 +15,9 @@ type Window struct {
 
 	glfwWindow *glfw.Window
 
-	keyStates map[int]bool
+	keyStates    map[int]bool
+	joyBtnStates map[int]bool
+	isJoystick   bool
 }
 
 var glfwToWindow map[*glfw.Window]*Window
@@ -28,6 +30,7 @@ func (window *Window) Open(width int, height int, title string) error {
 	}
 
 	window.keyStates = make(map[int]bool)
+	window.joyBtnStates = make(map[int]bool)
 
 	if !glfw.Init() {
 		return errors.New("initializing GLFW")
@@ -47,6 +50,10 @@ func (window *Window) Open(width int, height int, title string) error {
 	window.glfwWindow.SetCursorPositionCallback(mousePositionCallback)
 	window.glfwWindow.SetCursorEnterCallback(mouseEnterWindowCallback)
 	window.glfwWindow.SetFocusCallback(windowFocusCallback)
+
+	if glfw.JoystickPresent(glfw.Joystick1) {
+		window.isJoystick = true
+	}
 
 	window.glfwWindow.MakeContextCurrent()
 
@@ -83,6 +90,25 @@ func (window *Window) UpdateEvents() error {
 	for i, val := range window.keyStates {
 		if val && window.actorManager != nil {
 			window.actorManager.keyEvent(Key(i), Hold)
+		}
+	}
+
+	if window.isJoystick {
+		buttons, err := glfw.GetJoystickButtons(glfw.Joystick1)
+		if err != nil {
+			panic(err)
+		}
+
+		for i, val := range buttons {
+			if val == 0 && window.joyBtnStates[i] {
+				window.actorManager.joystickButtonEvent(i, Release)
+				window.joyBtnStates[i] = false
+			} else if val == 1 && !window.joyBtnStates[i] {
+				window.actorManager.joystickButtonEvent(i, Press)
+				window.joyBtnStates[i] = true
+			} else if val == 1 && window.joyBtnStates[i] {
+				window.actorManager.joystickButtonEvent(i, Hold)
+			}
 		}
 	}
 
