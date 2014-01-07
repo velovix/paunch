@@ -31,6 +31,7 @@ Features
 - Easy-to-use effects system through GLSL shaders
 - Simple window management
 - Mouse and keyboard input
+- Joystick input
 - Fast, optomized collision detection
 - Flexibly handle complex object movement with multiple forces
 - Easy event management through object polling
@@ -40,6 +41,5 @@ Features
 To Do
 -----
 - Music and sound effect support
-- Joystick handling
 - Support for pre-3.0 OpenGL versions
 - Probably more...
