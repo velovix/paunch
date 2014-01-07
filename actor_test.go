@@ -75,7 +75,7 @@ func (obj *testActorObject) OnJoystickButton(button int, action Action) {
 
 func TestActorManager(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test1 := testActorObject{NewPoint(0.0, 0.0), 0}
 	test2 := testActorObject{NewPoint(0.0, 0.0), 0}
@@ -98,7 +98,7 @@ func TestActorManager(t *testing.T) {
 
 func TestActorManagerCollisions(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test1 := testActorObject{NewPoint(0.0, 0.0), 0}
 	test2 := testActorObject{NewPoint(0.0, 0.0), 0}
@@ -121,7 +121,7 @@ func TestActorManagerCollisions(t *testing.T) {
 
 func TestActorManagerKeyboardInput(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
@@ -135,7 +135,7 @@ func TestActorManagerKeyboardInput(t *testing.T) {
 
 func TestActorManagerMouseInput(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
@@ -149,7 +149,7 @@ func TestActorManagerMouseInput(t *testing.T) {
 
 func TestActorManagerMousePosition(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
@@ -163,7 +163,7 @@ func TestActorManagerMousePosition(t *testing.T) {
 
 func TestActorMouseEnterWindow(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
@@ -177,7 +177,7 @@ func TestActorMouseEnterWindow(t *testing.T) {
 
 func TestActorWindowFocused(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
@@ -191,7 +191,7 @@ func TestActorWindowFocused(t *testing.T) {
 
 func TestActorDraw(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
@@ -205,7 +205,7 @@ func TestActorDraw(t *testing.T) {
 
 func TestActorTick(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
@@ -219,7 +219,7 @@ func TestActorTick(t *testing.T) {
 
 func TestActorJoystickButton(t *testing.T) {
 
-	var actorManager ActorManager
+	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
