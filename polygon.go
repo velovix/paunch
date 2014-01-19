@@ -113,8 +113,24 @@ func (polygon *Polygon) OnPoint(point *Point) bool {
 
 	intersects := 0
 	for _, val := range polygon.Lines {
-		if ray.OnLine(val) {
-			intersects++
+		intersectPnt := getLineIntersection(ray, val)
+		if intersectPnt == nil {
+			continue
+		} else {
+			isOnVertex := false
+			if intersectPnt.OnPoint(val.Start) && val.End.Y < intersectPnt.Y {
+				intersects++
+				isOnVertex = true
+			} else if intersectPnt.OnPoint(val.End) && val.Start.Y < intersectPnt.Y {
+				intersects++
+				isOnVertex = true
+			} else if intersectPnt.OnPoint(val.End) || intersectPnt.OnPoint(val.Start) {
+				isOnVertex = true
+			}
+
+			if !isOnVertex {
+				intersects++
+			}
 		}
 	}
 
