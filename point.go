@@ -26,6 +26,12 @@ func (point *Point) Move(x, y float64) {
 	point.Y += y
 }
 
+// SetPosition sets the position of the Point object.
+func (point *Point) SetPosition(x, y float64) {
+
+	point = NewPoint(x, y)
+}
+
 // DistanceToTangentPoint returns a Point with values equal to the distance
 // a given Point is from the closest tangent Point on the given side of the
 // Point. However, for a Point, this doesn't mean much. All this method returns

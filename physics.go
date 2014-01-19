@@ -61,6 +61,15 @@ func (physics *Physics) Move(x, y float64) {
 	}
 }
 
+// SetPosition sets the position of the Physics object. The starting point
+// is the start point of each individual object.
+func (physics *Physics) SetPosition(x, y float64) {
+
+	for _, val := range physics.movers {
+		val.SetPosition(x, y)
+	}
+}
+
 // GetAcceleration returns the X and Y acceleration of the Physics object.
 func (physics *Physics) GetAcceleration() (float64, float64) {
 

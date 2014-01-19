@@ -47,6 +47,16 @@ func (line *Line) Move(x, y float64) {
 	line.B = line.Start.Y - (line.M * line.Start.X)
 }
 
+// SetPosition sets the position of the Line object with the start point as the
+// reference point.
+func (line *Line) SetPosition(x, y float64) {
+
+	xDisp := line.End.X - line.Start.X
+	yDisp := line.End.Y - line.Start.Y
+
+	line = NewLine(NewPoint(x, y), NewPoint(x+xDisp, y+yDisp))
+}
+
 // GetPointFromX returns a Point on the Line that corresponds to the given X
 // value. If the given X value is outside the area of the line, the method will
 // return the nearest Point and an error. If the slope of the line is

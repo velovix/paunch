@@ -55,6 +55,16 @@ func (polygon *Polygon) Move(x, y float64) {
 	polygon.bounds.Move(x, y)
 }
 
+// SetPosition sets the position of the Polygon object with the first specified
+// vertex as the start point.
+func (polygon *Polygon) SetPosition(x, y float64) {
+
+	xDisp := x - polygon.Lines[0].Start.X
+	yDisp := y - polygon.Lines[0].Start.Y
+
+	polygon.Move(xDisp, yDisp)
+}
+
 // DistanceToTangentPoint returns a Point with values equal to the distance
 // a given Point is from the closest tangent Point on the given side of the
 // Polygon.

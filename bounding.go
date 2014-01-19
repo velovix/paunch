@@ -35,6 +35,16 @@ func (bounding *Bounding) Move(x, y float64) {
 	bounding.End.Move(x, y)
 }
 
+// SetPosition sets the position of the Bounding object with the start point as
+// the reference point.
+func (bounding *Bounding) SetPosition(x, y float64) {
+
+	width := bounding.End.X - bounding.Start.X
+	height := bounding.End.Y - bounding.Start.Y
+
+	bounding = NewBounding(NewPoint(x, y), NewPoint(x+width, y+height))
+}
+
 // DistanceToTangentPoint returns a Point with values equal to the distance
 // a given Point is from the closest tangent Point on the given side of the
 // Bounding.

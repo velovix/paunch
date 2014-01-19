@@ -187,3 +187,14 @@ func (renderable *Renderable) Move(x, y float64) {
 	gl.BufferSubData(gl.ARRAY_BUFFER, 0, gl.Sizeiptr(len(renderable.verticies)*4), gl.Pointer(&renderable.verticies[0]))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 }
+
+// SetPosition sets the position of the Renderable object with the first
+// defined vertex as the start point. For Renderable objects made with the
+// NewRenderableSurface function, the start point is the bottom left.
+func (renderable *Renderable) SetPosition(x, y float64) {
+
+	xDisp := x - float64(renderable.verticies[0])
+	yDisp := y - float64(renderable.verticies[1])
+
+	renderable.Move(xDisp, yDisp)
+}
