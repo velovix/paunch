@@ -79,12 +79,34 @@ func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) *Po
 				top = linePnt
 			}
 		}
+
+		if !math.IsInf(top.Y, 0) {
+			return getPointDistance(point, top)
+		}
+
+		for _, val := range polygon.Lines {
+			linePnt, _ := val.GetPointFromX(point.X)
+			if linePnt.Y > top.Y {
+				top = linePnt
+			}
+		}
 		return getPointDistance(point, top)
 	case Down:
 		bottom := NewPoint(point.X, math.Inf(1))
 		for _, val := range polygon.Lines {
 			linePnt, err := val.GetPointFromX(point.X)
 			if gpfErr, ok := err.(LineGetPointFromError); linePnt.Y < bottom.Y && (!ok || gpfErr.Type != OutsideLineRangeError) {
+				bottom = linePnt
+			}
+		}
+
+		if !math.IsInf(bottom.Y, 0) {
+			return getPointDistance(point, bottom)
+		}
+
+		for _, val := range polygon.Lines {
+			linePnt, _ := val.GetPointFromX(point.X)
+			if linePnt.Y < bottom.Y {
 				bottom = linePnt
 			}
 		}
@@ -97,12 +119,34 @@ func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) *Po
 				left = linePnt
 			}
 		}
+
+		if !math.IsInf(left.X, 0) {
+			return getPointDistance(point, left)
+		}
+
+		for _, val := range polygon.Lines {
+			linePnt, _ := val.GetPointFromY(point.Y)
+			if linePnt.X < left.X {
+				left = linePnt
+			}
+		}
 		return getPointDistance(point, left)
 	case Right:
 		right := NewPoint(math.Inf(-1), point.Y)
 		for _, val := range polygon.Lines {
 			linePnt, err := val.GetPointFromY(point.Y)
 			if gpfErr, ok := err.(LineGetPointFromError); linePnt.X > right.X && (!ok || gpfErr.Type != OutsideLineRangeError) {
+				right = linePnt
+			}
+		}
+
+		if !math.IsInf(right.X, 0) {
+			return getPointDistance(point, right)
+		}
+
+		for _, val := range polygon.Lines {
+			linePnt, _ := val.GetPointFromY(point.Y)
+			if linePnt.X > right.X {
 				right = linePnt
 			}
 		}
