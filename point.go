@@ -29,7 +29,10 @@ func (point *Point) Move(x, y float64) {
 // SetPosition sets the position of the Point object.
 func (point *Point) SetPosition(x, y float64) {
 
-	point = NewPoint(x, y)
+	xDisp := x - point.X
+	yDisp := y - point.Y
+
+	point.Move(xDisp, yDisp)
 }
 
 // DistanceToTangentPoint returns a Point with values equal to the distance
