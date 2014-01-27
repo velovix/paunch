@@ -23,7 +23,7 @@ Installation
 ------------
 Once you have the dependencies installed, just run go get!
 
-	go get github.com/Velovix/paunch
+	go get github.com/velovix/paunch
 
 Features
 --------
