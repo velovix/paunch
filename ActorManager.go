@@ -132,6 +132,13 @@ func (actorManager ActorManager) runCollisions(actor Actor) {
 	}
 }
 
+// RunCollisionEvent checks for collisions between the supplied Actor object
+// and the Actor objects supplied to the ActorManager object.
+func (actorManager ActorManager) RunCollisionEvent(actor Actor) {
+
+	actorManager.runCollisions(actor)
+}
+
 func (actorManager ActorManager) runTicks(actor Actor) {
 
 	actorTicker, ok := actor.(ActorTicker)
