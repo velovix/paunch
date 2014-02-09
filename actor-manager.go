@@ -171,3 +171,24 @@ func (actorManager ActorManager) RunDrawEvent() {
 		}
 	}
 }
+
+// Collides checks if the supplied Collider collides with any of the
+// ActorManager's Actors.
+func (actorManager ActorManager) Collides(collider Collider) bool {
+
+	for i := range actorManager.actors {
+		actorCollider, ok := actorManager.actors[i].(ActorCollider)
+		if !ok {
+			continue
+		}
+
+		collisions := actorCollider.GetColliders()
+		for _, val := range collisions {
+			if Collides(collider, val) {
+				return true
+			}
+		}
+	}
+
+	return false
+}
