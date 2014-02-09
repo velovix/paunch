@@ -115,7 +115,7 @@ func TestActorManagerCollisions(t *testing.T) {
 	actorManager.Add(&test2)
 	actorManager.Add(&test3)
 
-	actorManager.Tick()
+	actorManager.RunCollisionEvent()
 
 	if test1.id != 1 || test2.id != 1 {
 		t.Errorf("method OnCollision not triggered")
@@ -133,7 +133,7 @@ func TestActorManagerKeyboardInput(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.keyEvent(KeyUp, Press)
+	actorManager.RunKeyEvent(KeyUp, Press)
 
 	if test.id != 2 {
 		t.Errorf("method OnKeyboard not triggered")
@@ -147,7 +147,7 @@ func TestActorManagerMouseInput(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.mouseButtonEvent(MouseButtonMiddle, Press, 5, 5)
+	actorManager.RunMouseButtonEvent(MouseButtonMiddle, Press, 5, 5)
 
 	if test.id != 3 {
 		t.Errorf("method OnMouseButton not triggered")
@@ -161,7 +161,7 @@ func TestActorManagerMousePosition(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.mousePositionEvent(5, 5)
+	actorManager.RunMousePositionEvent(5, 5)
 
 	if test.id != 4 {
 		t.Errorf("method OnMousePosition not triggered")
@@ -175,7 +175,7 @@ func TestActorMouseEnterWindow(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.mouseEnterWindowEvent(0, 0, true)
+	actorManager.RunMouseEnterWindowEvent(0, 0, true)
 
 	if test.id != 5 {
 		t.Errorf("method OnMouseEnterWindow not triggered")
@@ -189,7 +189,7 @@ func TestActorWindowFocused(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.windowFocusEvent(true)
+	actorManager.RunWindowFocusEvent(true)
 
 	if test.id != 6 {
 		t.Errorf("method OnWindowFocus not triggered")
@@ -203,7 +203,7 @@ func TestActorDraw(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.Draw()
+	actorManager.RunDrawEvent()
 
 	if test.id != 7 {
 		t.Errorf("method OnDraw not triggered")
@@ -217,7 +217,7 @@ func TestActorTick(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.Tick()
+	actorManager.RunTickEvent()
 
 	if test.id != 8 {
 		t.Errorf("method OnTick not triggered")
@@ -231,7 +231,7 @@ func TestActorJoystickButton(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.joystickButtonEvent(1, Press)
+	actorManager.RunJoystickButtonEvent(1, Press)
 
 	if test.id != 9 {
 		t.Errorf("method OnJoystickButton not triggered")
@@ -245,7 +245,7 @@ func TestActorJoystickAxis(t *testing.T) {
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
 	actorManager.Add(&test)
 
-	actorManager.joystickAxisEvent(0, 0.5)
+	actorManager.RunJoystickAxisEvent(0, 0.5)
 
 	if test.id != 10 {
 		t.Errorf("method OnJoystickAxis not triggered")

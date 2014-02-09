@@ -97,7 +97,7 @@ func (window *Window) UpdateEvents() error {
 
 	for i, val := range window.keyStates {
 		if val && window.actorManager != nil {
-			window.actorManager.keyEvent(Key(i), Hold)
+			window.actorManager.RunKeyEvent(Key(i), Hold)
 		}
 	}
 
@@ -109,13 +109,13 @@ func (window *Window) UpdateEvents() error {
 
 		for i, val := range buttons {
 			if val == 0 && window.joyBtnStates[i] {
-				window.actorManager.joystickButtonEvent(i, Release)
+				window.actorManager.RunJoystickButtonEvent(i, Release)
 				window.joyBtnStates[i] = false
 			} else if val == 1 && !window.joyBtnStates[i] {
-				window.actorManager.joystickButtonEvent(i, Press)
+				window.actorManager.RunJoystickButtonEvent(i, Press)
 				window.joyBtnStates[i] = true
 			} else if val == 1 && window.joyBtnStates[i] {
-				window.actorManager.joystickButtonEvent(i, Hold)
+				window.actorManager.RunJoystickButtonEvent(i, Hold)
 			}
 		}
 
@@ -125,7 +125,7 @@ func (window *Window) UpdateEvents() error {
 		}
 
 		for i, val := range axes {
-			window.actorManager.joystickAxisEvent(i, float64(val))
+			window.actorManager.RunJoystickAxisEvent(i, float64(val))
 		}
 	}
 
@@ -148,7 +148,7 @@ func keyboardCallback(window *glfw.Window, glfwKey glfw.Key, scancode int, actio
 	glfwToWindow[window].keyStates[int(glfwKey)] = (action == glfw.Press)
 
 	if glfwToWindow[window].actorManager != nil {
-		glfwToWindow[window].actorManager.keyEvent(Key(glfwKey), Action(action))
+		glfwToWindow[window].actorManager.RunKeyEvent(Key(glfwKey), Action(action))
 	}
 }
 
@@ -157,14 +157,14 @@ func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action gl
 	if glfwToWindow[window].actorManager != nil {
 		x, y := window.GetCursorPosition()
 
-		glfwToWindow[window].actorManager.mouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), int(math.Floor(y)))
+		glfwToWindow[window].actorManager.RunMouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), int(math.Floor(y)))
 	}
 }
 
 func mousePositionCallback(window *glfw.Window, x, y float64) {
 
 	if glfwToWindow[window].actorManager != nil {
-		glfwToWindow[window].actorManager.mousePositionEvent(int(math.Floor(x)), int(math.Floor(y)))
+		glfwToWindow[window].actorManager.RunMousePositionEvent(int(math.Floor(x)), int(math.Floor(y)))
 	}
 }
 
@@ -173,13 +173,13 @@ func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
 	if glfwToWindow[window].actorManager != nil {
 		x, y := window.GetCursorPosition()
 
-		glfwToWindow[window].actorManager.mouseEnterWindowEvent(int(math.Floor(x)), int(math.Floor(y)), entered)
+		glfwToWindow[window].actorManager.RunMouseEnterWindowEvent(int(math.Floor(x)), int(math.Floor(y)), entered)
 	}
 }
 
 func windowFocusCallback(window *glfw.Window, focused bool) {
 
 	if glfwToWindow[window].actorManager != nil {
-		glfwToWindow[window].actorManager.windowFocusEvent(focused)
+		glfwToWindow[window].actorManager.RunWindowFocusEvent(focused)
 	}
 }

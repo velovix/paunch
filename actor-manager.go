@@ -40,7 +40,9 @@ func (actorManager *ActorManager) Remove(actor Actor) bool {
 	return false
 }
 
-func (actorManager ActorManager) keyEvent(key Key, action Action) {
+// RunKeyEvent simulates a key event, triggering the expected response from
+// the ActorManager object's Actors.
+func (actorManager ActorManager) RunKeyEvent(key Key, action Action) {
 
 	for i := range actorManager.actors {
 		if val, ok := actorManager.actors[i].(ActorKeyboarder); ok {
@@ -49,7 +51,9 @@ func (actorManager ActorManager) keyEvent(key Key, action Action) {
 	}
 }
 
-func (actorManager ActorManager) mouseButtonEvent(button MouseButton, action Action, x, y int) {
+// RunMouseButtonEvent simulates a mouse button event, triggering the
+// expected response from the ActorManager object's Actors.
+func (actorManager ActorManager) RunMouseButtonEvent(button MouseButton, action Action, x, y int) {
 
 	for i := range actorManager.actors {
 		if val, ok := actorManager.actors[i].(ActorMouseButtoner); ok {
@@ -58,7 +62,9 @@ func (actorManager ActorManager) mouseButtonEvent(button MouseButton, action Act
 	}
 }
 
-func (actorManager ActorManager) mousePositionEvent(x, y int) {
+// RunMousePositionEvent simulates a mouse position event, triggering the
+// expected response from the ActorManager object's Actors.
+func (actorManager ActorManager) RunMousePositionEvent(x, y int) {
 
 	for i := range actorManager.actors {
 		if val, ok := actorManager.actors[i].(ActorMousePositioner); ok {
@@ -67,7 +73,9 @@ func (actorManager ActorManager) mousePositionEvent(x, y int) {
 	}
 }
 
-func (actorManager ActorManager) mouseEnterWindowEvent(x, y int, entered bool) {
+// RunMouseEnterWindowEvent simulates a mouse enter window event, triggering
+// the expected response from the ActorManager object's Actors.
+func (actorManager ActorManager) RunMouseEnterWindowEvent(x, y int, entered bool) {
 
 	for i := range actorManager.actors {
 		if val, ok := actorManager.actors[i].(ActorMouseEnterWindower); ok {
@@ -76,7 +84,9 @@ func (actorManager ActorManager) mouseEnterWindowEvent(x, y int, entered bool) {
 	}
 }
 
-func (actorManager ActorManager) windowFocusEvent(focused bool) {
+// RunWindowFocusEvent simulates a window focus event, triggering the
+// expected response from the ActorManager object's Actors.
+func (actorManager ActorManager) RunWindowFocusEvent(focused bool) {
 
 	for i := range actorManager.actors {
 		if val, ok := actorManager.actors[i].(ActorWindowFocuser); ok {
@@ -85,7 +95,9 @@ func (actorManager ActorManager) windowFocusEvent(focused bool) {
 	}
 }
 
-func (actorManager ActorManager) joystickButtonEvent(button int, action Action) {
+// RunJoystickButtonEvent simulates a joystick button event, triggering the
+// expected response from the ActorManager object's Actors.
+func (actorManager ActorManager) RunJoystickButtonEvent(button int, action Action) {
 
 	for i := range actorManager.actors {
 		if val, ok := actorManager.actors[i].(ActorJoystickButtoner); ok {
@@ -94,7 +106,9 @@ func (actorManager ActorManager) joystickButtonEvent(button int, action Action) 
 	}
 }
 
-func (actorManager ActorManager) joystickAxisEvent(device int, value float64) {
+// RunJoystickAxisEvent simulates a joystick axis event, triggering the
+// expected response from the ActorManager object's Actors.
+func (actorManager ActorManager) RunJoystickAxisEvent(device int, value float64) {
 
 	for i := range actorManager.actors {
 		if val, ok := actorManager.actors[i].(ActorJoystickAxiser); ok {
@@ -103,74 +117,57 @@ func (actorManager ActorManager) joystickAxisEvent(device int, value float64) {
 	}
 }
 
-func (actorManager ActorManager) runCollisions(actor Actor) {
+// RunCollisionEvent checks for collisions between the ActorManager's Actors
+// and triggers appropriate methods.
+func (actorManager ActorManager) RunCollisionEvent() {
 
-	actorCollider, ok := actor.(ActorCollider)
-	if !ok {
-		return
-	}
-	colliders1 := actorCollider.GetColliders()
-
-	for _, val := range actorManager.actors {
-		if actor == val {
-			continue
+	for i := range actorManager.actors {
+		actorCollider, ok := actorManager.actors[i].(ActorCollider)
+		if !ok {
+			return
 		}
+		colliders1 := actorCollider.GetColliders()
 
-		actorCollider2, ok2 := val.(ActorCollider)
-		if !ok2 {
-			continue
-		}
-		colliders2 := actorCollider2.GetColliders()
+		for _, val := range actorManager.actors {
+			if actorManager.actors[i] == val {
+				continue
+			}
 
-		for _, col1 := range colliders1 {
-			for _, col2 := range colliders2 {
-				if Collides(col1, col2) {
-					actorCollider.OnCollision(col1, col2, val)
+			actorCollider2, ok2 := val.(ActorCollider)
+			if !ok2 {
+				continue
+			}
+			colliders2 := actorCollider2.GetColliders()
+
+			for _, col1 := range colliders1 {
+				for _, col2 := range colliders2 {
+					if Collides(col1, col2) {
+						actorCollider.OnCollision(col1, col2, val)
+					}
 				}
 			}
 		}
 	}
 }
 
-// RunCollisionEvent checks for collisions between the supplied Actor object
-// and the Actor objects supplied to the ActorManager object.
-func (actorManager ActorManager) RunCollisionEvent(actor Actor) {
+// RunTickEvent runs a tick event, triggering the expected response from
+// the ActorManager object's Actors.
+func (actorManager ActorManager) RunTickEvent() {
 
-	actorManager.runCollisions(actor)
-}
-
-func (actorManager ActorManager) runTicks(actor Actor) {
-
-	actorTicker, ok := actor.(ActorTicker)
-	if !ok {
-		return
-	}
-	actorTicker.OnTick()
-}
-
-func (actorManager ActorManager) runDraws(actor Actor) {
-
-	actorDrawer, ok := actor.(ActorDrawer)
-	if !ok {
-		return
-	}
-	actorDrawer.OnDraw()
-}
-
-// Tick runs all non-graphics tasks on the ActorManager's Actors.
-func (actorManager ActorManager) Tick() {
-
-	for _, val := range actorManager.actors {
-
-		actorManager.runCollisions(val)
-		actorManager.runTicks(val)
+	for i := range actorManager.actors {
+		if val, ok := actorManager.actors[i].(ActorTicker); ok {
+			val.OnTick()
+		}
 	}
 }
 
-// Draw runs all graphics-related tasks on the ActorManager's Actors.
-func (actorManager ActorManager) Draw() {
+// RunDrawEvent runs a draw event, triggering the expected response from
+// the ActorManager object's Actors.
+func (actorManager ActorManager) RunDrawEvent() {
 
-	for _, val := range actorManager.actors {
-		actorManager.runDraws(val)
+	for i := range actorManager.actors {
+		if val, ok := actorManager.actors[i].(ActorDrawer); ok {
+			val.OnDraw()
+		}
 	}
 }
