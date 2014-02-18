@@ -186,28 +186,24 @@ func getLineIntersection(line1, line2 *Line) *Point {
 		return nil
 	}
 
-	dx1 := findDeterminate(
-		findDeterminate(line1.Start.X, line1.Start.Y, line1.End.X, line1.End.Y),
-		findDeterminate(line1.Start.X, 1, line1.End.X, 1),
-		findDeterminate(line2.Start.X, line2.Start.Y, line2.End.X, line2.End.Y),
-		findDeterminate(line2.Start.X, 1, line2.End.X, 1))
+	if line1.M == line2.M {
+		return nil
+	}
 
-	dxy2 := findDeterminate(
-		findDeterminate(line1.Start.X, 1, line1.End.X, 1),
-		findDeterminate(line1.Start.Y, 1, line1.End.Y, 1),
-		findDeterminate(line2.Start.X, 1, line2.End.X, 1),
-		findDeterminate(line2.Start.Y, 1, line2.End.Y, 1))
+	line1A := line1.End.Y - line1.Start.Y
+	line1B := line1.Start.X - line1.End.X
+	line1C := line1A*line1.Start.X + line1B*line1.Start.Y
 
-	dy1 := findDeterminate(
-		findDeterminate(line1.Start.X, line1.Start.Y, line1.End.X, line1.End.Y),
-		findDeterminate(line1.Start.Y, 1, line1.End.Y, 1),
-		findDeterminate(line2.Start.X, line2.Start.Y, line2.End.X, line2.End.Y),
-		findDeterminate(line2.Start.Y, 1, line2.End.Y, 1))
+	line2A := line2.End.Y - line2.Start.Y
+	line2B := line2.Start.X - line2.End.X
+	line2C := line2A*line2.Start.X + line2B*line2.Start.Y
 
-	x := dx1 / dxy2
-	y := dy1 / dxy2
+	determinate := line1A*line2B - line2A*line1B
 
-	if line1.OnPoint(NewPoint(x, y)) && line2.OnPoint(NewPoint(x, y)) {
+	x := (line2B*line1C - line1B*line2C) / determinate
+	y := (line1A*line2C - line2A*line1C) / determinate
+
+	if x >= line1.Start.X && x <= line1.End.X && y >= line1.Start.Y && y <= line1.End.Y {
 		return NewPoint(x, y)
 	}
 
