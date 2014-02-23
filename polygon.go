@@ -163,7 +163,7 @@ func (polygon *Polygon) OnPoint(point *Point) bool {
 		return false
 	}
 
-	ray := NewLine(point, NewPoint(point.X+999, point.Y))
+	ray := NewLine(point, NewPoint(point.X+(polygon.bounds.End.X-polygon.bounds.Start.X), point.Y))
 
 	intersects := 0
 	for _, val := range polygon.Lines {
