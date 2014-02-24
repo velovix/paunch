@@ -95,6 +95,17 @@ func (actorManager ActorManager) RunWindowFocusEvent(focused bool) {
 	}
 }
 
+// RunWindowResizeEvent simulates a window resize event, triggering the
+// expected response from the ActorManager object's Actors.
+func (actorManager ActorManager) RunWindowResizeEvent(width, height int) {
+
+	for i := range actorManager.actors {
+		if val, ok := actorManager.actors[i].(ActorWindowResizer); ok {
+			val.OnWindowResize(width, height)
+		}
+	}
+}
+
 // RunJoystickButtonEvent simulates a joystick button event, triggering the
 // expected response from the ActorManager object's Actors.
 func (actorManager ActorManager) RunJoystickButtonEvent(button int, action Action) {

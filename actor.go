@@ -50,13 +50,22 @@ type ActorMouseEnterWindower interface {
 	OnMouseEnterWindow(x, y int, entered bool)
 }
 
-// ActorWindowFocuser in an interface that requires methods that allow an
+// ActorWindowFocuser is an interface that requires methods that allow an
 // ActorManager to call on the OnWindowFocus method of an Actor when the user
 // changes the focus of a window. Actor-implementing objects that also
 // implement this interface will automatically be called when appropriate after
 // being added to an ActorManager.
 type ActorWindowFocuser interface {
 	OnWindowFocus(focused bool)
+}
+
+// ActorWindowResizer is an interface that requires methods that allow an
+// ActorManager to call on the OnWindowResize method of an Actor when the user
+// changes the size of a window. Actor-implementing objects that also implement
+// this interface will automatically be caleld when appropriate after being
+// added to an ActorManager.
+type ActorWindowResizer interface {
+	OnWindowResize(width, height int)
 }
 
 // ActorJoystickButtoner is an interface that requires methods that allow an

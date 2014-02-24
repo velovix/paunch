@@ -2,6 +2,7 @@ package paunch
 
 import (
 	"errors"
+	gl "github.com/chsc/gogl/gl33"
 	glfw "github.com/go-gl/glfw3"
 	"math"
 )
@@ -52,6 +53,7 @@ func (window *Window) Open(width int, height int, title string) error {
 	window.glfwWindow.SetCursorPositionCallback(mousePositionCallback)
 	window.glfwWindow.SetCursorEnterCallback(mouseEnterWindowCallback)
 	window.glfwWindow.SetFocusCallback(windowFocusCallback)
+	window.glfwWindow.SetSizeCallback(windowResizeCallback)
 
 	if glfw.JoystickPresent(glfw.Joystick1) {
 		window.isJoystick = true
@@ -182,4 +184,13 @@ func windowFocusCallback(window *glfw.Window, focused bool) {
 	if glfwToWindow[window].actorManager != nil {
 		glfwToWindow[window].actorManager.RunWindowFocusEvent(focused)
 	}
+}
+
+func windowResizeCallback(window *glfw.Window, width, height int) {
+
+	if glfwToWindow[window].actorManager != nil {
+		glfwToWindow[window].actorManager.RunWindowResizeEvent(width, height)
+	}
+
+	gl.Viewport(0, 0, gl.Sizei(width), gl.Sizei(height))
 }

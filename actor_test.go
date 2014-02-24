@@ -80,6 +80,13 @@ func (obj *testActorObject) OnJoystickAxis(device int, value float64) {
 	}
 }
 
+func (obj *testActorObject) OnWindowResize(width, height int) {
+
+	if width == 640 && height == 480 {
+		obj.id = 11
+	}
+}
+
 func TestActorManager(t *testing.T) {
 
 	actorManager := NewActorManager()
@@ -249,5 +256,19 @@ func TestActorJoystickAxis(t *testing.T) {
 
 	if test.id != 10 {
 		t.Errorf("method OnJoystickAxis not triggered")
+	}
+}
+
+func TestActorWindowResize(t *testing.T) {
+
+	actorManager := NewActorManager()
+
+	test := testActorObject{NewPoint(0.0, 0.0), 0}
+	actorManager.Add(&test)
+
+	actorManager.RunWindowResizeEvent(640, 480)
+
+	if test.id != 11 {
+		t.Errorf("method OnWindowResize not triggered")
 	}
 }
