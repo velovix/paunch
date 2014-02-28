@@ -15,9 +15,14 @@ Paunch needs a few packages before being built.
 
 	go get github.com/chsc/gogl/gl33
 	go get github.com/go-gl/glfw3
+	go get github.com/vova616/go-openal/openal
 
 The package `glfw3` needs the C glfw3 library installed to build correctly. See
 [their repository](http://github.com/go-gl/glfw3) for more information.
+
+The package `go-openal` also requires it's respective C library, which is,
+naturally, `OpenAL`. Visit [their website](http://openal-soft.org/) for a
+download link and installation instructions.
 
 Installation
 ------------
@@ -36,10 +41,10 @@ Features
 - Flexibly handle complex object movement with multiple forces
 - Easy event management through object polling
 - Easy menu management
+- Music and sound effect support
 - More to come!
 
 To Do
 -----
-- Music and sound effect support
 - Support for pre-3.0 OpenGL versions
 - Probably more...
