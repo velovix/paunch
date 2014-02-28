@@ -2,6 +2,7 @@ package paunch
 
 import (
 	glfw "github.com/go-gl/glfw3"
+	al "github.com/vova616/go-openal/openal"
 )
 
 const tolerance = 0.01
@@ -184,4 +185,15 @@ const (
 	KeyRightSuper   = Key(glfw.KeyRightSuper)
 	KeyMenu         = Key(glfw.KeyMenu)
 	KeyLast         = Key(glfw.KeyLast)
+)
+
+// SoundState is a value that can be retured by Sound.GetPlaying().
+type SoundState int
+
+// Sound state IDs
+const (
+	Initial = SoundState(al.Initial)
+	Playing = SoundState(al.Playing)
+	Paused  = SoundState(al.Paused)
+	Stopped = SoundState(al.Stopped)
 )
