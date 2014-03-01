@@ -220,6 +220,18 @@ func (sound Sound) GetPlaying() SoundState {
 	return SoundState(sound.source.State())
 }
 
+// GetGain returns the gain (volume) of the Sound object.
+func (sound Sound) GetGain() float32 {
+
+	return sound.source.GetGain()
+}
+
+// SetGain sets the gain (volume) of the Sound object. 1 is the default value.
+func (sound Sound) SetGain(gain float32) {
+
+	sound.source.SetGain(gain)
+}
+
 // Destroy cleans up the Sound object, which will no longer be playable. This
 // should be done after the Sound object is no longer needed.
 func (sound Sound) Destroy() {
