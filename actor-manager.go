@@ -135,7 +135,7 @@ func (actorManager ActorManager) RunCollisionEvent() {
 	for i := range actorManager.actors {
 		actorCollider, ok := actorManager.actors[i].(ActorCollider)
 		if !ok {
-			return
+			continue
 		}
 		colliders1 := actorCollider.GetColliders()
 
