@@ -40,6 +40,13 @@ func (actorManager *ActorManager) Remove(actor Actor) bool {
 	return false
 }
 
+// GetActors returns a copy of the slice of Actor objects the ActorManager has
+// stored.
+func (actorManager *ActorManager) GetActors() []Actor {
+
+	return actorManager.actors
+}
+
 // RunKeyEvent simulates a key event, triggering the expected response from
 // the ActorManager object's Actors.
 func (actorManager ActorManager) RunKeyEvent(key Key, action Action) {
