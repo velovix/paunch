@@ -37,14 +37,15 @@ func (effect *Effect) checkUniformVariable(program string, variable string) {
 	}
 }
 
-// Init initializes the Effect object. This must be called before doing
-// anything else with the object.
-func (effect *Effect) Init() error {
+// NewEffect creates a new Effect object.
+func NewEffect() Effect {
+
+	var effect Effect
 
 	effect.uniforms = make(map[string]gl.Int)
 	effect.programs = make(map[string]gl.Uint)
 
-	return nil
+	return effect
 }
 
 // SetVariablei sets a specified variable to the supplied integer to be passed
