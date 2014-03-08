@@ -9,8 +9,8 @@ import (
 
 // Window is an object that manages window creation and user input.
 type Window struct {
-	Width        int
-	Height       int
+	width        int
+	height       int
 	nativeWidth  int
 	nativeHeight int
 
@@ -52,8 +52,8 @@ func (window *Window) Open(width, height, nativeWidth, nativeHeight int, title s
 		return err
 	}
 
-	window.Width = width
-	window.Height = height
+	window.width = width
+	window.height = height
 	window.nativeWidth = nativeWidth
 	window.nativeHeight = nativeHeight
 
@@ -80,6 +80,19 @@ func (window *Window) Destroy() error {
 
 	glfw.Terminate()
 	return nil
+}
+
+// GetSize returns the current width and height of the Window object.
+func (window *Window) GetSize() (width, height int) {
+
+	return window.width, window.height
+}
+
+// SetSize sets the width and height of the Window object and triggers a window
+// resize event.
+func (window *Window) SetSize(width, height int) {
+
+	window.glfwWindow.SetSize(width, height)
 }
 
 // ShouldClose returns whether or not the user has attempted to close the
@@ -180,8 +193,8 @@ func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action gl
 
 		var windHeight int
 		if glfwToWindow[window].nativeMousePos {
-			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].Width)
-			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].Height)
+			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].width)
+			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].height)
 			windHeight = glfwToWindow[window].nativeHeight
 		} else {
 			_, windHeight = window.GetSize()
@@ -195,8 +208,8 @@ func mousePositionCallback(window *glfw.Window, x, y float64) {
 	if glfwToWindow[window].actorManager != nil {
 		var windHeight int
 		if glfwToWindow[window].nativeMousePos {
-			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].Width)
-			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].Height)
+			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].width)
+			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].height)
 			windHeight = glfwToWindow[window].nativeHeight
 		} else {
 			_, windHeight = window.GetSize()
@@ -212,8 +225,8 @@ func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
 
 		var windHeight int
 		if glfwToWindow[window].nativeMousePos {
-			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].Width)
-			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].Height)
+			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].width)
+			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].height)
 			windHeight = glfwToWindow[window].nativeHeight
 		} else {
 			_, windHeight = window.GetSize()
@@ -231,8 +244,8 @@ func windowFocusCallback(window *glfw.Window, focused bool) {
 
 func windowResizeCallback(window *glfw.Window, width, height int) {
 
-	glfwToWindow[window].Width = width
-	glfwToWindow[window].Height = height
+	glfwToWindow[window].width = width
+	glfwToWindow[window].height = height
 
 	if glfwToWindow[window].actorManager != nil {
 		glfwToWindow[window].actorManager.RunWindowResizeEvent(width, height)
