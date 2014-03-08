@@ -9,23 +9,30 @@ import (
 
 // Window is an object that manages window creation and user input.
 type Window struct {
-	Width  int
-	Height int
+	Width        int
+	Height       int
+	nativeWidth  int
+	nativeHeight int
 
 	actorManager *ActorManager
 
 	glfwWindow *glfw.Window
 
-	keyStates     map[int]bool
-	joyBtnStates  map[int]bool
-	joyAxisStates map[int]float32
-	isJoystick    bool
+	keyStates      map[int]bool
+	joyBtnStates   map[int]bool
+	joyAxisStates  map[int]float32
+	isJoystick     bool
+	nativeMousePos bool
 }
 
 var glfwToWindow map[*glfw.Window]*Window
 
-// Open opens a new window ready to be drawn in.
-func (window *Window) Open(width int, height int, title string) error {
+// Open opens a new window ready to be drawn in. The width and height will be
+// the size of the window in pixels. The nativeWidth and nativeHeight represent
+// the actual width and height of the drawing space if it were not stretched to
+// accomidate the window size. This is only important when SetNativeMousePos is
+// enabled.
+func (window *Window) Open(width, height, nativeWidth, nativeHeight int, title string) error {
 
 	if glfwToWindow == nil {
 		glfwToWindow = make(map[*glfw.Window]*Window)
@@ -47,6 +54,8 @@ func (window *Window) Open(width int, height int, title string) error {
 
 	window.Width = width
 	window.Height = height
+	window.nativeWidth = nativeWidth
+	window.nativeHeight = nativeHeight
 
 	window.glfwWindow.SetKeyCallback(keyboardCallback)
 	window.glfwWindow.SetMouseButtonCallback(mouseButtonCallback)
@@ -141,6 +150,16 @@ func (window *Window) SetActorManager(actorManager *ActorManager) {
 	window.actorManager = actorManager
 }
 
+// SetNativeMousePos changes the behavior of the reported mouse position. If
+// enabled, supplied mouse positions are made relative to the native width and
+// native height of the Window object. This is useful for applications that
+// stretch to larger window sizes, so that mouse position behavior remains the
+// same regardless of window size.
+func (window *Window) SetNativeMousePos(shouldBeNative bool) {
+
+	window.nativeMousePos = shouldBeNative
+}
+
 func keyboardCallback(window *glfw.Window, glfwKey glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 
 	if action == glfw.Repeat {
@@ -159,7 +178,14 @@ func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action gl
 	if glfwToWindow[window].actorManager != nil {
 		x, y := window.GetCursorPosition()
 
-		_, windHeight := window.GetSize()
+		var windHeight int
+		if glfwToWindow[window].nativeMousePos {
+			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].Width)
+			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].Height)
+			windHeight = glfwToWindow[window].nativeHeight
+		} else {
+			_, windHeight = window.GetSize()
+		}
 		glfwToWindow[window].actorManager.RunMouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), windHeight-int(math.Floor(y)))
 	}
 }
@@ -167,7 +193,14 @@ func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action gl
 func mousePositionCallback(window *glfw.Window, x, y float64) {
 
 	if glfwToWindow[window].actorManager != nil {
-		_, windHeight := window.GetSize()
+		var windHeight int
+		if glfwToWindow[window].nativeMousePos {
+			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].Width)
+			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].Height)
+			windHeight = glfwToWindow[window].nativeHeight
+		} else {
+			_, windHeight = window.GetSize()
+		}
 		glfwToWindow[window].actorManager.RunMousePositionEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)))
 	}
 }
@@ -177,7 +210,14 @@ func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
 	if glfwToWindow[window].actorManager != nil {
 		x, y := window.GetCursorPosition()
 
-		_, windHeight := window.GetSize()
+		var windHeight int
+		if glfwToWindow[window].nativeMousePos {
+			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].Width)
+			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].Height)
+			windHeight = glfwToWindow[window].nativeHeight
+		} else {
+			_, windHeight = window.GetSize()
+		}
 		glfwToWindow[window].actorManager.RunMouseEnterWindowEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)), entered)
 	}
 }
@@ -190,6 +230,9 @@ func windowFocusCallback(window *glfw.Window, focused bool) {
 }
 
 func windowResizeCallback(window *glfw.Window, width, height int) {
+
+	glfwToWindow[window].Width = width
+	glfwToWindow[window].Height = height
 
 	if glfwToWindow[window].actorManager != nil {
 		glfwToWindow[window].actorManager.RunWindowResizeEvent(width, height)

@@ -7,7 +7,7 @@ import (
 func TestOpenWindow(t *testing.T) {
 
 	var window Window
-	err := window.Open(640, 480, "Test")
+	err := window.Open(640, 480, 640, 480, "Test")
 	if err != nil {
 		t.Errorf(".Open(640, 480, \"Test\") returned %s", err)
 	}
@@ -21,7 +21,7 @@ func TestOpenWindow(t *testing.T) {
 func TestUpdateDisplay(t *testing.T) {
 
 	var window Window
-	err := window.Open(640, 480, "Test")
+	err := window.Open(640, 480, 640, 480, "Test")
 	if err != nil {
 		t.Errorf(".Open(640, 480, \"Test\") returned %s", err)
 	}
@@ -35,7 +35,7 @@ func TestUpdateDisplay(t *testing.T) {
 func TestUpdateEvents(t *testing.T) {
 
 	var window Window
-	err := window.Open(640, 480, "Test")
+	err := window.Open(640, 480, 640, 480, "Test")
 	if err != nil {
 		t.Errorf(".Open(640, 480, \"Test\") returned %s", err)
 	}
@@ -49,7 +49,7 @@ func TestUpdateEvents(t *testing.T) {
 func TestInitDraw(t *testing.T) {
 
 	var window Window
-	err := window.Open(640, 480, "Test")
+	err := window.Open(640, 480, 640, 480, "Test")
 	if err != nil {
 		t.Errorf("window.Open(640, 480, \"Test\") returned %s", err)
 	}
