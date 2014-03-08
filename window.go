@@ -13,6 +13,7 @@ type Window struct {
 	height       int
 	nativeWidth  int
 	nativeHeight int
+	title        string
 
 	actorManager *ActorManager
 
@@ -27,12 +28,25 @@ type Window struct {
 
 var glfwToWindow map[*glfw.Window]*Window
 
-// Open opens a new window ready to be drawn in. The width and height will be
+// InitWindows initializes the Window object system. This must be called before
+// other window-based operations may take place.
+func InitWindows() error {
+
+	if !glfw.Init() {
+		return errors.New("initializing GLFW")
+	}
+
+	return nil
+}
+
+// NewWindow creates a new Window object. The width and height will be
 // the size of the window in pixels. The nativeWidth and nativeHeight represent
 // the actual width and height of the drawing space if it were not stretched to
 // accomidate the window size. This is only important when SetNativeMousePos is
 // enabled.
-func (window *Window) Open(width, height, nativeWidth, nativeHeight int, title string) error {
+func NewWindow(width, height, nativeWidth, nativeHeight int, title string) Window {
+
+	var window Window
 
 	if glfwToWindow == nil {
 		glfwToWindow = make(map[*glfw.Window]*Window)
@@ -42,20 +56,24 @@ func (window *Window) Open(width, height, nativeWidth, nativeHeight int, title s
 	window.joyBtnStates = make(map[int]bool)
 	window.joyAxisStates = make(map[int]float32)
 
-	if !glfw.Init() {
-		return errors.New("initializing GLFW")
-	}
-
-	var err error
-	window.glfwWindow, err = glfw.CreateWindow(width, height, title, nil, nil)
-	if err != nil {
-		return err
-	}
-
 	window.width = width
 	window.height = height
 	window.nativeWidth = nativeWidth
 	window.nativeHeight = nativeHeight
+
+	return window
+}
+
+// Open opens the Window object.
+func (window *Window) Open() error {
+
+	var err error
+	window.glfwWindow, err = glfw.CreateWindow(window.width, window.height, window.title, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	glfwToWindow[window.glfwWindow] = window
 
 	window.glfwWindow.SetKeyCallback(keyboardCallback)
 	window.glfwWindow.SetMouseButtonCallback(mouseButtonCallback)
@@ -69,8 +87,6 @@ func (window *Window) Open(width, height, nativeWidth, nativeHeight int, title s
 	}
 
 	window.glfwWindow.MakeContextCurrent()
-
-	glfwToWindow[window.glfwWindow] = window
 
 	return nil
 }
