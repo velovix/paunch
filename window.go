@@ -95,6 +95,20 @@ func (window *Window) SetSize(width, height int) {
 	window.glfwWindow.SetSize(width, height)
 }
 
+// GetNativeSize returns the native width and height of the Window object.
+func (window *Window) GetNativeSize() (nativeWidth, nativeHeight int) {
+
+	return window.nativeWidth, window.nativeHeight
+}
+
+// SetNativeSize sets the native width and height of the Window object to the
+// specified values.
+func (window *Window) SetNativeSize(nativeWidth, nativeHeight int) {
+
+	window.nativeWidth = nativeWidth
+	window.nativeHeight = nativeHeight
+}
+
 // ShouldClose returns whether or not the user has attempted to close the
 // window.
 func (window *Window) ShouldClose() bool {
