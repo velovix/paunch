@@ -159,14 +159,16 @@ func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action gl
 	if glfwToWindow[window].actorManager != nil {
 		x, y := window.GetCursorPosition()
 
-		glfwToWindow[window].actorManager.RunMouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), int(math.Floor(y)))
+		_, windHeight := window.GetSize()
+		glfwToWindow[window].actorManager.RunMouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), windHeight-int(math.Floor(y)))
 	}
 }
 
 func mousePositionCallback(window *glfw.Window, x, y float64) {
 
 	if glfwToWindow[window].actorManager != nil {
-		glfwToWindow[window].actorManager.RunMousePositionEvent(int(math.Floor(x)), int(math.Floor(y)))
+		_, windHeight := window.GetSize()
+		glfwToWindow[window].actorManager.RunMousePositionEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)))
 	}
 }
 
@@ -175,7 +177,8 @@ func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
 	if glfwToWindow[window].actorManager != nil {
 		x, y := window.GetCursorPosition()
 
-		glfwToWindow[window].actorManager.RunMouseEnterWindowEvent(int(math.Floor(x)), int(math.Floor(y)), entered)
+		_, windHeight := window.GetSize()
+		glfwToWindow[window].actorManager.RunMouseEnterWindowEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)), entered)
 	}
 }
 
