@@ -15,7 +15,7 @@ type Window struct {
 	nativeHeight int
 	title        string
 
-	actorManager *ActorManager
+	actorManagers []*ActorManager
 
 	glfwWindow *glfw.Window
 
@@ -51,6 +51,8 @@ func NewWindow(width, height, nativeWidth, nativeHeight int, title string) Windo
 	if glfwToWindow == nil {
 		glfwToWindow = make(map[*glfw.Window]*Window)
 	}
+
+	window.actorManagers = make([]*ActorManager, 0)
 
 	window.keyStates = make(map[int]bool)
 	window.joyBtnStates = make(map[int]bool)
@@ -145,13 +147,15 @@ func (window *Window) UpdateEvents() error {
 
 	glfw.PollEvents()
 
-	if window.actorManager == nil {
+	if len(window.actorManagers) == 0 {
 		return nil
 	}
 
 	for i, val := range window.keyStates {
-		if val && window.actorManager != nil {
-			window.actorManager.RunKeyEvent(Key(i), Hold)
+		for _, actorManager := range window.actorManagers {
+			if val {
+				actorManager.RunKeyEvent(Key(i), Hold)
+			}
 		}
 	}
 
@@ -161,15 +165,17 @@ func (window *Window) UpdateEvents() error {
 			panic(err)
 		}
 
-		for i, val := range buttons {
-			if val == 0 && window.joyBtnStates[i] {
-				window.actorManager.RunJoystickButtonEvent(i, Release)
-				window.joyBtnStates[i] = false
-			} else if val == 1 && !window.joyBtnStates[i] {
-				window.actorManager.RunJoystickButtonEvent(i, Press)
-				window.joyBtnStates[i] = true
-			} else if val == 1 && window.joyBtnStates[i] {
-				window.actorManager.RunJoystickButtonEvent(i, Hold)
+		for _, actorManager := range window.actorManagers {
+			for i, val := range buttons {
+				if val == 0 && window.joyBtnStates[i] {
+					actorManager.RunJoystickButtonEvent(i, Release)
+					window.joyBtnStates[i] = false
+				} else if val == 1 && !window.joyBtnStates[i] {
+					actorManager.RunJoystickButtonEvent(i, Press)
+					window.joyBtnStates[i] = true
+				} else if val == 1 && window.joyBtnStates[i] {
+					actorManager.RunJoystickButtonEvent(i, Hold)
+				}
 			}
 		}
 
@@ -178,19 +184,22 @@ func (window *Window) UpdateEvents() error {
 			panic(err2)
 		}
 
-		for i, val := range axes {
-			window.actorManager.RunJoystickAxisEvent(i, float64(val))
+		for _, actorManager := range window.actorManagers {
+			for i, val := range axes {
+				actorManager.RunJoystickAxisEvent(i, float64(val))
+			}
 		}
 	}
 
 	return nil
 }
 
-// SetActorManager sets the Actor Manager the Window object sends input events
-// to.
-func (window *Window) SetActorManager(actorManager *ActorManager) {
+// SetActorManagers sets the ActorManagers the Window object sends input events
+// to. The Window object uses the copy of the slice given to it, so future
+// modifications to that slice will affect the Window object, as well.
+func (window *Window) SetActorManagers(actorManagers []*ActorManager) {
 
-	window.actorManager = actorManager
+	window.actorManagers = actorManagers
 }
 
 // SetNativeMousePos changes the behavior of the reported mouse position. If
@@ -211,64 +220,67 @@ func keyboardCallback(window *glfw.Window, glfwKey glfw.Key, scancode int, actio
 
 	glfwToWindow[window].keyStates[int(glfwKey)] = (action == glfw.Press)
 
-	if glfwToWindow[window].actorManager != nil {
-		glfwToWindow[window].actorManager.RunKeyEvent(Key(glfwKey), Action(action))
+	for _, actorManager := range glfwToWindow[window].actorManagers {
+		actorManager.RunKeyEvent(Key(glfwKey), Action(action))
 	}
 }
 
 func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
 
-	if glfwToWindow[window].actorManager != nil {
-		x, y := window.GetCursorPosition()
+	x, y := window.GetCursorPosition()
 
-		var windHeight int
-		if glfwToWindow[window].nativeMousePos {
-			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].width)
-			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].height)
-			windHeight = glfwToWindow[window].nativeHeight
-		} else {
-			_, windHeight = window.GetSize()
-		}
-		glfwToWindow[window].actorManager.RunMouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), windHeight-int(math.Floor(y)))
+	var windHeight int
+	if glfwToWindow[window].nativeMousePos {
+		x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].width)
+		y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].height)
+		windHeight = glfwToWindow[window].nativeHeight
+	} else {
+		_, windHeight = window.GetSize()
+	}
+
+	for _, actorManager := range glfwToWindow[window].actorManagers {
+		actorManager.RunMouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), windHeight-int(math.Floor(y)))
 	}
 }
 
 func mousePositionCallback(window *glfw.Window, x, y float64) {
 
-	if glfwToWindow[window].actorManager != nil {
-		var windHeight int
-		if glfwToWindow[window].nativeMousePos {
-			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].width)
-			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].height)
-			windHeight = glfwToWindow[window].nativeHeight
-		} else {
-			_, windHeight = window.GetSize()
-		}
-		glfwToWindow[window].actorManager.RunMousePositionEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)))
+	var windHeight int
+	if glfwToWindow[window].nativeMousePos {
+		x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].width)
+		y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].height)
+		windHeight = glfwToWindow[window].nativeHeight
+	} else {
+		_, windHeight = window.GetSize()
+	}
+
+	for _, actorManager := range glfwToWindow[window].actorManagers {
+		actorManager.RunMousePositionEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)))
 	}
 }
 
 func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
 
-	if glfwToWindow[window].actorManager != nil {
-		x, y := window.GetCursorPosition()
+	x, y := window.GetCursorPosition()
 
-		var windHeight int
-		if glfwToWindow[window].nativeMousePos {
-			x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].width)
-			y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].height)
-			windHeight = glfwToWindow[window].nativeHeight
-		} else {
-			_, windHeight = window.GetSize()
-		}
-		glfwToWindow[window].actorManager.RunMouseEnterWindowEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)), entered)
+	var windHeight int
+	if glfwToWindow[window].nativeMousePos {
+		x *= float64(glfwToWindow[window].nativeWidth) / float64(glfwToWindow[window].width)
+		y *= float64(glfwToWindow[window].nativeHeight) / float64(glfwToWindow[window].height)
+		windHeight = glfwToWindow[window].nativeHeight
+	} else {
+		_, windHeight = window.GetSize()
+	}
+
+	for _, actorManager := range glfwToWindow[window].actorManagers {
+		actorManager.RunMouseEnterWindowEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)), entered)
 	}
 }
 
 func windowFocusCallback(window *glfw.Window, focused bool) {
 
-	if glfwToWindow[window].actorManager != nil {
-		glfwToWindow[window].actorManager.RunWindowFocusEvent(focused)
+	for _, actorManager := range glfwToWindow[window].actorManagers {
+		actorManager.RunWindowFocusEvent(focused)
 	}
 }
 
@@ -277,8 +289,8 @@ func windowResizeCallback(window *glfw.Window, width, height int) {
 	glfwToWindow[window].width = width
 	glfwToWindow[window].height = height
 
-	if glfwToWindow[window].actorManager != nil {
-		glfwToWindow[window].actorManager.RunWindowResizeEvent(width, height)
+	for _, actorManager := range glfwToWindow[window].actorManagers {
+		actorManager.RunWindowResizeEvent(width, height)
 	}
 
 	gl.Viewport(0, 0, gl.Sizei(width), gl.Sizei(height))
