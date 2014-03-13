@@ -87,29 +87,6 @@ func (obj *testActorObject) OnWindowResize(width, height int) {
 	}
 }
 
-func TestActorManager(t *testing.T) {
-
-	actorManager := NewActorManager()
-
-	test1 := testActorObject{NewPoint(0.0, 0.0), 0}
-	test2 := testActorObject{NewPoint(0.0, 0.0), 0}
-
-	actorManager.Add(&test1)
-	actorManager.Add(&test2)
-
-	if !actorManager.Remove(&test1) {
-		t.Errorf("could not remove Actor from ActorManager")
-	}
-
-	if actorManager.Remove(&test1) {
-		t.Errorf("double remove of Actor from ActorManager")
-	}
-
-	if !actorManager.Remove(&test2) {
-		t.Errorf("incorrect recognition of Actors in ActorManager")
-	}
-}
-
 func TestActorManagerCollisions(t *testing.T) {
 
 	actorManager := NewActorManager()
@@ -118,9 +95,7 @@ func TestActorManagerCollisions(t *testing.T) {
 	test2 := testActorObject{NewPoint(0.0, 0.0), 0}
 	test3 := testActorObject{NewPoint(1.0, 1.0), 0}
 
-	actorManager.Add(&test1)
-	actorManager.Add(&test2)
-	actorManager.Add(&test3)
+	actorManager.SetActors([]Actor{&test1, &test2, &test3})
 
 	actorManager.RunCollisionEvent()
 
@@ -138,7 +113,7 @@ func TestActorManagerKeyboardInput(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunKeyEvent(KeyUp, Press)
 
@@ -152,7 +127,7 @@ func TestActorManagerMouseInput(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunMouseButtonEvent(MouseButtonMiddle, Press, 5, 5)
 
@@ -166,7 +141,7 @@ func TestActorManagerMousePosition(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunMousePositionEvent(5, 5)
 
@@ -180,7 +155,7 @@ func TestActorMouseEnterWindow(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunMouseEnterWindowEvent(0, 0, true)
 
@@ -194,7 +169,7 @@ func TestActorWindowFocused(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunWindowFocusEvent(true)
 
@@ -208,7 +183,7 @@ func TestActorDraw(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunDrawEvent()
 
@@ -222,7 +197,7 @@ func TestActorTick(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunTickEvent()
 
@@ -236,7 +211,7 @@ func TestActorJoystickButton(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunJoystickButtonEvent(1, Press)
 
@@ -250,7 +225,7 @@ func TestActorJoystickAxis(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunJoystickAxisEvent(0, 0.5)
 
@@ -264,7 +239,7 @@ func TestActorWindowResize(t *testing.T) {
 	actorManager := NewActorManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.Add(&test)
+	actorManager.SetActors([]Actor{&test})
 
 	actorManager.RunWindowResizeEvent(640, 480)
 

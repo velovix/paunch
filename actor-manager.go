@@ -12,36 +12,15 @@ func NewActorManager() ActorManager {
 	return ActorManager{make([]Actor, 0)}
 }
 
-// Add adds a new Actor to the ActorManager.
-func (actorManager *ActorManager) Add(actor Actor) {
+// SetActors sets the Actors used by the ActorManager object to the given
+// slice. The ActorManager does not make a seperate copy of the slice, so
+// changes to the slice will affect the ActorManager.
+func (actorManager *ActorManager) SetActors(actors []Actor) {
 
-	actorManager.actors = append(actorManager.actors, actor)
+	actorManager.actors = actors
 }
 
-// Remove removes all instances of the supplied Actor from the ActorManager.
-func (actorManager *ActorManager) Remove(actor Actor) bool {
-
-	for i := range actorManager.actors {
-		if actor == actorManager.actors[i] {
-			temp := make([]Actor, len(actorManager.actors)-1)
-
-			for j, val := range actorManager.actors {
-				if j != i {
-					temp = append(temp, val)
-				}
-			}
-
-			actorManager.actors = temp
-
-			return true
-		}
-	}
-
-	return false
-}
-
-// GetActors returns a copy of the slice of Actor objects the ActorManager has
-// stored.
+// GetActors returns the slice of Actor objects the ActorManager has stored.
 func (actorManager *ActorManager) GetActors() []Actor {
 
 	return actorManager.actors
