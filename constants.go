@@ -1,6 +1,7 @@
 package paunch
 
 import (
+	gl "github.com/chsc/gogl/gl33"
 	glfw "github.com/go-gl/glfw3"
 	al "github.com/vova616/go-openal/openal"
 )
@@ -196,4 +197,14 @@ const (
 	Playing = SoundState(al.Playing)
 	Paused  = SoundState(al.Paused)
 	Stopped = SoundState(al.Stopped)
+)
+
+// ShaderType is a value that represents a shader type.
+type ShaderType int
+
+// Shader type IDs
+const (
+	Vertex    = ShaderType(gl.VERTEX_SHADER)
+	Fragment  = ShaderType(gl.FRAGMENT_SHADER)
+	notShader = -1
 )

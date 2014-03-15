@@ -8,12 +8,6 @@ import (
 	"strings"
 )
 
-const (
-	vertex    = gl.VERTEX_SHADER
-	fragment  = gl.FRAGMENT_SHADER
-	notShader = -1
-)
-
 // Effect is an object that manages shaders.
 type Effect struct {
 	uniforms map[string]gl.Int
@@ -145,7 +139,7 @@ func (effect *Effect) SetVariable4f(variable string, val1 float32, val2 float32,
 	gl.Uniform4f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2), gl.Float(val3), gl.Float(val4))
 }
 
-func compileShader(shaderType int, scripts []*gl.Char) (gl.Uint, error) {
+func compileShader(shaderType ShaderType, scripts []*gl.Char) (gl.Uint, error) {
 
 	shaderID := gl.CreateShader(gl.Enum(shaderType))
 	gl.ShaderSource(shaderID, gl.Sizei(len(scripts)), &scripts[0], nil)
@@ -157,10 +151,10 @@ func compileShader(shaderType int, scripts []*gl.Char) (gl.Uint, error) {
 	return shaderID, checkForErrors()
 }
 
-func checkShaderCompiled(id gl.Uint, shaderType int) error {
+func checkShaderCompiled(id gl.Uint, shaderType ShaderType) error {
 
 	var shader string
-	if shaderType == vertex {
+	if shaderType == Vertex {
 		shader = "vertex"
 	} else {
 		shader = "fragment"
@@ -180,14 +174,14 @@ func checkShaderCompiled(id gl.Uint, shaderType int) error {
 	return nil
 }
 
-func checkIfShaderFile(name string) int {
+func checkIfShaderFile(name string) ShaderType {
 
 	split := strings.Split(name, ".")
 
 	if split[len(split)-1] == "vert" {
-		return vertex
+		return Vertex
 	} else if split[len(split)-1] == "frag" {
-		return fragment
+		return Fragment
 	}
 
 	return notShader
@@ -208,25 +202,114 @@ func NewEffect(directory string) (Effect, error) {
 	}
 	for _, val := range files {
 		name := val.Name()
-		if shaderType := checkIfShaderFile(name); !val.IsDir() && shaderType != -1 {
+		if shaderType := checkIfShaderFile(name); !val.IsDir() && shaderType != notShader {
 			text, err := loadTextFile(directory + name)
 			if err != nil {
 				return effect, err
 			}
-			if shaderType == vertex {
+			if shaderType == Vertex {
 				vscript = append(vscript, text)
-			} else if shaderType == fragment {
+			} else if shaderType == Fragment {
 				fscript = append(fscript, text)
 			}
 		}
 	}
 
-	vshaderID, vertErr := compileShader(vertex, vscript)
+	vshaderID, vertErr := compileShader(Vertex, vscript)
 	if vertErr != nil {
 		return effect, vertErr
 	}
 	gl.AttachShader(programID, vshaderID)
-	fshaderID, fragErr := compileShader(fragment, fscript)
+	fshaderID, fragErr := compileShader(Fragment, fscript)
+	if fragErr != nil {
+		return effect, fragErr
+	}
+	gl.AttachShader(programID, fshaderID)
+
+	gl.LinkProgram(programID)
+	var status gl.Int
+	gl.GetProgramiv(programID, gl.LINK_STATUS, &status)
+	if status == gl.FALSE {
+		return effect, errors.New("linking program")
+	}
+
+	effect.program = programID
+
+	return effect, checkForErrors()
+}
+
+// NewEffectFromFiles creates a new Effect object based on the shader file
+// names given.
+func NewEffectFromFiles(filenames []string) (Effect, error) {
+
+	var effect Effect
+
+	programID := gl.CreateProgram()
+
+	var vscript, fscript []*gl.Char
+
+	for _, val := range filenames {
+		if shaderType := checkIfShaderFile(val); shaderType != notShader {
+			text, err := loadTextFile(val)
+			if err != nil {
+				return effect, err
+			}
+			if shaderType == Vertex {
+				vscript = append(vscript, text)
+			} else if shaderType == Fragment {
+				fscript = append(fscript, text)
+			}
+		}
+	}
+
+	vshaderID, vertErr := compileShader(Vertex, vscript)
+	if vertErr != nil {
+		return effect, vertErr
+	}
+	gl.AttachShader(programID, vshaderID)
+	fshaderID, fragErr := compileShader(Fragment, fscript)
+	if fragErr != nil {
+		return effect, fragErr
+	}
+	gl.AttachShader(programID, fshaderID)
+
+	gl.LinkProgram(programID)
+	var status gl.Int
+	gl.GetProgramiv(programID, gl.LINK_STATUS, &status)
+	if status == gl.FALSE {
+		return effect, errors.New("linking program")
+	}
+
+	effect.program = programID
+
+	return effect, checkForErrors()
+}
+
+// NewEffectFromStrings creates a new Effect object based on the given strings
+// containing GLSL shader script. The types values should correlate with the
+// type of shader the script is describing.
+func NewEffectFromStrings(text []string, types []ShaderType) (Effect, error) {
+
+	var effect Effect
+
+	programID := gl.CreateProgram()
+
+	var vscript, fscript []*gl.Char
+
+	for i, val := range text {
+		if types[i] == Vertex {
+			vscript = append(vscript, gl.GLString(val))
+		} else if types[i] == Fragment {
+			fscript = append(fscript, gl.GLString(val))
+		}
+	}
+
+	vshaderID, vertErr := compileShader(Vertex, vscript)
+	if vertErr != nil {
+		return effect, vertErr
+	}
+	gl.AttachShader(programID, vshaderID)
+	fshaderID, fragErr := compileShader(Fragment, fscript)
 	if fragErr != nil {
 		return effect, fragErr
 	}
