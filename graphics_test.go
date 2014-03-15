@@ -145,15 +145,30 @@ func TestDrawSurfaceRenderable(t *testing.T) {
 	}
 }
 
+var vertex string = `#version 330
+layout(location = 0) in vec4 position;
+
+void main() {
+	vec4 vertex = position;
+	gl_Position = vertex;
+}`
+
+var fragment string = `#version 330
+out vec4 fragColor;
+
+void main() {
+	fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}`
+
 func TestEffects(t *testing.T) {
 
-	effect, err := NewEffect("shaders/texture/")
+	effect, err := NewEffectFromStrings([]string{vertex, fragment}, []ShaderType{Vertex, Fragment})
 	if err != nil {
-		t.Errorf("NewEffect(\"shaders/texture/\") returned %s", err)
+		t.Errorf("NewEffect([]string{vertex, fragment}, []ShaderType{Vertex, Shader}) returned %s", err)
 	}
 
 	err = UseEffect(&effect)
 	if err != nil {
-		t.Errorf("UseEffect(\"texture\") returned %s", err)
+		t.Errorf("UseEffect(&effect) returned %s", err)
 	}
 }
