@@ -9,15 +9,15 @@ import (
 )
 
 const (
-	vertex   = gl.VERTEX_SHADER
-	fragment = gl.FRAGMENT_SHADER
+	vertex    = gl.VERTEX_SHADER
+	fragment  = gl.FRAGMENT_SHADER
+	notShader = -1
 )
 
 // Effect is an object that manages shaders.
 type Effect struct {
-	uniforms       map[string]gl.Int
-	programs       map[string]gl.Uint
-	currentProgram string
+	uniforms map[string]gl.Int
+	program  gl.Uint
 }
 
 func loadTextFile(filename string) (*gl.Char, error) {
@@ -30,29 +30,18 @@ func loadTextFile(filename string) (*gl.Char, error) {
 	return gl.GLString(string(text)), nil
 }
 
-func (effect *Effect) checkUniformVariable(program string, variable string) {
+func (effect *Effect) checkUniformVariable(variable string) {
 
 	if _, ok := effect.uniforms[variable]; !ok {
-		effect.uniforms[variable] = gl.GetUniformLocation(effect.programs[program], gl.GLString(variable))
+		effect.uniforms[variable] = gl.GetUniformLocation(effect.program, gl.GLString(variable))
 	}
-}
-
-// NewEffect creates a new Effect object.
-func NewEffect() Effect {
-
-	var effect Effect
-
-	effect.uniforms = make(map[string]gl.Int)
-	effect.programs = make(map[string]gl.Uint)
-
-	return effect
 }
 
 // SetVariablei sets a specified variable to the supplied integer to be passed
 // into an effect.
 func (effect *Effect) SetVariablei(variable string, val int) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform1i(effect.uniforms[variable], gl.Int(val))
 }
@@ -61,7 +50,7 @@ func (effect *Effect) SetVariablei(variable string, val int) {
 // passed into an effect.
 func (effect *Effect) SetVariable2i(variable string, val1 int, val2 int) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform2i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2))
 }
@@ -70,7 +59,7 @@ func (effect *Effect) SetVariable2i(variable string, val1 int, val2 int) {
 // passed into an effect.
 func (effect *Effect) SetVariable3i(variable string, val1 int, val2 int, val3 int) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform3i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2), gl.Int(val3))
 }
@@ -79,7 +68,7 @@ func (effect *Effect) SetVariable3i(variable string, val1 int, val2 int, val3 in
 // passed into an effect.
 func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 int, val4 int) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform4i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2), gl.Int(val3), gl.Int(val4))
 }
@@ -88,7 +77,7 @@ func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 in
 // into an effect.
 func (effect *Effect) SetVariableui(variable string, val uint) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform1ui(effect.uniforms[variable], gl.Uint(val))
 }
@@ -97,7 +86,7 @@ func (effect *Effect) SetVariableui(variable string, val uint) {
 // passed into an effect.
 func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform2ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2))
 }
@@ -106,7 +95,7 @@ func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) {
 // be passed into an effect.
 func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3 uint) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform3ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2), gl.Uint(val3))
 }
@@ -115,7 +104,7 @@ func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3
 // be passed into an effect.
 func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3 uint, val4 uint) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform4ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2), gl.Uint(val3), gl.Uint(val4))
 }
@@ -124,7 +113,7 @@ func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3
 // into an effect.
 func (effect *Effect) SetVariablef(variable string, val float32) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform1f(effect.uniforms[variable], gl.Float(val))
 }
@@ -133,7 +122,7 @@ func (effect *Effect) SetVariablef(variable string, val float32) {
 // be passed into an effect.
 func (effect *Effect) SetVariable2f(variable string, val1 float32, val2 float32) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform2f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2))
 }
@@ -142,7 +131,7 @@ func (effect *Effect) SetVariable2f(variable string, val1 float32, val2 float32)
 // be passed into an effect.
 func (effect *Effect) SetVariable3f(variable string, val1 float32, val2 float32, val3 float32) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform3f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2), gl.Float(val3))
 }
@@ -151,7 +140,7 @@ func (effect *Effect) SetVariable3f(variable string, val1 float32, val2 float32,
 // be passed into an effect.
 func (effect *Effect) SetVariable4f(variable string, val1 float32, val2 float32, val3 float32, val4 float32) {
 
-	effect.checkUniformVariable(effect.currentProgram, variable)
+	effect.checkUniformVariable(variable)
 
 	gl.Uniform4f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2), gl.Float(val3), gl.Float(val4))
 }
@@ -204,9 +193,10 @@ func checkIfShaderFile(name string) int {
 	return -1
 }
 
-// New adds a new effect to the Effect object from a folder of GLSL shader
-// files.
-func (effect *Effect) New(name, directory string) error {
+// NewEffect creates a new Effect object based on the shader directory given.
+func NewEffect(directory string) (Effect, error) {
+
+	var effect Effect
 
 	programID := gl.CreateProgram()
 
@@ -214,14 +204,14 @@ func (effect *Effect) New(name, directory string) error {
 
 	files, ioErr := ioutil.ReadDir("shaders/" + directory)
 	if ioErr != nil {
-		return ioErr
+		return effect, ioErr
 	}
 	for _, val := range files {
 		name := val.Name()
 		if shaderType := checkIfShaderFile(name); !val.IsDir() && shaderType != -1 {
 			text, err := loadTextFile("shaders/" + directory + name)
 			if err != nil {
-				return err
+				return effect, err
 			}
 			if shaderType == vertex {
 				vscript = append(vscript, text)
@@ -233,12 +223,12 @@ func (effect *Effect) New(name, directory string) error {
 
 	vshaderID, vertErr := compileShader(vertex, vscript)
 	if vertErr != nil {
-		return vertErr
+		return effect, vertErr
 	}
 	gl.AttachShader(programID, vshaderID)
 	fshaderID, fragErr := compileShader(fragment, fscript)
 	if fragErr != nil {
-		return fragErr
+		return effect, fragErr
 	}
 	gl.AttachShader(programID, fshaderID)
 
@@ -246,25 +236,10 @@ func (effect *Effect) New(name, directory string) error {
 	var status gl.Int
 	gl.GetProgramiv(programID, gl.LINK_STATUS, &status)
 	if status == gl.FALSE {
-		return errors.New("linking program")
+		return effect, errors.New("linking program")
 	}
 
-	effect.programs[name] = programID
+	effect.program = programID
 
-	return checkForErrors()
-}
-
-// Use activates an effect for the following draw commands.
-func (effect *Effect) Use(name string) error {
-
-	if _, ok := effect.programs[name]; !ok {
-		return fmt.Errorf("effect list %s does not exist", name)
-	}
-
-	gl.UseProgram(effect.programs[name])
-
-	effect.currentProgram = name
-	effect.uniforms = make(map[string]gl.Int)
-
-	return checkForErrors()
+	return effect, checkForErrors()
 }

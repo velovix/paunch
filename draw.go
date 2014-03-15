@@ -56,3 +56,20 @@ func Clear() error {
 
 	return checkForErrors()
 }
+
+// UseEffect sets the given Effect object for use in the following draw
+// commands.
+func UseEffect(effect *Effect) error {
+
+	gl.UseProgram(effect.program)
+
+	effect.uniforms = make(map[string]gl.Int)
+
+	return checkForErrors()
+}
+
+// DisableEffects disables all effects.
+func DisableEffects() {
+
+	gl.UseProgram(0)
+}
