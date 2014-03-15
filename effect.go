@@ -190,7 +190,7 @@ func checkIfShaderFile(name string) int {
 		return fragment
 	}
 
-	return -1
+	return notShader
 }
 
 // NewEffect creates a new Effect object based on the shader directory given.
@@ -202,14 +202,14 @@ func NewEffect(directory string) (Effect, error) {
 
 	var vscript, fscript []*gl.Char
 
-	files, ioErr := ioutil.ReadDir("shaders/" + directory)
+	files, ioErr := ioutil.ReadDir(directory)
 	if ioErr != nil {
 		return effect, ioErr
 	}
 	for _, val := range files {
 		name := val.Name()
 		if shaderType := checkIfShaderFile(name); !val.IsDir() && shaderType != -1 {
-			text, err := loadTextFile("shaders/" + directory + name)
+			text, err := loadTextFile(directory + name)
 			if err != nil {
 				return effect, err
 			}

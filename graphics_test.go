@@ -147,9 +147,9 @@ func TestDrawSurfaceRenderable(t *testing.T) {
 
 func TestEffects(t *testing.T) {
 
-	effect, err := NewEffect("texture/")
+	effect, err := NewEffect("shaders/texture/")
 	if err != nil {
-		t.Errorf("NewEffect(\"texture/\") returned %s", err)
+		t.Errorf("NewEffect(\"shaders/texture/\") returned %s", err)
 	}
 
 	err = UseEffect(&effect)
