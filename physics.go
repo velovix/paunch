@@ -21,9 +21,11 @@ type Physics struct {
 
 	accel    physicsPoint
 	maxAccel physicsPoint
+	minAccel physicsPoint
 	friction physicsPoint
 
 	usingMaxAccel map[Axis]bool
+	usingMinAccel map[Axis]bool
 	forces        map[string]force
 }
 
@@ -32,6 +34,7 @@ func NewPhysics() Physics {
 
 	var physics Physics
 	physics.usingMaxAccel = make(map[Axis]bool)
+	physics.usingMinAccel = make(map[Axis]bool)
 	physics.forces = make(map[string]force)
 
 	return physics
@@ -142,6 +145,21 @@ func (physics *Physics) SetMaxAcceleration(force float64, axis Axis) {
 	physics.usingMaxAccel[axis] = true
 }
 
+// SetMinAcceleration sets the minimum allowed acceleration of the Physics
+// object on the specified axis. In situations where the object would normally
+// go slower than the specified value, it will be set to the value instead.
+func (physics *Physics) SetMinAcceleration(force float64, axis Axis) {
+
+	switch axis {
+	case X:
+		physics.minAccel.x = force
+	case Y:
+		physics.minAccel.y = force
+	}
+
+	physics.usingMinAccel[axis] = true
+}
+
 // SetFriction sets the friction value of the Physics object. Friction is a
 // force that enfluences acceleration to move toward zero. This might be used
 // to simulate the natural slowdown of an object rubbing against a surface.
@@ -162,19 +180,16 @@ func (physics *Physics) Calculate() {
 		}
 	}
 
-	if math.Abs(physics.accel.x) > physics.maxAccel.x && physics.usingMaxAccel[X] {
-		if physics.accel.x > 0 {
-			physics.accel.x = physics.maxAccel.x
-		} else {
-			physics.accel.x = -physics.maxAccel.x
-		}
+	if physics.accel.x > physics.maxAccel.x && physics.usingMaxAccel[X] {
+		physics.accel.x = physics.maxAccel.x
+	} else if physics.accel.x < physics.minAccel.x && physics.usingMinAccel[X] {
+		physics.accel.x = physics.minAccel.x
 	}
-	if math.Abs(physics.accel.y) > physics.maxAccel.y && physics.usingMaxAccel[Y] {
-		if physics.accel.y > 0 {
-			physics.accel.y = physics.maxAccel.y
-		} else {
-			physics.accel.y = -physics.maxAccel.y
-		}
+
+	if physics.accel.y > physics.maxAccel.y && physics.usingMaxAccel[Y] {
+		physics.accel.y = physics.maxAccel.y
+	} else if physics.accel.y < physics.minAccel.y && physics.usingMinAccel[Y] {
+		physics.accel.y = physics.minAccel.y
 	}
 
 	for i := range physics.movers {
