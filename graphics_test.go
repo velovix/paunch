@@ -145,7 +145,7 @@ func TestDrawSurfaceRenderable(t *testing.T) {
 	}
 }
 
-var vertex string = `#version 330
+var vertex = `#version 330
 layout(location = 0) in vec4 position;
 
 void main() {
@@ -153,7 +153,7 @@ void main() {
 	gl_Position = vertex;
 }`
 
-var fragment string = `#version 330
+var fragment = `#version 330
 out vec4 fragColor;
 
 void main() {
