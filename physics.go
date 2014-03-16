@@ -8,6 +8,11 @@ type physicsPoint struct {
 	x, y float64
 }
 
+type force struct {
+	magnitude physicsPoint
+	active    bool
+}
+
 // Physics is an object meant to make the movement of multiple related movers,
 // such as a Renderable and a Collision, easier. It also allows for easy
 // management of multiple forces of movement at once.
@@ -19,7 +24,7 @@ type Physics struct {
 	friction physicsPoint
 
 	usingMaxAccel map[Axis]bool
-	forces        map[string]physicsPoint
+	forces        map[string]force
 }
 
 // NewPhysics creates a new Physics object.
@@ -27,7 +32,7 @@ func NewPhysics() Physics {
 
 	var physics Physics
 	physics.usingMaxAccel = make(map[Axis]bool)
-	physics.forces = make(map[string]physicsPoint)
+	physics.forces = make(map[string]force)
 
 	return physics
 }
@@ -39,16 +44,34 @@ func (physics *Physics) AttachMover(mover Mover) {
 	physics.movers = append(physics.movers, mover)
 }
 
-// AddConstForce adds a constant force to the Physics object, which is taken
-// into account every time the Calculate method is called. This might be used
-// to simulate gravity or other such forces.
-func (physics *Physics) AddConstForce(name string, forceX, forceY float64) {
+// AddForce adds a constant force to the Physics object, which is taken
+// into account every time the Calculate method is called. The force is
+// disabled by default.
+func (physics *Physics) AddForce(name string, forceX, forceY float64) {
 
-	physics.forces[name] = physicsPoint{forceX, forceY}
+	physics.forces[name] = force{physicsPoint{forceX, forceY}, false}
 }
 
-// DeleteConstForce removes a constant force from the Physics object.
-func (physics *Physics) DeleteConstForce(name string) {
+// EnableForce makes the specified force active for future calls to the
+// Calculate method.
+func (physics *Physics) EnableForce(name string) {
+
+	if _, ok := physics.forces[name]; ok {
+		physics.forces[name] = force{physics.forces[name].magnitude, true}
+	}
+}
+
+// DisableForce makes the specified force inactive for future calls to the
+// Calculate method.
+func (physics *Physics) DisableForce(name string) {
+
+	if _, ok := physics.forces[name]; ok {
+		physics.forces[name] = force{physics.forces[name].magnitude, false}
+	}
+}
+
+// DeleteForce removes a constant force from the Physics object.
+func (physics *Physics) DeleteForce(name string) {
 
 	delete(physics.forces, name)
 }
@@ -125,8 +148,10 @@ func (physics *Physics) SetFriction(forceX, forceY float64) {
 func (physics *Physics) Calculate() {
 
 	for _, val := range physics.forces {
-		physics.accel.x += val.x
-		physics.accel.y += val.y
+		if val.active {
+			physics.accel.x += val.magnitude.x
+			physics.accel.y += val.magnitude.y
+		}
 	}
 
 	if math.Abs(physics.accel.x) > physics.maxAccel.x && physics.usingMaxAccel[X] {
