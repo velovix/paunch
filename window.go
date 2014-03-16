@@ -93,10 +93,10 @@ func (window *Window) Open() error {
 	return nil
 }
 
-// Destroy closes the window and stops reading input.
-func (window *Window) Destroy() error {
+// Close closes the window and stops reading input.
+func (window *Window) Close() error {
 
-	glfw.Terminate()
+	window.glfwWindow.Destroy()
 	return nil
 }
 
