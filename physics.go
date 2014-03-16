@@ -37,11 +37,19 @@ func NewPhysics() Physics {
 	return physics
 }
 
-// AttachMover attaches a Mover to the Physics object. This Mover will be moved
-// along with the rest of the Physics object as soon as it's attached.
-func (physics *Physics) AttachMover(mover Mover) {
+// SetMovers sets the Movers attached to the Physics object to the contents
+// of the slice. The Physics object does not make a seperate copy of the slice,
+// sochanges to the slice will affect the Physics object.
+func (physics *Physics) SetMovers(movers []Mover) {
 
-	physics.movers = append(physics.movers, mover)
+	physics.movers = movers
+}
+
+// GetMovers returns the slice containing the Mover objects attached to the
+// Physics object.
+func (physics *Physics) GetMovers() []Mover {
+
+	return physics.movers
 }
 
 // AddForce adds a constant force to the Physics object, which is taken
