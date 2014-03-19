@@ -74,9 +74,9 @@ func TestInitDraw(t *testing.T) {
 		t.Errorf("window.Open(640, 480, \"Test\") returned %s", err)
 	}
 
-	err = InitDraw(window)
+	err = InitDraw()
 	if err != nil {
-		t.Errorf("draw.Init() returned %s", err)
+		t.Errorf("InitDraw() returned %s", err)
 	}
 }
 
