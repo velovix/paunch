@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	vorbis "github.com/velovix/vorbis"
 	al "github.com/vova616/go-openal/openal"
+	"io/ioutil"
 	"os"
+	"strings"
 )
 
 // Sound represents a playable sound clip.
@@ -45,6 +48,25 @@ type wavInfo struct {
 	numChannels int16
 	data8       []byte
 	data16      []int16
+}
+
+func loadOGG(filename string) (wavInfo, error) {
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return wavInfo{}, err
+	}
+
+	data, readErr := ioutil.ReadAll(file)
+	if readErr != nil {
+		return wavInfo{}, readErr
+	}
+
+	sound, numChannels, decodeErr := vorbis.Decode(data)
+	if decodeErr != nil {
+		return wavInfo{}, decodeErr
+	}
+	return wavInfo{sampleRate: 44100, bitRate: 16, numChannels: int16(numChannels), data16: sound}, nil
 }
 
 func loadWAV(filename string) (wavInfo, error) {
@@ -158,7 +180,14 @@ func NewSound(filename string) (Sound, error) {
 	tmpBuffer := al.NewBuffer()
 	sound.buffer = &tmpBuffer
 
-	info, err := loadWAV(filename)
+	var err error
+	var info wavInfo
+	split := strings.Split(filename, ".")
+	if split[len(split)-1] == "wav" {
+		info, err = loadWAV(filename)
+	} else if split[len(split)-1] == "ogg" {
+		info, err = loadOGG(filename)
+	}
 	if err != nil {
 		return sound, err
 	}
