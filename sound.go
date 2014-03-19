@@ -42,7 +42,7 @@ type dataHeaderObj struct {
 	chunkSize int32
 }
 
-type wavInfo struct {
+type soundInfo struct {
 	sampleRate  int32
 	bitRate     int16
 	numChannels int16
@@ -50,30 +50,30 @@ type wavInfo struct {
 	data16      []int16
 }
 
-func loadOGG(filename string) (wavInfo, error) {
+func loadOGG(filename string) (soundInfo, error) {
 
 	file, err := os.Open(filename)
 	if err != nil {
-		return wavInfo{}, err
+		return soundInfo{}, err
 	}
 
 	data, readErr := ioutil.ReadAll(file)
 	if readErr != nil {
-		return wavInfo{}, readErr
+		return soundInfo{}, readErr
 	}
 
 	sound, numChannels, decodeErr := vorbis.Decode(data)
 	if decodeErr != nil {
-		return wavInfo{}, decodeErr
+		return soundInfo{}, decodeErr
 	}
-	return wavInfo{sampleRate: 44100, bitRate: 16, numChannels: int16(numChannels), data16: sound}, nil
+	return soundInfo{sampleRate: 44100, bitRate: 16, numChannels: int16(numChannels), data16: sound}, nil
 }
 
-func loadWAV(filename string) (wavInfo, error) {
+func loadWAV(filename string) (soundInfo, error) {
 
 	file, err := os.Open(filename)
 	if err != nil {
-		return wavInfo{}, err
+		return soundInfo{}, err
 	}
 	defer file.Close()
 
@@ -83,34 +83,34 @@ func loadWAV(filename string) (wavInfo, error) {
 	riffHeaderBytes := make([]byte, 12)
 	length, err = file.Read(riffHeaderBytes)
 	if err != nil {
-		return wavInfo{}, err
+		return soundInfo{}, err
 	}
 	if length != len(riffHeaderBytes) {
-		return wavInfo{}, errors.New("unexpected end of file")
+		return soundInfo{}, errors.New("unexpected end of file")
 	}
 	riffHeader.chunkID = riffHeaderBytes[0:4]
 	if string(riffHeader.chunkID) != "RIFF" {
-		return wavInfo{}, errors.New("no RIFF header ID in first WAV chunk")
+		return soundInfo{}, errors.New("no RIFF header ID in first WAV chunk")
 	}
 	stream := bytes.NewBuffer(riffHeaderBytes[4:8])
 	binary.Read(stream, binary.LittleEndian, &riffHeader.chunkSize)
 	riffHeader.format = riffHeaderBytes[8:12]
 	if string(riffHeader.format) != "WAVE" {
-		return wavInfo{}, errors.New("no WAVE header ID in first WAV chunk")
+		return soundInfo{}, errors.New("no WAVE header ID in first WAV chunk")
 	}
 
 	var fmtHeader fmtHeaderObj
 	fmtHeaderBytes := make([]byte, 24)
 	length, err = file.ReadAt(fmtHeaderBytes, int64(len(riffHeaderBytes)))
 	if err != nil {
-		return wavInfo{}, err
+		return soundInfo{}, err
 	}
 	if length != len(fmtHeaderBytes) {
-		return wavInfo{}, errors.New("unexpected end of file")
+		return soundInfo{}, errors.New("unexpected end of file")
 	}
 	fmtHeader.chunkID = fmtHeaderBytes[0:4]
 	if string(fmtHeader.chunkID) != "fmt " {
-		return wavInfo{}, errors.New("no fmt header ID in second WAV chunk")
+		return soundInfo{}, errors.New("no fmt header ID in second WAV chunk")
 	}
 	stream = bytes.NewBuffer(fmtHeaderBytes[4:8])
 	binary.Read(stream, binary.LittleEndian, &fmtHeader.chunkSize)
@@ -131,14 +131,14 @@ func loadWAV(filename string) (wavInfo, error) {
 	dataHeaderBytes := make([]byte, 8)
 	length, err = file.ReadAt(dataHeaderBytes, int64(len(riffHeaderBytes)+int(8+fmtHeader.chunkSize)))
 	if err != nil {
-		return wavInfo{}, err
+		return soundInfo{}, err
 	}
 	if length != len(dataHeaderBytes) {
-		return wavInfo{}, errors.New("unexpected end of file")
+		return soundInfo{}, errors.New("unexpected end of file")
 	}
 	dataHeader.chunkID = dataHeaderBytes[0:4]
 	if string(dataHeader.chunkID) != "data" {
-		return wavInfo{}, errors.New("no data header ID in third WAV chunk")
+		return soundInfo{}, errors.New("no data header ID in third WAV chunk")
 	}
 	stream = bytes.NewBuffer(dataHeaderBytes[4:8])
 	binary.Read(stream, binary.LittleEndian, &dataHeader.chunkSize)
@@ -147,26 +147,26 @@ func loadWAV(filename string) (wavInfo, error) {
 		data := make([]byte, dataHeader.chunkSize)
 		length, err = file.ReadAt(data, int64(len(riffHeaderBytes)+int(8+fmtHeader.chunkSize)+len(dataHeaderBytes)))
 		if length != len(data) {
-			return wavInfo{}, errors.New("unexpected end of file")
+			return soundInfo{}, errors.New("unexpected end of file")
 		}
 
-		return wavInfo{sampleRate: fmtHeader.sampleRate, bitRate: fmtHeader.bitsPerSample, numChannels: fmtHeader.numChannels, data8: data}, nil
+		return soundInfo{sampleRate: fmtHeader.sampleRate, bitRate: fmtHeader.bitsPerSample, numChannels: fmtHeader.numChannels, data8: data}, nil
 	} else if fmtHeader.bitsPerSample == 16 {
 		data := make([]int16, dataHeader.chunkSize/2)
 		dataBytes := make([]byte, dataHeader.chunkSize)
 		length, err = file.ReadAt(dataBytes, int64(len(riffHeaderBytes)+int(8+fmtHeader.chunkSize)+len(dataHeaderBytes)))
 		if length != len(dataBytes) {
-			return wavInfo{}, errors.New("unexpected end of file")
+			return soundInfo{}, errors.New("unexpected end of file")
 		}
 
 		for i := 0; i < len(dataBytes); i += 2 {
 			stream = bytes.NewBuffer(dataBytes[i : i+2])
 			binary.Read(stream, binary.LittleEndian, &data[i/2])
 		}
-		return wavInfo{sampleRate: fmtHeader.sampleRate, bitRate: fmtHeader.bitsPerSample, numChannels: fmtHeader.numChannels, data16: data}, nil
+		return soundInfo{sampleRate: fmtHeader.sampleRate, bitRate: fmtHeader.bitsPerSample, numChannels: fmtHeader.numChannels, data16: data}, nil
 	}
 
-	return wavInfo{}, errors.New("invalid bitrate")
+	return soundInfo{}, errors.New("invalid bitrate")
 }
 
 // NewSound returns a new Sound object based on the provided file. As of right
@@ -181,7 +181,7 @@ func NewSound(filename string) (Sound, error) {
 	sound.buffer = &tmpBuffer
 
 	var err error
-	var info wavInfo
+	var info soundInfo
 	split := strings.Split(filename, ".")
 	if split[len(split)-1] == "wav" {
 		info, err = loadWAV(filename)
