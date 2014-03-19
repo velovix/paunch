@@ -17,9 +17,9 @@ func TestOpenWindow(t *testing.T) {
 		t.Errorf(".Open(640, 480, \"Test\") returned %s", err)
 	}
 
-	err = window.Destroy()
+	err = window.Close()
 	if err != nil {
-		t.Errorf(".Destroy() returned %s", err)
+		t.Errorf(".Close() returned %s", err)
 	}
 }
 
