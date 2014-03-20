@@ -24,6 +24,7 @@ type Window struct {
 	joyAxisStates  map[int]float32
 	isJoystick     bool
 	nativeMousePos bool
+	fullscreen     bool
 }
 
 var glfwToWindow map[*glfw.Window]*Window
@@ -44,7 +45,7 @@ func InitWindows() error {
 // the actual width and height of the drawing space if it were not stretched to
 // accomidate the window size. This is only important when SetNativeMousePos is
 // enabled.
-func NewWindow(width, height, nativeWidth, nativeHeight int, title string) Window {
+func NewWindow(width, height, nativeWidth, nativeHeight int, fullscreen bool, title string) Window {
 
 	var window Window
 
@@ -63,6 +64,8 @@ func NewWindow(width, height, nativeWidth, nativeHeight int, title string) Windo
 	window.nativeWidth = nativeWidth
 	window.nativeHeight = nativeHeight
 
+	window.fullscreen = fullscreen
+
 	return window
 }
 
@@ -70,7 +73,15 @@ func NewWindow(width, height, nativeWidth, nativeHeight int, title string) Windo
 func (window *Window) Open() error {
 
 	var err error
-	window.glfwWindow, err = glfw.CreateWindow(window.width, window.height, window.title, nil, nil)
+	if window.fullscreen {
+		primaryMonitor, monitorErr := glfw.GetPrimaryMonitor()
+		if monitorErr != nil {
+			return monitorErr
+		}
+		window.glfwWindow, err = glfw.CreateWindow(window.width, window.height, window.title, primaryMonitor, nil)
+	} else {
+		window.glfwWindow, err = glfw.CreateWindow(window.width, window.height, window.title, nil, nil)
+	}
 	if err != nil {
 		return err
 	}
@@ -91,6 +102,10 @@ func (window *Window) Open() error {
 	window.glfwWindow.MakeContextCurrent()
 
 	return nil
+}
+
+func (window *Window) SetFullScreen(fullscreen bool) {
+
 }
 
 // Close closes the window and stops reading input.

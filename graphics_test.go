@@ -11,10 +11,10 @@ func TestOpenWindow(t *testing.T) {
 		t.Errorf("InitWindows() returned %s", err)
 	}
 
-	window := NewWindow(640, 480, 640, 480, "Test")
+	window := NewWindow(640, 480, 640, 480, false, "Test")
 	err = window.Open()
 	if err != nil {
-		t.Errorf(".Open(640, 480, \"Test\") returned %s", err)
+		t.Errorf(".Open(640, 480, 640, 480, false, \"Test\") returned %s", err)
 	}
 
 	err = window.Close()
@@ -30,10 +30,10 @@ func TestUpdateDisplay(t *testing.T) {
 		t.Errorf("InitWindows() returned %s", err)
 	}
 
-	window := NewWindow(640, 480, 640, 480, "Test")
+	window := NewWindow(640, 480, 640, 480, false, "Test")
 	err = window.Open()
 	if err != nil {
-		t.Errorf(".Open(640, 480, \"Test\") returned %s", err)
+		t.Errorf(".Open(640, 480, 640, 480, false, \"Test\") returned %s", err)
 	}
 
 	err = window.UpdateDisplay()
@@ -49,10 +49,10 @@ func TestUpdateEvents(t *testing.T) {
 		t.Errorf("InitWindows() returned %s", err)
 	}
 
-	window := NewWindow(640, 480, 640, 480, "Test")
+	window := NewWindow(640, 480, 640, 480, false, "Test")
 	err = window.Open()
 	if err != nil {
-		t.Errorf(".Open(640, 480, \"Test\") returned %s", err)
+		t.Errorf(".Open(640, 480, 640, 480, false, \"Test\") returned %s", err)
 	}
 
 	err = window.UpdateEvents()
@@ -68,10 +68,10 @@ func TestInitDraw(t *testing.T) {
 		t.Errorf("InitWindows() returned %s", err)
 	}
 
-	window := NewWindow(640, 480, 640, 480, "Test")
+	window := NewWindow(640, 480, 640, 480, false, "Test")
 	err = window.Open()
 	if err != nil {
-		t.Errorf("window.Open(640, 480, \"Test\") returned %s", err)
+		t.Errorf("window.Open(640, 480, 640, 480, false, \"Test\") returned %s", err)
 	}
 
 	err = InitDraw()
