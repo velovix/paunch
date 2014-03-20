@@ -42,7 +42,8 @@ func (bounding *Bounding) SetPosition(x, y float64) {
 	width := bounding.End.X - bounding.Start.X
 	height := bounding.End.Y - bounding.Start.Y
 
-	bounding = NewBounding(NewPoint(x, y), NewPoint(x+width, y+height))
+	newBounding := NewBounding(NewPoint(x, y), NewPoint(x+width, y+height))
+	*bounding = *newBounding
 }
 
 // DistanceToTangentPoint returns a Point with values equal to the distance

@@ -51,10 +51,10 @@ func (line *Line) Move(x, y float64) {
 // reference point.
 func (line *Line) SetPosition(x, y float64) {
 
-	xDisp := line.End.X - line.Start.X
-	yDisp := line.End.Y - line.Start.Y
+	xDisp := x - line.Start.X
+	yDisp := y - line.Start.Y
 
-	line = NewLine(NewPoint(x, y), NewPoint(x+xDisp, y+yDisp))
+	line.Move(xDisp, yDisp)
 }
 
 // GetPointFromX returns a Point on the Line that corresponds to the given X
