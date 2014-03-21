@@ -65,6 +65,7 @@ func NewWindow(width, height, nativeWidth, nativeHeight int, fullscreen bool, ti
 	window.nativeHeight = nativeHeight
 
 	window.fullscreen = fullscreen
+	window.title = title
 
 	return window
 }
