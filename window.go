@@ -104,10 +104,6 @@ func (window *Window) Open() error {
 	return nil
 }
 
-func (window *Window) SetFullScreen(fullscreen bool) {
-
-}
-
 // Close closes the window and stops reading input.
 func (window *Window) Close() error {
 
