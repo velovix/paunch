@@ -104,6 +104,16 @@ func (physics *Physics) SetPosition(x, y float64) {
 	}
 }
 
+// GetPosition returns the position of the Physics object's first Mover.
+func (physics *Physics) GetPosition() (x, y float64) {
+
+	if len(physics.movers) == 0 {
+		return 0, 0
+	}
+
+	return physics.movers[0].GetPosition()
+}
+
 // GetAcceleration returns the X and Y acceleration of the Physics object.
 func (physics *Physics) GetAcceleration() (float64, float64) {
 

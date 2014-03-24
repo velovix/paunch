@@ -57,6 +57,12 @@ func (line *Line) SetPosition(x, y float64) {
 	line.Move(xDisp, yDisp)
 }
 
+// GetPosition returns the starting position of the Line object.
+func (line *Line) GetPosition() (x, y float64) {
+
+	return line.Start.X, line.Start.Y
+}
+
 // GetPointFromX returns a Point on the Line that corresponds to the given X
 // value. If the given X value is outside the area of the line, the method will
 // return the nearest Point and an error. If the slope of the line is

@@ -65,6 +65,13 @@ func (polygon *Polygon) SetPosition(x, y float64) {
 	polygon.Move(xDisp, yDisp)
 }
 
+// GetPosition returns the starting position of the first line of the Polygon
+// object.
+func (polygon *Polygon) GetPosition() (x, y float64) {
+
+	return polygon.Lines[0].Start.X, polygon.Lines[0].Start.Y
+}
+
 // DistanceToTangentPoint returns a Point with values equal to the distance
 // a given Point is from the closest tangent Point on the given side of the
 // Polygon.

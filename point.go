@@ -35,6 +35,12 @@ func (point *Point) SetPosition(x, y float64) {
 	point.Move(xDisp, yDisp)
 }
 
+// GetPosition returns the X and Y position of the Point object.
+func (point *Point) GetPosition() (x, y float64) {
+
+	return point.X, point.Y
+}
+
 // DistanceToTangentPoint returns a Point with values equal to the distance
 // a given Point is from the closest tangent Point on the given side of the
 // Point. However, for a Point, this doesn't mean much. All this method returns

@@ -5,4 +5,5 @@ package paunch
 type Mover interface {
 	Move(x, y float64)
 	SetPosition(x, y float64)
+	GetPosition() (x, y float64)
 }

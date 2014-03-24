@@ -46,6 +46,12 @@ func (bounding *Bounding) SetPosition(x, y float64) {
 	*bounding = *newBounding
 }
 
+// GetPosition returns the bottom left position of the Bounding object.
+func (bounding *Bounding) GetPosition() (x, y float64) {
+
+	return bounding.Start.X, bounding.Start.Y
+}
+
 // DistanceToTangentPoint returns a Point with values equal to the distance
 // a given Point is from the closest tangent Point on the given side of the
 // Bounding.

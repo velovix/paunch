@@ -198,3 +198,11 @@ func (renderable *Renderable) SetPosition(x, y float64) {
 
 	renderable.Move(xDisp, yDisp)
 }
+
+// GetPosition returns the X and Y position of the first specified vertex of
+// the Renderable object. If the Renderable object was created using
+// NewRenderableSurface, the lower left vertex will be returned.
+func (renderable *Renderable) GetPosition() (x, y float64) {
+
+	return float64(renderable.verticies[0]), float64(renderable.verticies[1])
+}
