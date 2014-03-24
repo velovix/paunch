@@ -121,9 +121,9 @@ func TestDrawTexturedRenderable(t *testing.T) {
 		t.Errorf("NewRenderable(TRIANGLE, triangles) returned %s", err)
 	}
 
-	err = renderable.Texture(texCoords, "img/test.png", 2)
+	err = renderable.Texture(texCoords, "test.png", 2)
 	if err != nil {
-		t.Errorf("renderable.Texture(texCoords, \"img/test.png\", 2) returned %s", err)
+		t.Errorf("renderable.Texture(texCoords, \"test.png\", 2) returned %s", err)
 	}
 
 	err = renderable.Draw(0)
@@ -134,9 +134,9 @@ func TestDrawTexturedRenderable(t *testing.T) {
 
 func TestDrawSurfaceRenderable(t *testing.T) {
 
-	renderable, err := NewRenderableSurface(0, 0, 1, 1, "img/test.png", 2)
+	renderable, err := NewRenderableSurface(0, 0, 1, 1, "test.png", 2)
 	if err != nil {
-		t.Errorf("NewRenderable(0, 0, 1, 1 \"img/test.png\", 2) returned %s", err)
+		t.Errorf("NewRenderable(0, 0, 1, 1 \"test.png\", 2) returned %s", err)
 	}
 
 	err = renderable.Draw(0)
