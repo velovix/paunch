@@ -95,12 +95,20 @@ func (physics *Physics) Move(x, y float64) {
 	}
 }
 
-// SetPosition sets the position of the Physics object. The starting point
-// is the start point of each individual object.
+// SetPosition sets the position of the Physics object relative to the Physics
+// object's first Mover.
 func (physics *Physics) SetPosition(x, y float64) {
 
-	for _, val := range physics.movers {
-		val.SetPosition(x, y)
+	if len(physics.movers) == 0 {
+		return
+	}
+
+	xDisp, yDisp := physics.movers[0].GetPosition()
+	xDisp = x - xDisp
+	yDisp = y - yDisp
+
+	for i, val := range physics.movers {
+		val.Move(xDisp, yDisp)
 	}
 }
 
