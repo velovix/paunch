@@ -107,7 +107,7 @@ func (physics *Physics) SetPosition(x, y float64) {
 	xDisp = x - xDisp
 	yDisp = y - yDisp
 
-	for i, val := range physics.movers {
+	for _, val := range physics.movers {
 		val.Move(xDisp, yDisp)
 	}
 }
