@@ -22,6 +22,7 @@ type Window struct {
 	keyStates      map[int]bool
 	joyBtnStates   map[int]bool
 	joyAxisStates  map[int]float32
+	isOpen         bool
 	isJoystick     bool
 	nativeMousePos bool
 	fullscreen     bool
@@ -102,13 +103,22 @@ func (window *Window) Open() error {
 
 	window.glfwWindow.MakeContextCurrent()
 
+	window.isOpen = true
+
 	return nil
 }
 
 // Close closes the window and stops reading input.
-func (window *Window) Close() {
+func (window *Window) Close() error {
+
+	if !window.isOpen {
+		return errors.New("window has not been opened")
+	}
 
 	window.glfwWindow.Destroy()
+	window.isOpen = false
+
+	return nil
 }
 
 // GetSize returns the current width and height of the Window object.
@@ -139,21 +149,35 @@ func (window *Window) SetNativeSize(nativeWidth, nativeHeight int) {
 }
 
 // ShouldClose returns whether or not the user has attempted to close the
-// window.
+// window. Will always return false if the Window object has not been opened.
 func (window *Window) ShouldClose() bool {
+
+	if !window.isOpen {
+		return false
+	}
 
 	return window.glfwWindow.ShouldClose()
 }
 
 // UpdateDisplay updates the window to display whatever has been drawn to the
 // framebuffer.
-func (window *Window) UpdateDisplay() {
+func (window *Window) UpdateDisplay() error {
+
+	if !window.isOpen {
+		return errors.New("window has not been opened")
+	}
 
 	window.glfwWindow.SwapBuffers()
+
+	return nil
 }
 
 // UpdateEvents updates events.
 func (window *Window) UpdateEvents() error {
+
+	if !window.isOpen {
+		return errors.New("window has not been opened")
+	}
 
 	glfw.PollEvents()
 
