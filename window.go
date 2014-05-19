@@ -15,7 +15,7 @@ type Window struct {
 	nativeHeight int
 	title        string
 
-	actorManagers []*ActorManager
+	eventManagers []*EventManager
 
 	glfwWindow *glfw.Window
 
@@ -53,7 +53,7 @@ func NewWindow(width, height, nativeWidth, nativeHeight int, fullscreen bool, ti
 		glfwToWindow = make(map[*glfw.Window]*Window)
 	}
 
-	window.actorManagers = make([]*ActorManager, 0)
+	window.eventManagers = make([]*EventManager, 0)
 
 	window.keyStates = make(map[int]bool)
 	window.joyBtnStates = make(map[int]bool)
@@ -159,14 +159,14 @@ func (window *Window) UpdateEvents() error {
 
 	glfw.PollEvents()
 
-	if len(window.actorManagers) == 0 {
+	if len(window.eventManagers) == 0 {
 		return nil
 	}
 
 	for i, val := range window.keyStates {
-		for _, actorManager := range window.actorManagers {
+		for _, eventManager := range window.eventManagers {
 			if val {
-				actorManager.RunKeyEvent(Key(i), Hold)
+				eventManager.RunKeyEvent(Key(i), Hold)
 			}
 		}
 	}
@@ -177,16 +177,16 @@ func (window *Window) UpdateEvents() error {
 			panic(err)
 		}
 
-		for _, actorManager := range window.actorManagers {
+		for _, eventManager := range window.eventManagers {
 			for i, val := range buttons {
 				if val == 0 && window.joyBtnStates[i] {
-					actorManager.RunJoystickButtonEvent(i, Release)
+					eventManager.RunJoystickButtonEvent(i, Release)
 					window.joyBtnStates[i] = false
 				} else if val == 1 && !window.joyBtnStates[i] {
-					actorManager.RunJoystickButtonEvent(i, Press)
+					eventManager.RunJoystickButtonEvent(i, Press)
 					window.joyBtnStates[i] = true
 				} else if val == 1 && window.joyBtnStates[i] {
-					actorManager.RunJoystickButtonEvent(i, Hold)
+					eventManager.RunJoystickButtonEvent(i, Hold)
 				}
 			}
 		}
@@ -196,9 +196,9 @@ func (window *Window) UpdateEvents() error {
 			panic(err2)
 		}
 
-		for _, actorManager := range window.actorManagers {
+		for _, eventManager := range window.eventManagers {
 			for i, val := range axes {
-				actorManager.RunJoystickAxisEvent(i, float64(val))
+				eventManager.RunJoystickAxisEvent(i, float64(val))
 			}
 		}
 	}
@@ -206,12 +206,12 @@ func (window *Window) UpdateEvents() error {
 	return nil
 }
 
-// SetActorManagers sets the ActorManagers the Window object sends input events
+// SetEventManagers sets the EventManagers the Window object sends input events
 // to. The Window object uses the copy of the slice given to it, so future
 // modifications to that slice will affect the Window object, as well.
-func (window *Window) SetActorManagers(actorManagers []*ActorManager) {
+func (window *Window) SetEventManagers(eventManagers []*EventManager) {
 
-	window.actorManagers = actorManagers
+	window.eventManagers = eventManagers
 }
 
 // SetNativeMousePos changes the behavior of the reported mouse position. If
@@ -232,8 +232,8 @@ func keyboardCallback(window *glfw.Window, glfwKey glfw.Key, scancode int, actio
 
 	glfwToWindow[window].keyStates[int(glfwKey)] = (action == glfw.Press)
 
-	for _, actorManager := range glfwToWindow[window].actorManagers {
-		actorManager.RunKeyEvent(Key(glfwKey), Action(action))
+	for _, eventManager := range glfwToWindow[window].eventManagers {
+		eventManager.RunKeyEvent(Key(glfwKey), Action(action))
 	}
 }
 
@@ -250,8 +250,8 @@ func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action gl
 		_, windHeight = window.GetSize()
 	}
 
-	for _, actorManager := range glfwToWindow[window].actorManagers {
-		actorManager.RunMouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), windHeight-int(math.Floor(y)))
+	for _, eventManager := range glfwToWindow[window].eventManagers {
+		eventManager.RunMouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), windHeight-int(math.Floor(y)))
 	}
 }
 
@@ -266,8 +266,8 @@ func mousePositionCallback(window *glfw.Window, x, y float64) {
 		_, windHeight = window.GetSize()
 	}
 
-	for _, actorManager := range glfwToWindow[window].actorManagers {
-		actorManager.RunMousePositionEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)))
+	for _, eventManager := range glfwToWindow[window].eventManagers {
+		eventManager.RunMousePositionEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)))
 	}
 }
 
@@ -284,15 +284,15 @@ func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
 		_, windHeight = window.GetSize()
 	}
 
-	for _, actorManager := range glfwToWindow[window].actorManagers {
-		actorManager.RunMouseEnterWindowEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)), entered)
+	for _, eventManager := range glfwToWindow[window].eventManagers {
+		eventManager.RunMouseEnterWindowEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)), entered)
 	}
 }
 
 func windowFocusCallback(window *glfw.Window, focused bool) {
 
-	for _, actorManager := range glfwToWindow[window].actorManagers {
-		actorManager.RunWindowFocusEvent(focused)
+	for _, eventManager := range glfwToWindow[window].eventManagers {
+		eventManager.RunWindowFocusEvent(focused)
 	}
 }
 
@@ -301,8 +301,8 @@ func windowResizeCallback(window *glfw.Window, width, height int) {
 	glfwToWindow[window].width = width
 	glfwToWindow[window].height = height
 
-	for _, actorManager := range glfwToWindow[window].actorManagers {
-		actorManager.RunWindowResizeEvent(width, height)
+	for _, eventManager := range glfwToWindow[window].eventManagers {
+		eventManager.RunWindowResizeEvent(width, height)
 	}
 
 	gl.Viewport(0, 0, gl.Sizei(width), gl.Sizei(height))

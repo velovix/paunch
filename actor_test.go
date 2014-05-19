@@ -87,17 +87,17 @@ func (obj *testActorObject) OnWindowResize(width, height int) {
 	}
 }
 
-func TestActorManagerCollisions(t *testing.T) {
+func TestEventManagerCollisions(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test1 := testActorObject{NewPoint(0.0, 0.0), 0}
 	test2 := testActorObject{NewPoint(0.0, 0.0), 0}
 	test3 := testActorObject{NewPoint(1.0, 1.0), 0}
 
-	actorManager.SetActors([]Actor{&test1, &test2, &test3})
+	eventManager.SetActors([]Actor{&test1, &test2, &test3})
 
-	actorManager.RunCollisionEvent()
+	eventManager.RunCollisionEvent()
 
 	if test1.id != 1 || test2.id != 1 {
 		t.Errorf("method OnCollision not triggered")
@@ -108,42 +108,42 @@ func TestActorManagerCollisions(t *testing.T) {
 	}
 }
 
-func TestActorManagerKeyboardInput(t *testing.T) {
+func TestEventManagerKeyboardInput(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunKeyEvent(KeyUp, Press)
+	eventManager.RunKeyEvent(KeyUp, Press)
 
 	if test.id != 2 {
 		t.Errorf("method OnKeyboard not triggered")
 	}
 }
 
-func TestActorManagerMouseInput(t *testing.T) {
+func TestEventManagerMouseInput(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunMouseButtonEvent(MouseButtonMiddle, Press, 5, 5)
+	eventManager.RunMouseButtonEvent(MouseButtonMiddle, Press, 5, 5)
 
 	if test.id != 3 {
 		t.Errorf("method OnMouseButton not triggered")
 	}
 }
 
-func TestActorManagerMousePosition(t *testing.T) {
+func TestEventManagerMousePosition(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunMousePositionEvent(5, 5)
+	eventManager.RunMousePositionEvent(5, 5)
 
 	if test.id != 4 {
 		t.Errorf("method OnMousePosition not triggered")
@@ -152,12 +152,12 @@ func TestActorManagerMousePosition(t *testing.T) {
 
 func TestActorMouseEnterWindow(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunMouseEnterWindowEvent(0, 0, true)
+	eventManager.RunMouseEnterWindowEvent(0, 0, true)
 
 	if test.id != 5 {
 		t.Errorf("method OnMouseEnterWindow not triggered")
@@ -166,12 +166,12 @@ func TestActorMouseEnterWindow(t *testing.T) {
 
 func TestActorWindowFocused(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunWindowFocusEvent(true)
+	eventManager.RunWindowFocusEvent(true)
 
 	if test.id != 6 {
 		t.Errorf("method OnWindowFocus not triggered")
@@ -180,12 +180,12 @@ func TestActorWindowFocused(t *testing.T) {
 
 func TestActorDraw(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunDrawEvent()
+	eventManager.RunDrawEvent()
 
 	if test.id != 7 {
 		t.Errorf("method OnDraw not triggered")
@@ -194,12 +194,12 @@ func TestActorDraw(t *testing.T) {
 
 func TestActorTick(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunTickEvent()
+	eventManager.RunTickEvent()
 
 	if test.id != 8 {
 		t.Errorf("method OnTick not triggered")
@@ -208,12 +208,12 @@ func TestActorTick(t *testing.T) {
 
 func TestActorJoystickButton(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunJoystickButtonEvent(1, Press)
+	eventManager.RunJoystickButtonEvent(1, Press)
 
 	if test.id != 9 {
 		t.Errorf("method OnJoystickButton not triggered")
@@ -222,12 +222,12 @@ func TestActorJoystickButton(t *testing.T) {
 
 func TestActorJoystickAxis(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunJoystickAxisEvent(0, 0.5)
+	eventManager.RunJoystickAxisEvent(0, 0.5)
 
 	if test.id != 10 {
 		t.Errorf("method OnJoystickAxis not triggered")
@@ -236,12 +236,12 @@ func TestActorJoystickAxis(t *testing.T) {
 
 func TestActorWindowResize(t *testing.T) {
 
-	actorManager := NewActorManager()
+	eventManager := NewEventManager()
 
 	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	actorManager.SetActors([]Actor{&test})
+	eventManager.SetActors([]Actor{&test})
 
-	actorManager.RunWindowResizeEvent(640, 480)
+	eventManager.RunWindowResizeEvent(640, 480)
 
 	if test.id != 11 {
 		t.Errorf("method OnWindowResize not triggered")
