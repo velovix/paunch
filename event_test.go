@@ -4,83 +4,83 @@ import (
 	"testing"
 )
 
-type testActorObject struct {
+type testObject struct {
 	collider Collider
 	id       int
 }
 
-func (obj *testActorObject) GetColliders() []Collider {
+func (obj *testObject) GetColliders() []Collider {
 
 	return []Collider{obj.collider}
 }
 
-func (obj *testActorObject) OnCollision(objectCollider, culpritCollider Collider, culprit Actor) {
+func (obj *testObject) OnCollision(objectCollider, culpritCollider Collider, culprit interface{}) {
 
 	obj.id = 1
 }
 
-func (obj *testActorObject) OnKeyboard(key Key, action Action) {
+func (obj *testObject) OnKeyboard(key Key, action Action) {
 
 	if key == KeyUp && action == Press {
 		obj.id = 2
 	}
 }
 
-func (obj *testActorObject) OnMouseButton(button MouseButton, action Action, x, y int) {
+func (obj *testObject) OnMouseButton(button MouseButton, action Action, x, y int) {
 
 	if button == MouseButtonMiddle && action == Press && x == 5 && y == 5 {
 		obj.id = 3
 	}
 }
 
-func (obj *testActorObject) OnMousePosition(x, y int) {
+func (obj *testObject) OnMousePosition(x, y int) {
 
 	if x == 5 && y == 5 {
 		obj.id = 4
 	}
 }
 
-func (obj *testActorObject) OnMouseEnterWindow(x, y int, entered bool) {
+func (obj *testObject) OnMouseEnterWindow(x, y int, entered bool) {
 
 	if x == 0 && y == 0 && entered {
 		obj.id = 5
 	}
 }
 
-func (obj *testActorObject) OnWindowFocus(focused bool) {
+func (obj *testObject) OnWindowFocus(focused bool) {
 
 	if focused {
 		obj.id = 6
 	}
 }
 
-func (obj *testActorObject) OnDraw() {
+func (obj *testObject) OnDraw() {
 
 	obj.id = 7
 }
 
-func (obj *testActorObject) OnTick() {
+func (obj *testObject) OnTick() {
 
 	if obj.id == 0 {
 		obj.id = 8
 	}
 }
 
-func (obj *testActorObject) OnJoystickButton(button int, action Action) {
+func (obj *testObject) OnJoystickButton(button int, action Action) {
 
 	if button == 1 && action == Press {
 		obj.id = 9
 	}
 }
 
-func (obj *testActorObject) OnJoystickAxis(device int, value float64) {
+func (obj *testObject) OnJoystickAxis(device int, value float64) {
 
 	if device == 0 && value == 0.5 {
 		obj.id = 10
 	}
 }
 
-func (obj *testActorObject) OnWindowResize(width, height int) {
+func (obj *testObject) OnWindowResize(width, height int) {
 
 	if width == 640 && height == 480 {
 		obj.id = 11
@@ -91,11 +91,11 @@ func TestEventManagerCollisions(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test1 := testActorObject{NewPoint(0.0, 0.0), 0}
-	test2 := testActorObject{NewPoint(0.0, 0.0), 0}
-	test3 := testActorObject{NewPoint(1.0, 1.0), 0}
+	test1 := testObject{NewPoint(0.0, 0.0), 0}
+	test2 := testObject{NewPoint(0.0, 0.0), 0}
+	test3 := testObject{NewPoint(1.0, 1.0), 0}
 
-	eventManager.SetActors([]Actor{&test1, &test2, &test3})
+	eventManager.SetObjects([]interface{}{&test1, &test2, &test3})
 
 	eventManager.RunCollisionEvent()
 
@@ -112,8 +112,8 @@ func TestEventManagerKeyboardInput(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunKeyEvent(KeyUp, Press)
 
@@ -126,8 +126,8 @@ func TestEventManagerMouseInput(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunMouseButtonEvent(MouseButtonMiddle, Press, 5, 5)
 
@@ -140,8 +140,8 @@ func TestEventManagerMousePosition(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunMousePositionEvent(5, 5)
 
@@ -150,12 +150,12 @@ func TestEventManagerMousePosition(t *testing.T) {
 	}
 }
 
-func TestActorMouseEnterWindow(t *testing.T) {
+func TestObjectMouseEnterWindow(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunMouseEnterWindowEvent(0, 0, true)
 
@@ -164,12 +164,12 @@ func TestActorMouseEnterWindow(t *testing.T) {
 	}
 }
 
-func TestActorWindowFocused(t *testing.T) {
+func TestObjectWindowFocused(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunWindowFocusEvent(true)
 
@@ -178,12 +178,12 @@ func TestActorWindowFocused(t *testing.T) {
 	}
 }
 
-func TestActorDraw(t *testing.T) {
+func TestObjectDraw(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunDrawEvent()
 
@@ -192,12 +192,12 @@ func TestActorDraw(t *testing.T) {
 	}
 }
 
-func TestActorTick(t *testing.T) {
+func TestObjectTick(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunTickEvent()
 
@@ -206,12 +206,12 @@ func TestActorTick(t *testing.T) {
 	}
 }
 
-func TestActorJoystickButton(t *testing.T) {
+func TestObjectJoystickButton(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunJoystickButtonEvent(1, Press)
 
@@ -220,12 +220,12 @@ func TestActorJoystickButton(t *testing.T) {
 	}
 }
 
-func TestActorJoystickAxis(t *testing.T) {
+func TestObjectJoystickAxis(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunJoystickAxisEvent(0, 0.5)
 
@@ -234,12 +234,12 @@ func TestActorJoystickAxis(t *testing.T) {
 	}
 }
 
-func TestActorWindowResize(t *testing.T) {
+func TestObjectWindowResize(t *testing.T) {
 
 	eventManager := NewEventManager()
 
-	test := testActorObject{NewPoint(0.0, 0.0), 0}
-	eventManager.SetActors([]Actor{&test})
+	test := testObject{NewPoint(0.0, 0.0), 0}
+	eventManager.SetObjects([]interface{}{&test})
 
 	eventManager.RunWindowResizeEvent(640, 480)
 
