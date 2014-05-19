@@ -12,7 +12,7 @@ func NewEventManager() EventManager {
 	return EventManager{make([]interface{}, 0)}
 }
 
-// SetActors sets the objects used by the EventManager object to the given
+// SetObjects sets the objects used by the EventManager object to the given
 // slice. The EventManager does not make a seperate copy of the slice, so
 // changes to the slice will affect the EventManager.
 func (eventManager *EventManager) SetObjects(objects []interface{}) {
@@ -20,7 +20,7 @@ func (eventManager *EventManager) SetObjects(objects []interface{}) {
 	eventManager.objects = objects
 }
 
-// GetActors returns the slice of objects the EventManager has stored.
+// GetObjects returns the slice of objects the EventManager has stored.
 func (eventManager *EventManager) GetObjects() []interface{} {
 
 	return eventManager.objects
@@ -114,7 +114,7 @@ func (eventManager EventManager) RunJoystickAxisEvent(device int, value float64)
 	}
 }
 
-// RunCollisionEvent checks for collisions between the EventManager's Actors
+// RunCollisionEvent checks for collisions between the EventManager's objects
 // and triggers appropriate methods.
 func (eventManager EventManager) RunCollisionEvent() {
 
