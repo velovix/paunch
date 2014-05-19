@@ -31,7 +31,7 @@ func (eventManager *EventManager) GetObjects() []interface{} {
 func (eventManager EventManager) RunKeyEvent(key Key, action Action) {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorKeyboarder); ok {
+		if val, ok := eventManager.objects[i].(KeyboardEventResponder); ok {
 			val.OnKeyboard(key, action)
 		}
 	}
@@ -42,7 +42,7 @@ func (eventManager EventManager) RunKeyEvent(key Key, action Action) {
 func (eventManager EventManager) RunMouseButtonEvent(button MouseButton, action Action, x, y int) {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorMouseButtoner); ok {
+		if val, ok := eventManager.objects[i].(MouseButtonEventResponder); ok {
 			val.OnMouseButton(button, action, x, y)
 		}
 	}
@@ -53,7 +53,7 @@ func (eventManager EventManager) RunMouseButtonEvent(button MouseButton, action 
 func (eventManager EventManager) RunMousePositionEvent(x, y int) {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorMousePositioner); ok {
+		if val, ok := eventManager.objects[i].(MousePositionEventResponder); ok {
 			val.OnMousePosition(x, y)
 		}
 	}
@@ -64,7 +64,7 @@ func (eventManager EventManager) RunMousePositionEvent(x, y int) {
 func (eventManager EventManager) RunMouseEnterWindowEvent(x, y int, entered bool) {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorMouseEnterWindower); ok {
+		if val, ok := eventManager.objects[i].(MouseEnterWindowResponder); ok {
 			val.OnMouseEnterWindow(x, y, entered)
 		}
 	}
@@ -75,7 +75,7 @@ func (eventManager EventManager) RunMouseEnterWindowEvent(x, y int, entered bool
 func (eventManager EventManager) RunWindowFocusEvent(focused bool) {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorWindowFocuser); ok {
+		if val, ok := eventManager.objects[i].(WindowFocusEventResponder); ok {
 			val.OnWindowFocus(focused)
 		}
 	}
@@ -86,7 +86,7 @@ func (eventManager EventManager) RunWindowFocusEvent(focused bool) {
 func (eventManager EventManager) RunWindowResizeEvent(width, height int) {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorWindowResizer); ok {
+		if val, ok := eventManager.objects[i].(WindowResizeEventResponder); ok {
 			val.OnWindowResize(width, height)
 		}
 	}
@@ -97,7 +97,7 @@ func (eventManager EventManager) RunWindowResizeEvent(width, height int) {
 func (eventManager EventManager) RunJoystickButtonEvent(button int, action Action) {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorJoystickButtoner); ok {
+		if val, ok := eventManager.objects[i].(JoystickButtonEventResponder); ok {
 			val.OnJoystickButton(button, action)
 		}
 	}
@@ -108,7 +108,7 @@ func (eventManager EventManager) RunJoystickButtonEvent(button int, action Actio
 func (eventManager EventManager) RunJoystickAxisEvent(device int, value float64) {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorJoystickAxiser); ok {
+		if val, ok := eventManager.objects[i].(JoystickAxisEventResponder); ok {
 			val.OnJoystickAxis(device, value)
 		}
 	}
@@ -119,7 +119,7 @@ func (eventManager EventManager) RunJoystickAxisEvent(device int, value float64)
 func (eventManager EventManager) RunCollisionEvent() {
 
 	for i := range eventManager.objects {
-		actorCollider, ok := eventManager.objects[i].(ActorCollider)
+		actorCollider, ok := eventManager.objects[i].(CollisionEventResponder)
 		if !ok {
 			continue
 		}
@@ -130,7 +130,7 @@ func (eventManager EventManager) RunCollisionEvent() {
 				continue
 			}
 
-			actorCollider2, ok2 := val.(ActorCollider)
+			actorCollider2, ok2 := val.(CollisionEventResponder)
 			if !ok2 {
 				continue
 			}
@@ -152,7 +152,7 @@ func (eventManager EventManager) RunCollisionEvent() {
 func (eventManager EventManager) RunTickEvent() {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorTicker); ok {
+		if val, ok := eventManager.objects[i].(TickEventResponder); ok {
 			val.OnTick()
 		}
 	}
@@ -163,7 +163,7 @@ func (eventManager EventManager) RunTickEvent() {
 func (eventManager EventManager) RunDrawEvent() {
 
 	for i := range eventManager.objects {
-		if val, ok := eventManager.objects[i].(ActorDrawer); ok {
+		if val, ok := eventManager.objects[i].(DrawEventResponder); ok {
 			val.OnDraw()
 		}
 	}
@@ -174,7 +174,7 @@ func (eventManager EventManager) RunDrawEvent() {
 func (eventManager EventManager) Collides(collider Collider) bool {
 
 	for i := range eventManager.objects {
-		actorCollider, ok := eventManager.objects[i].(ActorCollider)
+		actorCollider, ok := eventManager.objects[i].(CollisionEventResponder)
 		if !ok {
 			continue
 		}
