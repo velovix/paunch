@@ -121,6 +121,12 @@ func (window *Window) Close() error {
 	return nil
 }
 
+// IsOpen returns the open state of the Window object.
+func (window *Window) IsOpen() bool {
+
+	return window.isOpen
+}
+
 // GetSize returns the current width and height of the Window object.
 func (window *Window) GetSize() (width, height int) {
 
