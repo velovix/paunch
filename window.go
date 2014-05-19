@@ -106,10 +106,9 @@ func (window *Window) Open() error {
 }
 
 // Close closes the window and stops reading input.
-func (window *Window) Close() error {
+func (window *Window) Close() {
 
 	window.glfwWindow.Destroy()
-	return nil
 }
 
 // GetSize returns the current width and height of the Window object.
@@ -148,10 +147,9 @@ func (window *Window) ShouldClose() bool {
 
 // UpdateDisplay updates the window to display whatever has been drawn to the
 // framebuffer.
-func (window *Window) UpdateDisplay() error {
+func (window *Window) UpdateDisplay() {
 
 	window.glfwWindow.SwapBuffers()
-	return nil
 }
 
 // UpdateEvents updates events.
@@ -174,7 +172,7 @@ func (window *Window) UpdateEvents() error {
 	if window.isJoystick {
 		buttons, err := glfw.GetJoystickButtons(glfw.Joystick1)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		for _, eventManager := range window.eventManagers {
@@ -193,7 +191,7 @@ func (window *Window) UpdateEvents() error {
 
 		axes, err2 := glfw.GetJoystickAxes(glfw.Joystick1)
 		if err2 != nil {
-			panic(err2)
+			return err2
 		}
 
 		for _, eventManager := range window.eventManagers {
