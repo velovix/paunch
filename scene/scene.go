@@ -6,20 +6,30 @@ import (
 	"io"
 )
 
-type LoadScener interface {
+type Loader interface {
 	LoadScene(map[string]interface{}) bool
 }
 
-type Loader struct {
-	objects []LoadScener
+type Saver interface {
+	SaveScene() map[string]interface{}
 }
 
-func (loader *Loader) SetLoadSceners(objects []LoadScener) {
-
-	loader.objects = objects
+type Scene struct {
+	loaders []Loader
+	savers  []Saver
 }
 
-func (loader *Loader) Load(r io.Reader) error {
+func (scene *Scene) SetLoadSceners(loaders []Loader) {
+
+	scene.loaders = loaders
+}
+
+func (scene *Scene) SetSaveSceners(savers []Saver) {
+
+	scene.savers = savers
+}
+
+func (scene *Scene) Load(r io.Reader) error {
 
 	decoder := json.NewDecoder(r)
 
@@ -37,7 +47,7 @@ func (loader *Loader) Load(r io.Reader) error {
 	}
 
 	used := make([]bool, len(data))
-	for _, obj := range loader.objects {
+	for _, obj := range scene.loaders {
 		for j, val := range data {
 			if !used[j] && obj.LoadScene(val) {
 				used[j] = true
@@ -52,8 +62,22 @@ func (loader *Loader) Load(r io.Reader) error {
 			usedCnt++
 		}
 	}
-	if usedCnt < len(loader.objects) {
+	if usedCnt < len(scene.loaders) {
 		return errors.New("some objects did not have corresponding data")
+	}
+
+	return nil
+}
+
+func (scene *Scene) Save(w io.Writer) error {
+
+	encoder := json.NewEncoder(w)
+
+	for _, val := range scene.savers {
+		err := encoder.Encode(val.SaveScene())
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
