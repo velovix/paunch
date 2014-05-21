@@ -192,6 +192,8 @@ func NewEffect(directory string) (Effect, error) {
 
 	var effect Effect
 
+	effect.uniforms = make(map[string]gl.Int)
+
 	programID := gl.CreateProgram()
 
 	var vscript, fscript []*gl.Char
@@ -244,6 +246,8 @@ func NewEffectFromFiles(filenames []string) (Effect, error) {
 
 	var effect Effect
 
+	effect.uniforms = make(map[string]gl.Int)
+
 	programID := gl.CreateProgram()
 
 	var vscript, fscript []*gl.Char
@@ -291,6 +295,8 @@ func NewEffectFromFiles(filenames []string) (Effect, error) {
 func NewEffectFromStrings(text []string, types []ShaderType) (Effect, error) {
 
 	var effect Effect
+
+	effect.uniforms = make(map[string]gl.Int)
 
 	programID := gl.CreateProgram()
 
