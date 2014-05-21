@@ -64,6 +64,8 @@ func (err OpenGLError) Error() string {
 			message += "OUT_OF_MEMORY "
 		case gl.INVALID_FRAMEBUFFER_OPERATION:
 			message += "INVALID_FRAMEBUFFER_OPERATION "
+		case 255:
+			message += "..."
 		default:
 			message += fmt.Sprintf("Unknown error %i ", val)
 		}

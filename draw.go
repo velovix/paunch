@@ -22,6 +22,12 @@ func checkForErrors() error {
 	err := OpenGLError{make([]gl.Enum, 0)}
 	for errNumb := gl.GetError(); errNumb != gl.NO_ERROR; {
 		err.ErrorCodes = append(err.ErrorCodes, errNumb)
+		if len(err.ErrorCodes) >= 10 {
+			err.ErrorCodes = append(err.ErrorCodes, 255)
+			for errNumb := gl.GetError(); errNumb != gl.NO_ERROR; {
+			}
+			break
+		}
 	}
 
 	if len(err.ErrorCodes) == 0 {
