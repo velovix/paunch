@@ -31,8 +31,7 @@ func checkForErrors() error {
 	return err
 }
 
-// InitDraw sets up the drawing session for use.
-func InitDraw() error {
+func initDraw() error {
 
 	runtime.LockOSThread()
 

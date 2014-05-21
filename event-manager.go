@@ -189,3 +189,32 @@ func (eventManager EventManager) Collides(collider Collider) bool {
 
 	return false
 }
+
+// GetUserEvents sets whether or not the EventManager object should be
+// recieving user events. The default value is false.
+func (eventManager *EventManager) GetUserEvents(getting bool) {
+
+	if getting {
+		for _, val := range paunchWindow.eventManagers {
+			if val == eventManager {
+				return
+			}
+		}
+		paunchWindow.eventManagers = append(paunchWindow.eventManagers, eventManager)
+	} else {
+		for i, val := range paunchWindow.eventManagers {
+			if val == eventManager {
+				if len(paunchWindow.eventManagers) == 1 {
+					paunchWindow.eventManagers = make([]*EventManager, 0)
+				} else if i == 0 {
+					paunchWindow.eventManagers = paunchWindow.eventManagers[i+1 : len(paunchWindow.eventManagers)]
+				} else if i == len(paunchWindow.eventManagers)-1 {
+					paunchWindow.eventManagers = paunchWindow.eventManagers[0:i]
+				} else {
+					paunchWindow.eventManagers = append(paunchWindow.eventManagers[0:i],
+						paunchWindow.eventManagers[i+1:len(paunchWindow.eventManagers)]...)
+				}
+			}
+		}
+	}
+}
