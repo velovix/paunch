@@ -33,110 +33,194 @@ func (effect *Effect) checkUniformVariable(variable string) {
 
 // SetVariablei sets a specified variable to the supplied integer to be passed
 // into an effect.
-func (effect *Effect) SetVariablei(variable string, val int) {
+func (effect *Effect) SetVariablei(variable string, val int) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform1i(effect.uniforms[variable], gl.Int(val))
+	return nil
 }
 
 // SetVariable2i sets a specified variable to the two supplied integers to be
 // passed into an effect.
-func (effect *Effect) SetVariable2i(variable string, val1 int, val2 int) {
+func (effect *Effect) SetVariable2i(variable string, val1 int, val2 int) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform2i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2))
+	return nil
 }
 
 // SetVariable3i sets a specified variable to the three supplied integers to be
 // passed into an effect.
-func (effect *Effect) SetVariable3i(variable string, val1 int, val2 int, val3 int) {
+func (effect *Effect) SetVariable3i(variable string, val1 int, val2 int, val3 int) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform3i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2), gl.Int(val3))
+	return nil
 }
 
 // SetVariable4i sets a specified variable to the four supplied integers to be
 // passed into an effect.
-func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 int, val4 int) {
+func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 int, val4 int) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform4i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2), gl.Int(val3), gl.Int(val4))
+	return nil
 }
 
 // SetVariableui sets a specified variable to the supplied integer to be passed
 // into an effect.
-func (effect *Effect) SetVariableui(variable string, val uint) {
+func (effect *Effect) SetVariableui(variable string, val uint) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform1ui(effect.uniforms[variable], gl.Uint(val))
+	return nil
 }
 
 // SetVariable2ui sets a specified variable to the two supplied integers to be
 // passed into an effect.
-func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) {
+func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform2ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2))
+	return nil
 }
 
 // SetVariable3ui sets a specified variable to the three supplied integers to
 // be passed into an effect.
-func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3 uint) {
+func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3 uint) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform3ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2), gl.Uint(val3))
+	return nil
 }
 
 // SetVariable4ui sets a specified variable to the four supplied integers to
 // be passed into an effect.
-func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3 uint, val4 uint) {
+func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3 uint, val4 uint) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform4ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2), gl.Uint(val3), gl.Uint(val4))
+	return nil
 }
 
 // SetVariablef sets a specified variable to the supplied integer to be passed
 // into an effect.
-func (effect *Effect) SetVariablef(variable string, val float32) {
+func (effect *Effect) SetVariablef(variable string, val float32) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform1f(effect.uniforms[variable], gl.Float(val))
+	return nil
 }
 
 // SetVariable2f sets a specified variable to the two supplied integers to
 // be passed into an effect.
-func (effect *Effect) SetVariable2f(variable string, val1 float32, val2 float32) {
+func (effect *Effect) SetVariable2f(variable string, val1 float32, val2 float32) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform2f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2))
+	return nil
 }
 
 // SetVariable3f sets a specified variable to the three supplied integers to
 // be passed into an effect.
-func (effect *Effect) SetVariable3f(variable string, val1 float32, val2 float32, val3 float32) {
+func (effect *Effect) SetVariable3f(variable string, val1 float32, val2 float32, val3 float32) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform3f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2), gl.Float(val3))
+	return nil
 }
 
 // SetVariable4f sets a specified variable to the four supplied integers to
 // be passed into an effect.
-func (effect *Effect) SetVariable4f(variable string, val1 float32, val2 float32, val3 float32, val4 float32) {
+func (effect *Effect) SetVariable4f(variable string, val1 float32, val2 float32, val3 float32, val4 float32) error {
+
+	var currEffect gl.Int
+	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
+	if gl.Uint(currEffect) != effect.program {
+		return errors.New("effect is not currently in use")
+	}
 
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform4f(effect.uniforms[variable], gl.Float(val1), gl.Float(val2), gl.Float(val3), gl.Float(val4))
+	return nil
 }
 
 func compileShader(shaderType ShaderType, scripts []*gl.Char) (gl.Uint, error) {
