@@ -271,8 +271,9 @@ func checkIfShaderFile(name string) ShaderType {
 	return notShader
 }
 
-// NewEffect creates a new Effect object based on the shader directory given.
-func NewEffect(directory string) (Effect, error) {
+// NewEffectFromDirectory creates a new Effect object based on the shader
+// directory given.
+func NewEffectFromDirectory(directory string) (Effect, error) {
 
 	var effect Effect
 
