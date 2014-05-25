@@ -1,4 +1,4 @@
-package scene
+package paunch
 
 import (
 	"encoding/json"
