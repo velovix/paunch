@@ -5,37 +5,27 @@ import (
 	al "github.com/vova616/go-openal/openal"
 )
 
-// Audio is an object that deals with Paunch's sound system, as a whole. An
-// Audio object must be created before any other sound operations can take
-// place.
-type Audio struct {
-	device  *al.Device
-	context *al.Context
-}
+var (
+	paunchALDevice  *al.Device
+	paunchALContext *al.Context
+)
 
-// NewAudio creates a new Audio object. This must be done before any other
-// audio operations happen.
-func NewAudio() (Audio, error) {
+func startAudio() error {
 
-	var audio Audio
-
-	audio.device = al.OpenDevice("")
-	if audio.device == nil {
-		return audio, errors.New("failed to open device")
+	paunchALDevice = al.OpenDevice("")
+	if paunchALDevice == nil {
+		return errors.New("failed to open device")
 	}
 
-	audio.context = audio.device.CreateContext()
-	if ok := audio.context.Activate(); !ok {
-		return audio, errors.New("failed to make context current")
+	paunchALContext = paunchALDevice.CreateContext()
+	if ok := paunchALContext.Activate(); !ok {
+		return errors.New("failed to make context current")
 	}
 
-	return audio, nil
+	return nil
 }
 
-// Destroy cleans up the Audio object. After this method, audio opperations
-// will no longer work until NewAudio is called again. This should be done
-// before the program exits.
-func (audio Audio) Destroy() {
-	audio.device.CloseDevice()
-	audio.context.Destroy()
+func stopAudio() {
+	paunchALDevice.CloseDevice()
+	paunchALContext.Destroy()
 }

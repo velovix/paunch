@@ -29,5 +29,18 @@ func Start() error {
 		return err
 	}
 
+	err = startAudio()
+	if err != nil {
+		return err
+	}
+
 	return nil
+}
+
+// Stop safely closes the Paunch instance.
+func Stop() {
+
+	paunchWindow.close()
+
+	stopAudio()
 }
