@@ -16,6 +16,7 @@ Paunch needs a few packages before being built.
 	go get github.com/chsc/gogl/gl33
 	go get github.com/go-gl/glfw3
 	go get github.com/vova616/go-openal/openal
+	go get github.com/velovix/vorbis
 
 The package `glfw3` needs the C glfw3 library installed to build correctly. See
 [their repository](http://github.com/go-gl/glfw3) for more information.
