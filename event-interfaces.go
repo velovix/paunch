@@ -80,6 +80,15 @@ type JoystickAxisEventResponder interface {
 	OnJoystickAxis(device int, value float64)
 }
 
+// CharacterEventResponder is an interface that requires methods that allow an
+// EventManager to call on the OnCharacter method of an object when the user
+// inputs a valid unicode character. Objects that implement this interface will
+// automatically be called when appropriate after being added to an
+// EventManager.
+type CharacterEventResponder interface {
+	OnCharacter(character rune)
+}
+
 // DrawEventResponder is an interface that requires methods that allow an
 // EventManager to draw an object at every frame. Objects that implement this
 // interface will be autmatically called on every frame.

@@ -205,6 +205,7 @@ func (window *_Window) open() error {
 	window.glfwWindow.SetCursorEnterCallback(mouseEnterWindowCallback)
 	window.glfwWindow.SetFocusCallback(windowFocusCallback)
 	window.glfwWindow.SetSizeCallback(windowResizeCallback)
+	window.glfwWindow.SetCharacterCallback(windowCharacterCallback)
 
 	if glfw.JoystickPresent(glfw.Joystick1) {
 		window.isJoystick = true
@@ -311,4 +312,11 @@ func windowResizeCallback(window *glfw.Window, width, height int) {
 	}
 
 	gl.Viewport(0, 0, gl.Sizei(width), gl.Sizei(height))
+}
+
+func windowCharacterCallback(window *glfw.Window, character uint) {
+
+	for _, eventManager := range paunchWindow.eventManagers {
+		eventManager.RunCharacterEvent(rune(character))
+	}
 }

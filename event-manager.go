@@ -147,6 +147,17 @@ func (eventManager EventManager) RunCollisionEvent() {
 	}
 }
 
+// RunCharacterEvent simulates a character event, triggering the expected
+// response from the EventManager's objects.
+func (eventManager EventManager) RunCharacterEvent(character rune) {
+
+	for i := range eventManager.objects {
+		if val, ok := eventManager.objects[i].(CharacterEventResponder); ok {
+			val.OnCharacter(character)
+		}
+	}
+}
+
 // RunTickEvent runs a tick event, triggering the expected response from
 // the EventManager's objects.
 func (eventManager EventManager) RunTickEvent() {
