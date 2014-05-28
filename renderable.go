@@ -42,43 +42,29 @@ func imageToBytes(img image.Image) []byte {
 	return flippedBytes
 }
 
-// NewRenderable returns a new Renderable object based on the specified shape
-// type and verticies.
-func NewRenderable(mode int, verticies []float64) (Renderable, error) {
+// NewRenderableFromData creates a new Renderable object using the given data,
+// which is expected to be in RGBA format.
+func NewRenderableFromData(x, y, width, height float64, data []byte, clip int) (Renderable, error) {
 
-	verticies32 := make([]float32, len(verticies))
-	for i, val := range verticies {
-		verticies32[i] = float32(val)
-	}
+	var renderable Renderable
 
-	renderable := Renderable{mode, len(verticies), 0, 0, nil, verticies32}
+	verticies := []float32{
+		float32(x), float32(y),
+		float32(x + width), float32(y),
+		float32(x), float32(y + height),
+
+		float32(x + width), float32(y + height),
+		float32(x + width), float32(y),
+		float32(x), float32(y + height)}
+
+	renderable = Renderable{Triangles, len(verticies), 0, 0, nil, verticies}
 
 	gl.GenBuffers(1, &renderable.vertexBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertexBuffer))
-	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies32[0]), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies[0]), gl.STATIC_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
-	return renderable, checkForErrors()
-}
-
-// NewRenderableSurface returns a new rectangular, textured Renderable.
-func NewRenderableSurface(x, y, width, height float64, filename string, clip int) (Renderable, error) {
-
-	vertCoords := []float64{
-		x, y,
-		x + width, y,
-		x, y + height,
-
-		x + width, y + height,
-		x + width, y,
-		x, y + height}
-
-	renderable, err := NewRenderable(Triangles, vertCoords)
-	if err != nil {
-		return renderable, err
-	}
-
-	texCoords := []float64{
+	texCoords := []float32{
 		0, 0,
 		1, 0,
 		0, 1,
@@ -87,64 +73,57 @@ func NewRenderableSurface(x, y, width, height float64, filename string, clip int
 		1, 0,
 		0, 1}
 
-	err = renderable.Texture(texCoords, filename, clip)
-	if err != nil {
-		return renderable, err
-	}
-
-	return renderable, nil
-}
-
-// Texture applies a texture from a 32-bit PNG file to a Renderable. The
-// Renderable will automatically be drawn with this texture. The texture may
-// also be split into multiple smaller textures automatically if clip is > 1.
-func (renderable *Renderable) Texture(coords []float64, filename string, clip int) error {
-
-	file, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	coords32 := make([]float32, len(coords))
-	for i, val := range coords {
-		coords32[i] = float32(val)
-	}
-
 	gl.GenBuffers(1, &renderable.texcoordBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.texcoordBuffer))
-	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(coords32)*4), gl.Pointer(&coords32[0]), gl.STREAM_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(texCoords)*4), gl.Pointer(&texCoords[0]), gl.STREAM_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
-
-	data, decodeErr := png.Decode(file)
-	if decodeErr != nil {
-		return decodeErr
-	}
-
-	clipWidth := data.Bounds().Max.X - data.Bounds().Min.X
-	clipHeight := (data.Bounds().Max.Y - data.Bounds().Min.Y) / clip
 
 	renderable.texture = make([]gl.Uint, clip)
 	gl.GenTextures(gl.Sizei(clip), &renderable.texture[0])
 
-	byteData := imageToBytes(data)
 	clips := make([][]byte, clip)
 	for i := range clips {
-		clips[i] = byteData[i*(len(byteData)/len(clips)) : (i+1)*(len(byteData)/len(clips))]
+		clips[i] = data[i*(len(data)/len(clips)) : (i+1)*(len(data)/len(clips))]
 		gl.BindTexture(gl.TEXTURE_2D, renderable.texture[len(clips)-1-i])
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 		gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA,
-			gl.Sizei(clipWidth), gl.Sizei(clipHeight),
+			gl.Sizei(width), gl.Sizei(height),
 			0, gl.RGBA, gl.UNSIGNED_BYTE,
 			gl.Pointer(&clips[i][0]))
 	}
 
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 
-	return checkForErrors()
+	return renderable, checkForErrors()
+}
+
+// NewRenderableFromImage creates a new Renderable object using the given PNG
+// image file.
+func NewRenderableFromImage(x, y, width, height float64, filename string, clip int) (Renderable, error) {
+
+	var renderable Renderable
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return renderable, err
+	}
+	defer file.Close()
+
+	data, err := png.Decode(file)
+	if err != nil {
+		return renderable, err
+	}
+
+	byteData := imageToBytes(data)
+	renderable, err = NewRenderableFromData(x, y, width, height, byteData, clip)
+	if err != nil {
+		return renderable, err
+	}
+
+	return renderable, nil
 }
 
 // Draw draws the Renderable.
