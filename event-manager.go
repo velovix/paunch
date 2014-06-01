@@ -39,7 +39,7 @@ func (eventManager EventManager) RunKeyEvent(key Key, action Action) {
 
 // RunMouseButtonEvent simulates a mouse button event, triggering the
 // expected response from the EventManager's objects.
-func (eventManager EventManager) RunMouseButtonEvent(button MouseButton, action Action, x, y int) {
+func (eventManager EventManager) RunMouseButtonEvent(button MouseButton, action Action, x, y float64) {
 
 	for i := range eventManager.objects {
 		if val, ok := eventManager.objects[i].(MouseButtonEventResponder); ok {
@@ -50,7 +50,7 @@ func (eventManager EventManager) RunMouseButtonEvent(button MouseButton, action 
 
 // RunMousePositionEvent simulates a mouse position event, triggering the
 // expected response from the EventManager's objects.
-func (eventManager EventManager) RunMousePositionEvent(x, y int) {
+func (eventManager EventManager) RunMousePositionEvent(x, y float64) {
 
 	for i := range eventManager.objects {
 		if val, ok := eventManager.objects[i].(MousePositionEventResponder); ok {
@@ -61,7 +61,7 @@ func (eventManager EventManager) RunMousePositionEvent(x, y int) {
 
 // RunMouseEnterWindowEvent simulates a mouse enter window event, triggering
 // the expected response from the EventManager's objects.
-func (eventManager EventManager) RunMouseEnterWindowEvent(x, y int, entered bool) {
+func (eventManager EventManager) RunMouseEnterWindowEvent(x, y float64, entered bool) {
 
 	for i := range eventManager.objects {
 		if val, ok := eventManager.objects[i].(MouseEnterWindowResponder); ok {

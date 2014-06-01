@@ -23,7 +23,7 @@ type KeyboardEventResponder interface {
 // automatically be called when appropriate after being added to an
 // EventManager.
 type MouseButtonEventResponder interface {
-	OnMouseButton(button MouseButton, action Action, x, y int)
+	OnMouseButton(button MouseButton, action Action, x, y float64)
 }
 
 // MousePositionEventResponder is an interface that requires methods that allow
@@ -32,7 +32,7 @@ type MouseButtonEventResponder interface {
 // automatically be called when appropriate after being added to an
 // EventManager.
 type MousePositionEventResponder interface {
-	OnMousePosition(x, y int)
+	OnMousePosition(x, y float64)
 }
 
 // MouseEnterWindowResponder is an interface that requires methods that allow
@@ -41,7 +41,7 @@ type MousePositionEventResponder interface {
 // automatically be called when appropriate after being added to an
 // EventManager.
 type MouseEnterWindowResponder interface {
-	OnMouseEnterWindow(x, y int, entered bool)
+	OnMouseEnterWindow(x, y float64, entered bool)
 }
 
 // WindowFocusEventResponder is an interface that requires methods that allow

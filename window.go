@@ -4,7 +4,6 @@ import (
 	"errors"
 	gl "github.com/chsc/gogl/gl33"
 	glfw "github.com/go-gl/glfw3"
-	"math"
 )
 
 type _Window struct {
@@ -257,7 +256,7 @@ func mouseButtonCallback(window *glfw.Window, button glfw.MouseButton, action gl
 	}
 
 	for _, eventManager := range paunchWindow.eventManagers {
-		eventManager.RunMouseButtonEvent(MouseButton(button), Action(action), int(math.Floor(x)), windHeight-int(math.Floor(y)))
+		eventManager.RunMouseButtonEvent(MouseButton(button), Action(action), x, float64(windHeight)-y)
 	}
 }
 
@@ -273,7 +272,7 @@ func mousePositionCallback(window *glfw.Window, x, y float64) {
 	}
 
 	for _, eventManager := range paunchWindow.eventManagers {
-		eventManager.RunMousePositionEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)))
+		eventManager.RunMousePositionEvent(x, float64(windHeight)-y)
 	}
 }
 
@@ -291,7 +290,7 @@ func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
 	}
 
 	for _, eventManager := range paunchWindow.eventManagers {
-		eventManager.RunMouseEnterWindowEvent(int(math.Floor(x)), windHeight-int(math.Floor(y)), entered)
+		eventManager.RunMouseEnterWindowEvent(x, float64(windHeight)-y, entered)
 	}
 }
 
