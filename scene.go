@@ -26,6 +26,17 @@ type Scene struct {
 	savers  []Saver
 }
 
+// NewScene creates a new Scene object.
+func NewScene() Scene {
+
+	var scene Scene
+
+	scene.loaders = make([]Loader, 0)
+	scene.savers = make([]Saver, 0)
+
+	return scene
+}
+
 // SetLoadSceners sets the list of Loader objects that will be prompted during
 // a call to Load.
 func (scene *Scene) SetLoadSceners(loaders []Loader) {
