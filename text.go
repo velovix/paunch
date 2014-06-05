@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	"unicode/utf8"
 )
 
 const dpi = 72
@@ -22,6 +23,7 @@ type Text struct {
 
 	renderable Renderable
 	fontColor  *image.Uniform
+	shouldDraw bool
 }
 
 // NewText creates a new Text object. The x and y positions represent the left
@@ -55,11 +57,21 @@ func NewText(x, y float64, font Font, fontSize float64, message string) (Text, e
 // Draw draws the Text object.
 func (text Text) Draw() {
 
+	if !text.shouldDraw {
+		return
+	}
+
 	text.renderable.Draw(0)
 }
 
 // SetMessage changes the message displayed by the Text object.
 func (text *Text) SetMessage(message string) error {
+
+	if utf8.RuneCountInString(message) == 0 {
+		text.shouldDraw = false
+		return nil
+	}
+	text.shouldDraw = true
 
 	text.message = message
 	err := text.updateText()
