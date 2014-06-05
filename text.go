@@ -31,7 +31,7 @@ func NewText(x, y float64, font Font, fontSize float64, message string) (Text, e
 	var text Text
 
 	text.x = x
-	text.y = y - text.fontSize
+	text.y = y - fontSize
 
 	text.fontColor = image.NewUniform(color.RGBA{0, 0, 0, 255})
 
@@ -93,7 +93,7 @@ func (text *Text) SetColor(r, g, b, a uint8) error {
 // GetPosition returns the position of the Text object.
 func (text *Text) GetPosition() (float64, float64) {
 
-	return text.x, text.y
+	return text.x, text.y + text.fontSize
 }
 
 // Move moves the Text object the specified distance.
