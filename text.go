@@ -20,7 +20,6 @@ type Text struct {
 	x float64
 	y float64
 
-	rgba       *image.RGBA
 	renderable Renderable
 	fontColor  *image.Uniform
 }
@@ -34,14 +33,12 @@ func NewText(x, y float64, font Font, fontSize float64, message string) (Text, e
 	text.x = x
 	text.y = y - text.fontSize
 
-	text.rgba = image.NewRGBA(image.Rect(0, 0, 0, 0))
 	text.fontColor = image.NewUniform(color.RGBA{0, 0, 0, 255})
 
 	text.context = freetype.NewContext()
 	text.context.SetDPI(dpi)
 	text.context.SetFont(font.font)
 	text.context.SetFontSize(fontSize)
-	text.context.SetDst(text.rgba)
 	text.context.SetSrc(text.fontColor)
 	text.context.SetHinting(freetype.FullHinting)
 
@@ -156,19 +153,19 @@ func (text *Text) updateText() error {
 	if err != nil {
 		return err
 	}
-	text.rgba = image.NewRGBA(image.Rect(0, 0, width, height))
-	draw.Draw(text.rgba, text.rgba.Bounds(), image.Transparent, image.ZP, draw.Src)
+	rgba := image.NewRGBA(image.Rect(0, 0, width, height))
+	draw.Draw(rgba, rgba.Bounds(), image.Transparent, image.ZP, draw.Src)
 
-	text.context.SetDst(text.rgba)
-	text.context.SetClip(text.rgba.Bounds())
+	text.context.SetDst(rgba)
+	text.context.SetClip(rgba.Bounds())
 	pt := freetype.Pt(0, int(text.context.PointToFix32(text.fontSize)>>8))
 	_, err = text.context.DrawString(text.message, pt)
 	if err != nil {
 		return err
 	}
 
-	flipRGBA(text.rgba)
-	text.renderable, err = NewRenderableFromData(text.x, text.y, float64(width), float64(height), text.rgba.Pix, 1)
+	flipRGBA(rgba)
+	text.renderable, err = NewRenderableFromData(text.x, text.y, float64(width), float64(height), rgba.Pix, 1)
 	if err != nil {
 		return err
 	}
