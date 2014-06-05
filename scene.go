@@ -2,7 +2,7 @@ package paunch
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io"
 )
 
@@ -19,43 +19,99 @@ type Saver interface {
 	SaveScene() map[string]interface{}
 }
 
-// Scene is an object that manages the saving of game states on an
-// object-to-object basis into a JSON file.
-type Scene struct {
-	loaders []Loader
-	savers  []Saver
+// SceneEncoder creates a JSON encoded file containing header information and
+// the data given to the SceneEncoder by its Saver objects.
+type SceneEncoder struct {
+	writer io.Writer
+	header map[string]interface{}
+	savers []Saver
 }
 
-// NewScene creates a new Scene object.
-func NewScene() Scene {
-
-	var scene Scene
-
-	scene.loaders = make([]Loader, 0)
-	scene.savers = make([]Saver, 0)
-
-	return scene
+// SceneDecoder reads from a JSON file as created by a SceneEncoder object.
+type SceneDecoder struct {
+	reader          io.Reader
+	hasHeaderLoaded bool
+	loaders         []Loader
 }
 
-// SetLoadSceners sets the list of Loader objects that will be prompted during
+// NewSceneEncoder creates a new SceneEncoder object that will save to the
+// given io.Writer.
+func NewSceneEncoder(w io.Writer) SceneEncoder {
+
+	var sceneEncoder SceneEncoder
+
+	sceneEncoder.writer = w
+	sceneEncoder.header = make(map[string]interface{})
+	sceneEncoder.savers = make([]Saver, 0)
+
+	return sceneEncoder
+}
+
+// NewSceneDecoder creates a new SceneDecoder object that will read from the
+// given io.Reader.
+func NewSceneDecoder(r io.Reader) SceneDecoder {
+
+	var sceneDecoder SceneDecoder
+
+	sceneDecoder.reader = r
+	sceneDecoder.loaders = make([]Loader, 0)
+
+	return sceneDecoder
+}
+
+// SetLoaders sets the list of Loader objects that will be prompted during
 // a call to Load.
-func (scene *Scene) SetLoadSceners(loaders []Loader) {
+func (sceneDecoder *SceneDecoder) SetLoaders(loaders []Loader) {
 
-	scene.loaders = loaders
+	sceneDecoder.loaders = loaders
 }
 
-// SetSaveSceners sets the list of Saver objects that will be prompted during
+// SetSavers sets the list of Saver objects that will be prompted during
 // a call to Save.
-func (scene *Scene) SetSaveSceners(savers []Saver) {
+func (sceneEncoder *SceneEncoder) SetSavers(savers []Saver) {
 
-	scene.savers = savers
+	sceneEncoder.savers = savers
+}
+
+// GetHeader returns the header information from the file.
+func (sceneDecoder *SceneDecoder) GetHeader() (map[string]interface{}, error) {
+
+	decoder := json.NewDecoder(sceneDecoder.reader)
+	defer func() { sceneDecoder.reader = decoder.Buffered() }()
+	defer func() { sceneDecoder.hasHeaderLoaded = true }()
+
+	info := make(map[string]bool)
+	err := decoder.Decode(&info)
+	if err != nil {
+		return make(map[string]interface{}), err
+	}
+
+	if info["hasHeader"] {
+		header := make(map[string]interface{})
+		err = decoder.Decode(&header)
+		if err != nil {
+			return make(map[string]interface{}), err
+		}
+		sceneDecoder.hasHeaderLoaded = true
+		return header, nil
+	}
+
+	sceneDecoder.hasHeaderLoaded = true
+	return make(map[string]interface{}), nil
 }
 
 // Load reads the information from the given JSON file and gives it to the
 // Loader objects.
-func (scene *Scene) Load(r io.Reader) error {
+func (sceneDecoder *SceneDecoder) Load() error {
 
-	decoder := json.NewDecoder(r)
+	decoder := json.NewDecoder(sceneDecoder.reader)
+
+	if !sceneDecoder.hasHeaderLoaded {
+		_, err := sceneDecoder.GetHeader()
+		if err != nil {
+			return err
+		}
+	}
 
 	data := make([]map[string]interface{}, 0)
 
@@ -66,12 +122,12 @@ func (scene *Scene) Load(r io.Reader) error {
 			data = data[:len(data)-1]
 			break
 		} else if err != nil {
-			panic(err)
+			return err
 		}
 	}
 
 	used := make([]bool, len(data))
-	for _, obj := range scene.loaders {
+	for _, obj := range sceneDecoder.loaders {
 		for j, val := range data {
 			if !used[j] && obj.LoadScene(val) {
 				used[j] = true
@@ -86,21 +142,41 @@ func (scene *Scene) Load(r io.Reader) error {
 			usedCnt++
 		}
 	}
-	if usedCnt < len(scene.loaders) {
-		return errors.New("some objects did not have corresponding data")
+	if usedCnt < len(sceneDecoder.loaders) {
+		return fmt.Errorf("some objects did not have corresponding data: %v used, %v total", usedCnt, len(sceneDecoder.loaders))
 	}
 
 	return nil
 }
 
+// SetHeader sets the header information of the file.
+func (sceneEncoder *SceneEncoder) SetHeader(data map[string]interface{}) {
+
+	sceneEncoder.header = data
+}
+
 // Save reads the information to the given location using data recieved from
 // the Saver objects.
-func (scene *Scene) Save(w io.Writer) error {
+func (sceneEncoder *SceneEncoder) Save() error {
 
-	encoder := json.NewEncoder(w)
+	encoder := json.NewEncoder(sceneEncoder.writer)
 
-	for _, val := range scene.savers {
-		err := encoder.Encode(val.SaveScene())
+	info := make(map[string]bool)
+	info["hasHeader"] = len(sceneEncoder.header) > 0
+	err := encoder.Encode(info)
+	if err != nil {
+		return err
+	}
+
+	if info["hasHeader"] {
+		err = encoder.Encode(sceneEncoder.header)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, val := range sceneEncoder.savers {
+		err = encoder.Encode(val.SaveScene())
 		if err != nil {
 			return err
 		}
