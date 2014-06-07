@@ -17,8 +17,10 @@ type Text struct {
 	context  *freetype.Context
 	fontSize float64
 
-	x float64
-	y float64
+	x      float64
+	y      float64
+	width  float64
+	height float64
 
 	renderable Renderable
 	fontColor  *image.Uniform
@@ -96,6 +98,12 @@ func (text *Text) GetPosition() (float64, float64) {
 	return text.x, text.y + text.fontSize
 }
 
+// GetSize returns the width and height of the Text object.
+func (text *Text) GetSize() (float64, float64) {
+
+	return text.width, text.height
+}
+
 // Move moves the Text object the specified distance.
 func (text *Text) Move(x, y float64) {
 
@@ -150,6 +158,8 @@ func (text *Text) findTextDimensions() (int, int, error) {
 func (text *Text) updateText() error {
 
 	if text.message == "" {
+		text.width = 0
+		text.height = 0
 		var err error
 		rgba := image.NewRGBA(image.Rect(0, 0, 1, 1))
 		draw.Draw(rgba, rgba.Bounds(), image.White, image.ZP, draw.Src)
@@ -180,6 +190,9 @@ func (text *Text) updateText() error {
 	if err != nil {
 		return err
 	}
+
+	text.width = float64(width)
+	text.height = float64(height)
 
 	return nil
 }
