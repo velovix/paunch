@@ -22,14 +22,14 @@ type Saver interface {
 // SceneEncoder creates a JSON encoded file containing header information and
 // the data given to the SceneEncoder by its Saver objects.
 type SceneEncoder struct {
-	writer io.Writer
-	header map[string]interface{}
-	savers []Saver
+	encoder *json.Encoder
+	header  map[string]interface{}
+	savers  []Saver
 }
 
 // SceneDecoder reads from a JSON file as created by a SceneEncoder object.
 type SceneDecoder struct {
-	reader          io.Reader
+	decoder         *json.Decoder
 	hasHeaderLoaded bool
 	loaders         []Loader
 }
@@ -40,7 +40,7 @@ func NewSceneEncoder(w io.Writer) SceneEncoder {
 
 	var sceneEncoder SceneEncoder
 
-	sceneEncoder.writer = w
+	sceneEncoder.encoder = json.NewEncoder(w)
 	sceneEncoder.header = make(map[string]interface{})
 	sceneEncoder.savers = make([]Saver, 0)
 
@@ -53,7 +53,7 @@ func NewSceneDecoder(r io.Reader) SceneDecoder {
 
 	var sceneDecoder SceneDecoder
 
-	sceneDecoder.reader = r
+	sceneDecoder.decoder = json.NewDecoder(r)
 	sceneDecoder.loaders = make([]Loader, 0)
 
 	return sceneDecoder
@@ -76,35 +76,29 @@ func (sceneEncoder *SceneEncoder) SetSavers(savers []Saver) {
 // GetHeader returns the header information from the file.
 func (sceneDecoder *SceneDecoder) GetHeader() (map[string]interface{}, error) {
 
-	decoder := json.NewDecoder(sceneDecoder.reader)
-	defer func() { sceneDecoder.reader = decoder.Buffered() }()
 	defer func() { sceneDecoder.hasHeaderLoaded = true }()
 
 	info := make(map[string]bool)
-	err := decoder.Decode(&info)
+	err := sceneDecoder.decoder.Decode(&info)
 	if err != nil {
 		return make(map[string]interface{}), err
 	}
 
 	if info["hasHeader"] {
 		header := make(map[string]interface{})
-		err = decoder.Decode(&header)
+		err = sceneDecoder.decoder.Decode(&header)
 		if err != nil {
 			return make(map[string]interface{}), err
 		}
-		sceneDecoder.hasHeaderLoaded = true
 		return header, nil
 	}
 
-	sceneDecoder.hasHeaderLoaded = true
 	return make(map[string]interface{}), nil
 }
 
 // Load reads the information from the given JSON file and gives it to the
 // Loader objects.
 func (sceneDecoder *SceneDecoder) Load() error {
-
-	decoder := json.NewDecoder(sceneDecoder.reader)
 
 	if !sceneDecoder.hasHeaderLoaded {
 		_, err := sceneDecoder.GetHeader()
@@ -117,7 +111,7 @@ func (sceneDecoder *SceneDecoder) Load() error {
 
 	for i := 0; ; i++ {
 		data = append(data, make(map[string]interface{}))
-		err := decoder.Decode(&data[i])
+		err := sceneDecoder.decoder.Decode(&data[i])
 		if err != nil && err.Error() == "EOF" {
 			data = data[:len(data)-1]
 			break
@@ -159,24 +153,22 @@ func (sceneEncoder *SceneEncoder) SetHeader(data map[string]interface{}) {
 // the Saver objects.
 func (sceneEncoder *SceneEncoder) Save() error {
 
-	encoder := json.NewEncoder(sceneEncoder.writer)
-
 	info := make(map[string]bool)
 	info["hasHeader"] = len(sceneEncoder.header) > 0
-	err := encoder.Encode(info)
+	err := sceneEncoder.encoder.Encode(info)
 	if err != nil {
 		return err
 	}
 
 	if info["hasHeader"] {
-		err = encoder.Encode(sceneEncoder.header)
+		err = sceneEncoder.encoder.Encode(sceneEncoder.header)
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, val := range sceneEncoder.savers {
-		err = encoder.Encode(val.SaveScene())
+		err = sceneEncoder.encoder.Encode(val.SaveScene())
 		if err != nil {
 			return err
 		}
