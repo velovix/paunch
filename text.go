@@ -108,9 +108,9 @@ func (text *Text) GetSize() (float64, float64) {
 func (text *Text) Move(x, y float64) {
 
 	text.x += x
-	text.y += y - text.fontSize
+	text.y += y
 
-	text.renderable.Move(x, y-text.fontSize)
+	text.renderable.Move(x, y)
 }
 
 // SetPosition sets the Text object's position to the specified point.
