@@ -126,6 +126,28 @@ func NewRenderableFromImage(x, y float64, filename string, clip int) (Renderable
 	return renderable, nil
 }
 
+func (renderable *Renderable) SetScaling(xScale, yScale float64) {
+
+	verticies := make([]float32, len(renderable.verticies))
+
+	xTransform := renderable.verticies[0] - (renderable.verticies[0] * float32(xScale))
+	yTransform := renderable.verticies[1] - (renderable.verticies[1] * float32(yScale))
+
+	for i := range verticies {
+		if i%2 == 0 {
+			verticies[i] = renderable.verticies[i] * float32(xScale)
+			verticies[i] += xTransform
+		} else {
+			verticies[i] = renderable.verticies[i] * float32(yScale)
+			verticies[i] += yTransform
+		}
+	}
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertexBuffer)
+	gl.BufferSubData(gl.ARRAY_BUFFER, 0, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies[0]))
+	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+}
+
 // Draw draws the Renderable.
 func (renderable *Renderable) Draw(frame int) error {
 
