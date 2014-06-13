@@ -56,9 +56,17 @@ func initDraw() error {
 // Clear clears the pixels on screen. This should probably be called before
 // every new frame.
 func Clear() error {
+
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	return checkForErrors()
+}
+
+// SetClearColor sets the color the screen will become after a call to the
+// Clear function.
+func SetClearColor(r uint8, g uint8, b uint8) {
+
+	gl.ClearColor(gl.Float(r)/255, gl.Float(g)/255, gl.Float(b)/255, 1.0)
 }
 
 // UseEffect sets the given Effect object for use in the following draw
