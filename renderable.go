@@ -17,7 +17,7 @@ type Renderable struct {
 	verticies      []float32
 }
 
-func imageToBytes(img image.Image) []byte {
+func imageToBytes(img image.Image) (int, int, []byte) {
 
 	width := img.Bounds().Max.X - img.Bounds().Min.X
 	height := img.Bounds().Max.Y - img.Bounds().Min.Y
@@ -39,7 +39,7 @@ func imageToBytes(img image.Image) []byte {
 		}
 	}
 
-	return flippedBytes
+	return img.Bounds().Max.X, img.Bounds().Max.Y, flippedBytes
 }
 
 // NewRenderableFromData creates a new Renderable object using the given data,
@@ -102,7 +102,7 @@ func NewRenderableFromData(x, y, width, height float64, data []byte, clip int) (
 
 // NewRenderableFromImage creates a new Renderable object using the given PNG
 // image file.
-func NewRenderableFromImage(x, y, width, height float64, filename string, clip int) (Renderable, error) {
+func NewRenderableFromImage(x, y float64, filename string, clip int) (Renderable, error) {
 
 	var renderable Renderable
 
@@ -117,8 +117,8 @@ func NewRenderableFromImage(x, y, width, height float64, filename string, clip i
 		return renderable, err
 	}
 
-	byteData := imageToBytes(data)
-	renderable, err = NewRenderableFromData(x, y, width, height, byteData, clip)
+	width, height, byteData := imageToBytes(data)
+	renderable, err = NewRenderableFromData(x, y, float64(width), float64(height/clip), byteData, clip)
 	if err != nil {
 		return renderable, err
 	}
