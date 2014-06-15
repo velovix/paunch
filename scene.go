@@ -36,9 +36,9 @@ type SceneDecoder struct {
 
 // NewSceneEncoder creates a new SceneEncoder object that will save to the
 // given io.Writer.
-func NewSceneEncoder(w io.Writer) SceneEncoder {
+func NewSceneEncoder(w io.Writer) *SceneEncoder {
 
-	var sceneEncoder SceneEncoder
+	sceneEncoder := &SceneEncoder{}
 
 	sceneEncoder.encoder = json.NewEncoder(w)
 	sceneEncoder.header = make(map[string]interface{})
@@ -49,9 +49,9 @@ func NewSceneEncoder(w io.Writer) SceneEncoder {
 
 // NewSceneDecoder creates a new SceneDecoder object that will read from the
 // given io.Reader.
-func NewSceneDecoder(r io.Reader) SceneDecoder {
+func NewSceneDecoder(r io.Reader) *SceneDecoder {
 
-	var sceneDecoder SceneDecoder
+	sceneDecoder := &SceneDecoder{}
 
 	sceneDecoder.decoder = json.NewDecoder(r)
 	sceneDecoder.loaders = make([]Loader, 0)

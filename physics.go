@@ -30,9 +30,9 @@ type Physics struct {
 }
 
 // NewPhysics creates a new Physics object.
-func NewPhysics() Physics {
+func NewPhysics() *Physics {
 
-	var physics Physics
+	physics := &Physics{}
 	physics.usingMaxAccel = make(map[Axis]bool)
 	physics.usingMinAccel = make(map[Axis]bool)
 	physics.forces = make(map[string]force)

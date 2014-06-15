@@ -12,9 +12,9 @@ type Font struct {
 }
 
 // NewFont creates a new Font object based on the font file provided.
-func NewFont(fontFile string) (Font, error) {
+func NewFont(fontFile string) (*Font, error) {
 
-	var font Font
+	font := &Font{}
 
 	fontData, err := ioutil.ReadFile(fontFile)
 	if err != nil {

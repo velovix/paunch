@@ -44,9 +44,9 @@ func imageToBytes(img image.Image) (int, int, []byte) {
 
 // NewRenderableFromData creates a new Renderable object using the given data,
 // which is expected to be in RGBA format.
-func NewRenderableFromData(x, y, width, height float64, data []byte, clip int) (Renderable, error) {
+func NewRenderableFromData(x, y, width, height float64, data []byte, clip int) (*Renderable, error) {
 
-	var renderable Renderable
+	var renderable *Renderable
 
 	verticies := []float32{
 		float32(x), float32(y),
@@ -57,7 +57,7 @@ func NewRenderableFromData(x, y, width, height float64, data []byte, clip int) (
 		float32(x + width), float32(y),
 		float32(x), float32(y + height)}
 
-	renderable = Renderable{Triangles, len(verticies), 0, 0, nil, verticies}
+	renderable = &Renderable{Triangles, len(verticies), 0, 0, nil, verticies}
 
 	gl.GenBuffers(1, &renderable.vertexBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertexBuffer))
@@ -102,9 +102,9 @@ func NewRenderableFromData(x, y, width, height float64, data []byte, clip int) (
 
 // NewRenderableFromImage creates a new Renderable object using the given PNG
 // image file.
-func NewRenderableFromImage(x, y float64, filename string, clip int) (Renderable, error) {
+func NewRenderableFromImage(x, y float64, filename string, clip int) (*Renderable, error) {
 
-	var renderable Renderable
+	var renderable *Renderable
 
 	file, err := os.Open(filename)
 	if err != nil {

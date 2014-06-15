@@ -171,9 +171,9 @@ func loadWAV(filename string) (soundInfo, error) {
 
 // NewSound returns a new Sound object based on the provided file. As of right
 // now, NewSound only supports standard WAV files.
-func NewSound(filename string) (Sound, error) {
+func NewSound(filename string) (*Sound, error) {
 
-	var sound Sound
+	sound := &Sound{}
 
 	tmpSource := al.NewSource()
 	sound.source = &tmpSource
@@ -217,53 +217,53 @@ func NewSound(filename string) (Sound, error) {
 
 // Play plays the Sound object from it's current time. If the Sound has never
 // been played, that time will be at the beginning.
-func (sound Sound) Play() {
+func (sound *Sound) Play() {
 
 	sound.source.Play()
 }
 
 // Pause pauses the Sound object at it's current time. The Play method will
 // resume from where the Pause method left off.
-func (sound Sound) Pause() {
+func (sound *Sound) Pause() {
 
 	sound.source.Pause()
 }
 
 // Stop pauses the Sound object and brings it's time to the beginning.
-func (sound Sound) Stop() {
+func (sound *Sound) Stop() {
 
 	sound.source.Stop()
 }
 
 // SetLoop sets whether or not the Sound object should loop at the end of it's
 // sample. The default value is false.
-func (sound Sound) SetLoop(willLoop bool) {
+func (sound *Sound) SetLoop(willLoop bool) {
 
 	sound.source.SetLooping(willLoop)
 }
 
 // GetPlaying returns a SoundState value reflecting the playing state of the
 // Sound object.
-func (sound Sound) GetPlaying() SoundState {
+func (sound *Sound) GetPlaying() SoundState {
 
 	return SoundState(sound.source.State())
 }
 
 // GetGain returns the gain (volume) of the Sound object.
-func (sound Sound) GetGain() float32 {
+func (sound *Sound) GetGain() float32 {
 
 	return sound.source.GetGain()
 }
 
 // SetGain sets the gain (volume) of the Sound object. 1 is the default value.
-func (sound Sound) SetGain(gain float32) {
+func (sound *Sound) SetGain(gain float32) {
 
 	sound.source.SetGain(gain)
 }
 
 // Destroy cleans up the Sound object, which will no longer be playable. This
 // should be done after the Sound object is no longer needed.
-func (sound Sound) Destroy() {
+func (sound *Sound) Destroy() {
 
 	tmpSource := *sound.source
 	tmpBuffer := *sound.buffer

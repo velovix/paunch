@@ -273,9 +273,9 @@ func checkIfShaderFile(name string) ShaderType {
 
 // NewEffectFromDirectory creates a new Effect object based on the shader
 // directory given.
-func NewEffectFromDirectory(directory string) (Effect, error) {
+func NewEffectFromDirectory(directory string) (*Effect, error) {
 
-	var effect Effect
+	effect := &Effect{}
 
 	effect.uniforms = make(map[string]gl.Int)
 
@@ -327,9 +327,9 @@ func NewEffectFromDirectory(directory string) (Effect, error) {
 
 // NewEffectFromFiles creates a new Effect object based on the shader file
 // names given.
-func NewEffectFromFiles(filenames []string) (Effect, error) {
+func NewEffectFromFiles(filenames []string) (*Effect, error) {
 
-	var effect Effect
+	effect := &Effect{}
 
 	effect.uniforms = make(map[string]gl.Int)
 
@@ -377,9 +377,9 @@ func NewEffectFromFiles(filenames []string) (Effect, error) {
 // NewEffectFromStrings creates a new Effect object based on the given strings
 // containing GLSL shader script. The types values should correlate with the
 // type of shader the script is describing.
-func NewEffectFromStrings(text []string, types []ShaderType) (Effect, error) {
+func NewEffectFromStrings(text []string, types []ShaderType) (*Effect, error) {
 
-	var effect Effect
+	effect := &Effect{}
 
 	effect.uniforms = make(map[string]gl.Int)
 

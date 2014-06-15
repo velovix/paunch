@@ -22,15 +22,15 @@ type Text struct {
 	width  float64
 	height float64
 
-	renderable Renderable
+	renderable *Renderable
 	fontColor  *image.Uniform
 }
 
 // NewText creates a new Text object. The x and y positions represent the left
 // and bottom of text without tails.
-func NewText(x, y float64, font Font, fontSize float64, message string) (Text, error) {
+func NewText(x, y float64, font *Font, fontSize float64, message string) (*Text, error) {
 
-	var text Text
+	text := &Text{}
 
 	text.x = x
 	text.y = y - fontSize
@@ -55,7 +55,7 @@ func NewText(x, y float64, font Font, fontSize float64, message string) (Text, e
 }
 
 // Draw draws the Text object.
-func (text Text) Draw() {
+func (text *Text) Draw() {
 
 	text.renderable.Draw(0)
 }
