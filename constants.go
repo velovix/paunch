@@ -208,3 +208,18 @@ const (
 	Fragment  = ShaderType(gl.FRAGMENT_SHADER)
 	notShader = -1
 )
+
+// Shape is a value that represents a shape type.
+type Shape int
+
+// Shape IDs
+const (
+	ShapePoints        = Shape(gl.POINTS)
+	ShapeLines         = Shape(gl.LINES)
+	ShapeLineStrip     = Shape(gl.LINE_STRIP)
+	ShapeLineLoop      = Shape(gl.LINE_LOOP)
+	ShapeTriangles     = Shape(gl.TRIANGLES)
+	ShapeTriangleStrip = Shape(gl.TRIANGLE_STRIP)
+	ShapeTriangleFan   = Shape(gl.TRIANGLE_FAN)
+	ShapePolygon       = Shape(gl.POLYGON)
+)

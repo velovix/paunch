@@ -42,6 +42,26 @@ func imageToBytes(img image.Image) (int, int, []byte) {
 	return img.Bounds().Max.X, img.Bounds().Max.Y, flippedBytes
 }
 
+// NewRenderableFromShape creates a new Renderable object using the given shape
+// type and verticies. The shape is formed in the same way OpenGL shapes are
+// made.
+func NewRenderableFromShape(shape Shape, verticies []float64) (*Renderable, error) {
+
+	verticies32 := make([]float32, len(verticies))
+	for i, val := range verticies {
+		verticies32[i] = float32(val)
+	}
+
+	renderable := &Renderable{mode: int(shape), size: len(verticies), vertexBuffer: 0, texcoordBuffer: 0, texture: nil, verticies: verticies32}
+
+	gl.GenBuffers(1, &renderable.vertexBuffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertexBuffer))
+	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies32[0]), gl.DYNAMIC_DRAW)
+	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+
+	return renderable, checkForErrors()
+}
+
 // NewRenderableFromData creates a new Renderable object using the given data,
 // which is expected to be in RGBA format.
 func NewRenderableFromData(x, y, width, height float64, data []byte, clip int) (*Renderable, error) {
@@ -57,7 +77,7 @@ func NewRenderableFromData(x, y, width, height float64, data []byte, clip int) (
 		float32(x + width), float32(y),
 		float32(x), float32(y + height)}
 
-	renderable = &Renderable{Triangles, len(verticies), 0, 0, nil, verticies}
+	renderable = &Renderable{int(ShapeTriangles), len(verticies), 0, 0, nil, verticies}
 
 	gl.GenBuffers(1, &renderable.vertexBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(renderable.vertexBuffer))

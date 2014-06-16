@@ -6,17 +6,6 @@ import (
 	"runtime"
 )
 
-// Constants defining different shapes that can be created with a Renderable.
-const (
-	Points        = gl.POINTS
-	LineStrip     = gl.LINE_STRIP
-	LineLoop      = gl.LINE_LOOP
-	Lines         = gl.LINES
-	TriangleStrip = gl.TRIANGLE_STRIP
-	TriangleFan   = gl.TRIANGLE_FAN
-	Triangles     = gl.TRIANGLES
-)
-
 func checkForErrors() error {
 
 	err := OpenGLError{make([]gl.Enum, 0)}
