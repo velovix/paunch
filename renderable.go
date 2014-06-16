@@ -146,6 +146,26 @@ func NewRenderableFromImage(x, y float64, filename string, clip int) (*Renderabl
 	return renderable, nil
 }
 
+// NewRenderableFromRenderable creates a new Renderable object that uses the
+// same image data as the supplied Renderable object. This can serve to save a
+// lot of GPU memory when dealing with Renderable objects that use image data.
+// Renderable objects made from shapes will not benefit from being created
+// this way from a performance point of view.
+func NewRenderableFromRenderable(renderable *Renderable) *Renderable {
+
+	newRenderable := &Renderable{mode: renderable.mode, size: renderable.size, texcoordBuffer: renderable.texcoordBuffer,
+		texture: renderable.texture, verticies: make([]float32, len(renderable.verticies))}
+
+	copy(newRenderable.verticies, renderable.verticies)
+
+	gl.GenBuffers(1, &newRenderable.vertexBuffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(newRenderable.vertexBuffer))
+	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(newRenderable.verticies)*4), gl.Pointer(&newRenderable.verticies[0]), gl.DYNAMIC_DRAW)
+	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+
+	return newRenderable
+}
+
 func (renderable *Renderable) SetScaling(xScale, yScale float64) {
 
 	verticies := make([]float32, len(renderable.verticies))
