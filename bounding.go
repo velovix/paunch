@@ -55,7 +55,7 @@ func (bounding *Bounding) GetPosition() (x, y float64) {
 // DistanceToTangentPoint returns a Point with values equal to the distance
 // a given Point is from the closest tangent Point on the given side of the
 // Bounding.
-func (bounding *Bounding) DistanceToTangentPoint(point *Point, side Direction) *Point {
+func (bounding *Bounding) DistanceToTangentPoint(point *Point, side Direction) (float64, float64) {
 
 	switch side {
 	case Up:
@@ -91,7 +91,7 @@ func (bounding *Bounding) DistanceToTangentPoint(point *Point, side Direction) *
 		}
 		return getPointDistance(point, NewPoint(bounding.End.X, y))
 	default:
-		return NewPoint(0, 0)
+		return 0, 0
 	}
 }
 

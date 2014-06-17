@@ -6,11 +6,11 @@ type Point struct {
 	Y float64
 }
 
-func getPointDistance(point1, point2 *Point) *Point {
+func getPointDistance(point1, point2 *Point) (float64, float64) {
 
-	distance := NewPoint(point2.X-point1.X, point2.Y-point1.Y)
+	x, y := point2.X-point1.X, point2.Y-point1.Y
 
-	return distance
+	return x, y
 }
 
 // NewPoint creates a new Point object.
@@ -45,7 +45,7 @@ func (point *Point) GetPosition() (x, y float64) {
 // a given Point is from the closest tangent Point on the given side of the
 // Point. However, for a Point, this doesn't mean much. All this method returns
 // is the distance between a given Point and the Point itself.
-func (point *Point) DistanceToTangentPoint(point2 *Point, side Direction) *Point {
+func (point *Point) DistanceToTangentPoint(point2 *Point, side Direction) (float64, float64) {
 
 	return getPointDistance(point, point2)
 }

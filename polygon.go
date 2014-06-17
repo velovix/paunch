@@ -75,7 +75,7 @@ func (polygon *Polygon) GetPosition() (x, y float64) {
 // DistanceToTangentPoint returns a Point with values equal to the distance
 // a given Point is from the closest tangent Point on the given side of the
 // Polygon.
-func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) *Point {
+func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) (float64, float64) {
 
 	switch side {
 	case Up:
@@ -159,7 +159,7 @@ func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) *Po
 		}
 		return getPointDistance(point, right)
 	default:
-		return NewPoint(0, 0)
+		return 0, 0
 	}
 }
 

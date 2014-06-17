@@ -106,7 +106,7 @@ func (line *Line) GetPointFromY(y float64) (*Point, error) {
 // DistanceToTangentPoint returns a Point with values equal to the distance
 // a given Point is from the closest tangent Point on the given side of the
 // Line.
-func (line *Line) DistanceToTangentPoint(point *Point, side Direction) *Point {
+func (line *Line) DistanceToTangentPoint(point *Point, side Direction) (float64, float64) {
 
 	switch side {
 	case Up:
@@ -126,7 +126,7 @@ func (line *Line) DistanceToTangentPoint(point *Point, side Direction) *Point {
 		tangent, _ := line.GetPointFromY(y)
 		return getPointDistance(point, tangent)
 	default:
-		return NewPoint(0, 0)
+		return 0, 0
 	}
 }
 
