@@ -1,7 +1,7 @@
 package paunch
 
 import (
-	gl "github.com/chsc/gogl/gl33"
+	gl "github.com/chsc/gogl/gl32"
 	"image"
 	"image/png"
 	"os"

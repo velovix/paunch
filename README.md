@@ -13,7 +13,7 @@ Dependencies
 ------------
 Paunch needs a few packages before being built.
 
-	go get github.com/chsc/gogl/gl33
+	go get github.com/chsc/gogl/gl32
 	go get github.com/go-gl/glfw3
 	go get github.com/vova616/go-openal/openal
 	go get github.com/velovix/vorbis

@@ -1,4 +1,4 @@
-#version 330
+#version 320
 
 // Input
 smooth in vec2 f_texcoord;

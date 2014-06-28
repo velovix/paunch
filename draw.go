@@ -2,7 +2,7 @@ package paunch
 
 import (
 	"errors"
-	gl "github.com/chsc/gogl/gl33"
+	gl "github.com/chsc/gogl/gl32"
 	"runtime"
 )
 
