@@ -30,6 +30,12 @@ const (
 	Right
 )
 
+// Aliases for Direction IDs
+const (
+	Top    = Up
+	Bottom = Down
+)
+
 // Action corresponds to a key or button action.
 type Action int
 
