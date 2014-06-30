@@ -11,7 +11,7 @@ func init() {
 // Start starts the Paunch system by opening the window and beginning to
 // recieve input. Some Paunch operations may fail if this function has not yet
 // been called, including all drawing commands.
-func Start() error {
+func Start(version Version) error {
 
 	var err error
 
@@ -24,7 +24,7 @@ func Start() error {
 		return err
 	}
 
-	err = initDraw()
+	err = initDraw(version)
 	if err != nil {
 		return err
 	}

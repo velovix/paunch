@@ -229,3 +229,13 @@ const (
 	ShapeTriangleFan   = Shape(gl.TRIANGLE_FAN)
 	ShapePolygon       = Shape(gl.POLYGON)
 )
+
+type Version int
+
+// OpenGL Version Management
+const (
+	_ Version = iota
+	VersionNew
+	VersionOld
+	VersionAutomatic
+)
