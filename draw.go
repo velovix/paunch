@@ -6,6 +6,8 @@ import (
 	"runtime"
 )
 
+var paunchGLVersion Version
+
 func checkForErrors() error {
 
 	err := OpenGLError{make([]gl.Enum, 0)}
@@ -26,12 +28,38 @@ func checkForErrors() error {
 	return err
 }
 
-func initDraw() error {
+func initDraw(version Version) error {
 
 	runtime.LockOSThread()
 
-	if err := gl.Init(); err != nil {
-		return errors.New("initializing OpenGL")
+	if err := gl.InitVersion10(); err != nil {
+		return errors.New("initializing OpenGL 1.0")
+	} else if err = gl.InitVersion11(); err != nil {
+		return errors.New("initializing OpenGL 1.1")
+	} else if err = gl.InitVersion12(); err != nil {
+		return errors.New("initializing OpenGL 1.2")
+	} else if err = gl.InitVersion13(); err != nil {
+		return errors.New("initializing OpenGL 1.3")
+	} else if err = gl.InitVersion14(); err != nil {
+		return errors.New("initializing OpenGL 1.4")
+	} else if err = gl.InitVersion15(); err != nil {
+		return errors.New("initializing OpenGL 1.5")
+	} else if err = gl.InitVersion20(); err != nil {
+		return errors.New("initializing OpenGL 2.0")
+	} else if err = gl.InitVersion21(); err != nil {
+		return errors.New("initializing OpenGL 2.1")
+	}
+
+	paunchGLVersion = VersionOld
+
+	if version == VersionNew || version == VersionAutomatic {
+		if err := gl.InitVersion32(); err != nil {
+			if version == VersionNew {
+				return errors.New("initializing OpenGL 3.2")
+			}
+		} else {
+			paunchGLVersion = VersionNew
+		}
 	}
 
 	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
