@@ -17,7 +17,7 @@ type force struct {
 // such as a Renderable and a Collision, easier. It also allows for easy
 // management of multiple forces of movement at once.
 type Physics struct {
-	movers []Mover
+	Movers []Mover
 
 	accel    physicsPoint
 	maxAccel physicsPoint
@@ -38,21 +38,6 @@ func NewPhysics() *Physics {
 	physics.forces = make(map[string]force)
 
 	return physics
-}
-
-// SetMovers sets the Movers attached to the Physics object to the contents
-// of the slice. The Physics object does not make a seperate copy of the slice,
-// sochanges to the slice will affect the Physics object.
-func (physics *Physics) SetMovers(movers []Mover) {
-
-	physics.movers = movers
-}
-
-// GetMovers returns the slice containing the Mover objects attached to the
-// Physics object.
-func (physics *Physics) GetMovers() []Mover {
-
-	return physics.movers
 }
 
 // AddForce adds a constant force to the Physics object, which is taken
@@ -90,7 +75,7 @@ func (physics *Physics) DeleteForce(name string) {
 // Move moves all the members of the Physics object a specified distance.
 func (physics *Physics) Move(x, y float64) {
 
-	for _, val := range physics.movers {
+	for _, val := range physics.Movers {
 		val.Move(x, y)
 	}
 }
@@ -99,15 +84,15 @@ func (physics *Physics) Move(x, y float64) {
 // object's first Mover.
 func (physics *Physics) SetPosition(x, y float64) {
 
-	if len(physics.movers) == 0 {
+	if len(physics.Movers) == 0 {
 		return
 	}
 
-	xDisp, yDisp := physics.movers[0].GetPosition()
+	xDisp, yDisp := physics.Movers[0].GetPosition()
 	xDisp = x - xDisp
 	yDisp = y - yDisp
 
-	for _, val := range physics.movers {
+	for _, val := range physics.Movers {
 		val.Move(xDisp, yDisp)
 	}
 }
@@ -115,11 +100,11 @@ func (physics *Physics) SetPosition(x, y float64) {
 // GetPosition returns the position of the Physics object's first Mover.
 func (physics *Physics) GetPosition() (x, y float64) {
 
-	if len(physics.movers) == 0 {
+	if len(physics.Movers) == 0 {
 		return 0, 0
 	}
 
-	return physics.movers[0].GetPosition()
+	return physics.Movers[0].GetPosition()
 }
 
 // GetAcceleration returns the X and Y acceleration of the Physics object.
@@ -210,8 +195,8 @@ func (physics *Physics) Calculate() {
 		physics.accel.y = physics.minAccel.y
 	}
 
-	for i := range physics.movers {
-		physics.movers[i].Move(physics.accel.x, physics.accel.y)
+	for i := range physics.Movers {
+		physics.Movers[i].Move(physics.accel.x, physics.accel.y)
 	}
 
 	if math.Abs(physics.accel.x) >= math.Abs(physics.friction.x) {
