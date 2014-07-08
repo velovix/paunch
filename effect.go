@@ -96,7 +96,8 @@ func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 in
 }
 
 // SetVariableui sets a specified variable to the supplied integer to be passed
-// into an effect.
+// into an effect. This functionality is not avaliable if Paunch is initialized
+// with VersionOld.
 func (effect *Effect) SetVariableui(variable string, val uint) error {
 
 	if paunchGLVersion == VersionOld {
@@ -116,7 +117,8 @@ func (effect *Effect) SetVariableui(variable string, val uint) error {
 }
 
 // SetVariable2ui sets a specified variable to the two supplied integers to be
-// passed into an effect.
+// passed into an effect. This functionality is not avaliable if Paunch is
+// initialized with VersionOld.
 func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) error {
 
 	if paunchGLVersion == VersionOld {
@@ -136,7 +138,8 @@ func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) erro
 }
 
 // SetVariable3ui sets a specified variable to the three supplied integers to
-// be passed into an effect.
+// be passed into an effect. This functionality is not avaliable if Paunch is
+// initialized with VersionOld.
 func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3 uint) error {
 
 	if paunchGLVersion == VersionOld {
@@ -156,7 +159,8 @@ func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3
 }
 
 // SetVariable4ui sets a specified variable to the four supplied integers to
-// be passed into an effect.
+// be passed into an effect. This functionality is not avaliable if Paunch is
+// initialized with VersionOld.
 func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3 uint, val4 uint) error {
 
 	if paunchGLVersion == VersionOld {
