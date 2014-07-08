@@ -99,6 +99,10 @@ func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 in
 // into an effect.
 func (effect *Effect) SetVariableui(variable string, val uint) error {
 
+	if paunchGLVersion == VersionOld {
+		return errors.New("cannot use SetVariableui with the current OpenGL version")
+	}
+
 	var currEffect gl.Int
 	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
 	if gl.Uint(currEffect) != effect.program {
@@ -114,6 +118,10 @@ func (effect *Effect) SetVariableui(variable string, val uint) error {
 // SetVariable2ui sets a specified variable to the two supplied integers to be
 // passed into an effect.
 func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) error {
+
+	if paunchGLVersion == VersionOld {
+		return errors.New("cannot use SetVariable2ui with the current OpenGL version")
+	}
 
 	var currEffect gl.Int
 	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
@@ -131,6 +139,10 @@ func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) erro
 // be passed into an effect.
 func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3 uint) error {
 
+	if paunchGLVersion == VersionOld {
+		return errors.New("cannot use SetVariable3ui with the current OpenGL version")
+	}
+
 	var currEffect gl.Int
 	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
 	if gl.Uint(currEffect) != effect.program {
@@ -146,6 +158,10 @@ func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3
 // SetVariable4ui sets a specified variable to the four supplied integers to
 // be passed into an effect.
 func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3 uint, val4 uint) error {
+
+	if paunchGLVersion == VersionOld {
+		return errors.New("cannot use SetVariable4ui with the current OpenGL version")
+	}
 
 	var currEffect gl.Int
 	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
