@@ -30,7 +30,7 @@ func Start(version Version) (Version, error) {
 		return VersionOld, err
 	}
 
-	version, err := initDraw(version)
+	err = initDraw(version)
 	if err != nil {
 		return VersionOld, err
 	}
