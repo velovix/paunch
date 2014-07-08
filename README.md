@@ -5,9 +5,8 @@ Paunch is a 2D game engine written in Go.
 
 Development Status
 ------------------
-Paunch is still heavily in development, and lacks the key features and proper
-testing that characterizes a solid game engine. Please check back frequently,
-as work is being done on Paunch almost every day.
+Paunch is nearing a stable release. There may still be minor API changes, but
+hopefully future changes will either be bug fixes or new features.
 
 Dependencies
 ------------
