@@ -193,6 +193,7 @@ func (renderable *Renderable) Draw(frame int) error {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, renderable.vertexBuffer)
 	gl.VertexAttribPointer(gl.Uint(0), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
+	gl.BindAttribLocation(paunchEffect.program, gl.Uint(0), gl.GLString("position"))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
 	if renderable.texcoordBuffer != 0 {
@@ -200,6 +201,7 @@ func (renderable *Renderable) Draw(frame int) error {
 
 		gl.BindBuffer(gl.ARRAY_BUFFER, renderable.texcoordBuffer)
 		gl.VertexAttribPointer(gl.Uint(1), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
+		gl.BindAttribLocation(paunchEffect.program, gl.Uint(0), gl.GLString("texcoord"))
 		gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
 		gl.BindTexture(gl.TEXTURE_2D, renderable.texture[frame])

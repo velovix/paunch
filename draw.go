@@ -7,6 +7,7 @@ import (
 )
 
 var paunchGLVersion Version
+var paunchEffect *Effect
 
 func checkForErrors() error {
 
@@ -94,6 +95,8 @@ func UseEffect(effect *Effect) error {
 
 	effect.uniforms = make(map[string]gl.Int)
 
+	paunchEffect = effect
+
 	return checkForErrors()
 }
 
@@ -101,4 +104,5 @@ func UseEffect(effect *Effect) error {
 func DisableEffects() {
 
 	gl.UseProgram(0)
+	paunchEffect = nil
 }
