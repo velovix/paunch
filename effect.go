@@ -3,7 +3,7 @@ package paunch
 import (
 	"errors"
 	"fmt"
-	gl "github.com/chsc/gogl/gl32"
+	"github.com/velovix/gl"
 	"io/ioutil"
 	"strings"
 )

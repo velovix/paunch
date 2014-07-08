@@ -2,7 +2,7 @@ package paunch
 
 import (
 	"errors"
-	gl "github.com/chsc/gogl/gl32"
+	"github.com/velovix/gl"
 	"runtime"
 )
 
@@ -48,6 +48,8 @@ func initDraw(version Version) error {
 		return errors.New("initializing OpenGL 2.0")
 	} else if err = gl.InitVersion21(); err != nil {
 		return errors.New("initializing OpenGL 2.1")
+	} else if err = gl.InitLegacy(); err != nil {
+		return errors.New("initializing OpenGL legacy functions")
 	}
 
 	paunchGLVersion = VersionOld
