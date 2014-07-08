@@ -16,7 +16,10 @@ Paunch requires a few C libraries to be installed before use.
 Paunch needs the GLFW3 library installed to build correctly, which you can find
 on their website [here](www.glfw.org). Make sure you build GLFW3 as a _shared
 library_. When using cmake, you have to include the `-DBUILD_SHARED_LIBS=on`
-flag.
+flag. You may also want to include the `-GLFW_USE_OPTIMUS_HPG=on` flag if you
+are on a system with Nvidia Optimus in order to force Optimus to use the
+dedicated graphics card. Intel integrated graphics sometimes have trouble
+initializing legacy OpenGL functions.
 
 Paunch also requires the OpenAL library to be installed. You can find a
 download [here](http://kcat.strangesoft.net/openal.html).
