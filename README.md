@@ -52,3 +52,7 @@ Features
 To Do
 -----
 - ???
+
+Known Issues
+------------
+- Intel HD Graphics 4000 may not initialize OpenGL correctly
