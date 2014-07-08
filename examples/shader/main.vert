@@ -1,11 +1,11 @@
-#version 320
+#version 120
 
 // Inputs
-layout(location = 0) in vec4 position;
-layout(location = 1) in vec2 texcoord;
+attribute vec4 position;
+attribute vec2 texcoord;
 
 // Outputs
-smooth out vec2 f_texcoord;
+varying vec2 f_texcoord;
 
 uniform vec2 screen_size;
 
@@ -26,6 +26,7 @@ void main() {
 
 	vertex = adjustScreenPixels(vertex);
 
+	gl_TexCoord[0].st = texcoord;
 	f_texcoord = texcoord;
 	gl_Position = vertex;
 }

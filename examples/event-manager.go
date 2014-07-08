@@ -60,7 +60,7 @@ func main() {
 	paunch.SetWindowSize(640, 480)
 	paunch.SetWindowTitle("Use the arrow keys to move the object!")
 
-	err := paunch.Start()
+	_, err := paunch.Start(paunch.VersionAutomatic)
 	if err != nil {
 		panic(err)
 	}
@@ -75,8 +75,8 @@ func main() {
 	player := NewPlayer(288, 208)
 
 	eventManager = paunch.NewEventManager()
-	eventManager.SetObjects([]interface{}{&player}) // Add the Player object to the EventManager's object list.
-	eventManager.GetUserEvents(true)                // Set the EventManager to automatically respond to user events.
+	eventManager.Objects = []interface{}{&player} // Add the Player object to the EventManager's object list.
+	eventManager.GetUserEvents(true)              // Set the EventManager to automatically respond to user events.
 
 	lastFrame := time.Now()
 
