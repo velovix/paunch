@@ -29,8 +29,8 @@ Once you have the dependencies installed, just run go get!
 
 Notes
 -----
-As of right now, Paunch requires that your graphics card supports OpenGL 3.2 or
-higher. This is a limitation I hope to get rid of as soon as possible.
+Your graphics card must support at least OpenGL 2.1 or you will get an error
+complaining that OpenGL could not be initialized.
 
 Features
 --------
@@ -44,9 +44,8 @@ Features
 - Easy event management through object polling
 - Easy menu management
 - Music and sound effect support
-- More to come!
+- Flexible OpenGL version support
 
 To Do
 -----
-- Support for pre-3.0 OpenGL versions
-- Probably more...
+- ???
