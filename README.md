@@ -11,25 +11,26 @@ as work is being done on Paunch almost every day.
 
 Dependencies
 ------------
-Paunch needs a few packages before being built.
+Paunch requires a few C libraries to be installed before use.
 
-	go get github.com/chsc/gogl/gl32
-	go get github.com/go-gl/glfw3
-	go get github.com/vova616/go-openal/openal
-	go get github.com/velovix/vorbis
+Paunch needs the GLFW3 library installed to build correctly, which you can find
+on their website [here](www.glfw.org). Make sure you build GLFW3 as a _shared
+library_. When using cmake, you have to include the `-DBUILD_SHARED_LIBS=on`
+flag.
 
-The package `glfw3` needs the C glfw3 library installed to build correctly. See
-[their repository](http://github.com/go-gl/glfw3) for more information.
-
-The package `go-openal` also requires it's respective C library, which is,
-naturally, `OpenAL`. Visit [their website](http://openal-soft.org/) for a
-download link and installation instructions.
+Paunch also requires the OpenAL library to be installed. You can find a
+download [here](http://kcat.strangesoft.net/openal.html).
 
 Installation
 ------------
 Once you have the dependencies installed, just run go get!
 
 	go get github.com/velovix/paunch
+
+Notes
+-----
+As of right now, Paunch requires that your graphics card supports OpenGL 3.2 or
+higher. This is a limitation I hope to get rid of as soon as possible.
 
 Features
 --------
