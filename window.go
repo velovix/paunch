@@ -2,8 +2,8 @@ package paunch
 
 import (
 	"errors"
-	gl "github.com/chsc/gogl/gl32"
 	glfw "github.com/go-gl/glfw3"
+	"github.com/velovix/gl"
 )
 
 type _Window struct {

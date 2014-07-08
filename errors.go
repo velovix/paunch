@@ -2,7 +2,7 @@ package paunch
 
 import (
 	"fmt"
-	gl "github.com/chsc/gogl/gl32"
+	"github.com/velovix/gl"
 )
 
 // LineGetPointFromErrorType are the types of errors a LineGetPointFromError
