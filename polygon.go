@@ -173,27 +173,39 @@ func (polygon *Polygon) OnPoint(point *Point) bool {
 	ray := NewLine(NewPoint(math.Floor(point.X), math.Floor(point.Y)),
 		NewPoint(math.Floor(point.X+(polygon.bounds.End.X-polygon.bounds.Start.X)), math.Floor(point.Y)))
 
+	c := make(chan int, len(polygon.Lines))
 	intersects := 0
 	for _, val := range polygon.Lines {
-		intersectPnt := getLineIntersection(ray, val)
-		if intersectPnt == nil {
-			continue
-		} else {
-			isOnVertex := false
-			if intersectPnt.OnPoint(val.Start) && val.End.Y < intersectPnt.Y {
-				intersects++
-				isOnVertex = true
-			} else if intersectPnt.OnPoint(val.End) && val.Start.Y < intersectPnt.Y {
-				intersects++
-				isOnVertex = true
-			} else if intersectPnt.OnPoint(val.End) || intersectPnt.OnPoint(val.Start) {
-				isOnVertex = true
-			}
+		val := val
+		go func() {
+			intersectPnt := getLineIntersection(ray, val)
+			if intersectPnt == nil {
+				c <- 0
+				return
+			} else {
+				intersectCnt := 0
+				isOnVertex := false
+				if intersectPnt.OnPoint(val.Start) && val.End.Y < intersectPnt.Y {
+					intersectCnt++
+					isOnVertex = true
+				} else if intersectPnt.OnPoint(val.End) && val.Start.Y < intersectPnt.Y {
+					intersectCnt++
+					isOnVertex = true
+				} else if intersectPnt.OnPoint(val.End) || intersectPnt.OnPoint(val.Start) {
+					isOnVertex = true
+				}
 
-			if !isOnVertex {
-				intersects++
+				if !isOnVertex {
+					intersectCnt++
+				}
+
+				c <- intersectCnt
 			}
-		}
+		}()
+	}
+
+	for i := 0; i < len(polygon.Lines); i++ {
+		intersects += <-c
 	}
 
 	if intersects%2 == 0 {
