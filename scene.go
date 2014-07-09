@@ -24,14 +24,14 @@ type Saver interface {
 type SceneEncoder struct {
 	encoder *json.Encoder
 	header  map[string]interface{}
-	savers  []Saver
+	Savers  []Saver
 }
 
 // SceneDecoder reads from a JSON file as created by a SceneEncoder object.
 type SceneDecoder struct {
 	decoder         *json.Decoder
 	hasHeaderLoaded bool
-	loaders         []Loader
+	Loaders         []Loader
 }
 
 // NewSceneEncoder creates a new SceneEncoder object that will save to the
@@ -42,7 +42,7 @@ func NewSceneEncoder(w io.Writer) *SceneEncoder {
 
 	sceneEncoder.encoder = json.NewEncoder(w)
 	sceneEncoder.header = make(map[string]interface{})
-	sceneEncoder.savers = make([]Saver, 0)
+	sceneEncoder.Savers = make([]Saver, 0)
 
 	return sceneEncoder
 }
@@ -54,23 +54,9 @@ func NewSceneDecoder(r io.Reader) *SceneDecoder {
 	sceneDecoder := &SceneDecoder{}
 
 	sceneDecoder.decoder = json.NewDecoder(r)
-	sceneDecoder.loaders = make([]Loader, 0)
+	sceneDecoder.Loaders = make([]Loader, 0)
 
 	return sceneDecoder
-}
-
-// SetLoaders sets the list of Loader objects that will be prompted during
-// a call to Load.
-func (sceneDecoder *SceneDecoder) SetLoaders(loaders []Loader) {
-
-	sceneDecoder.loaders = loaders
-}
-
-// SetSavers sets the list of Saver objects that will be prompted during
-// a call to Save.
-func (sceneEncoder *SceneEncoder) SetSavers(savers []Saver) {
-
-	sceneEncoder.savers = savers
 }
 
 // GetHeader returns the header information from the file.
@@ -121,7 +107,7 @@ func (sceneDecoder *SceneDecoder) Load() error {
 	}
 
 	used := make([]bool, len(data))
-	for _, obj := range sceneDecoder.loaders {
+	for _, obj := range sceneDecoder.Loaders {
 		for j, val := range data {
 			if !used[j] && obj.LoadScene(val) {
 				used[j] = true
@@ -136,8 +122,8 @@ func (sceneDecoder *SceneDecoder) Load() error {
 			usedCnt++
 		}
 	}
-	if usedCnt < len(sceneDecoder.loaders) {
-		return fmt.Errorf("some objects did not have corresponding data: %v used, %v total", usedCnt, len(sceneDecoder.loaders))
+	if usedCnt < len(sceneDecoder.Loaders) {
+		return fmt.Errorf("some objects did not have corresponding data: %v used, %v total", usedCnt, len(sceneDecoder.Loaders))
 	}
 
 	return nil
@@ -167,7 +153,7 @@ func (sceneEncoder *SceneEncoder) Save() error {
 		}
 	}
 
-	for _, val := range sceneEncoder.savers {
+	for _, val := range sceneEncoder.Savers {
 		err = sceneEncoder.encoder.Encode(val.SaveScene())
 		if err != nil {
 			return err
