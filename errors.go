@@ -33,7 +33,7 @@ func (err LineGetPointFromError) Error() string {
 	case UndefinedSlopeError:
 		return "no valid Point found on Line with undefined slope"
 	default:
-		return fmt.Sprintf("unknown error %i", err.Type)
+		return fmt.Sprintf("unknown error %v", err.Type)
 	}
 }
 
@@ -67,7 +67,7 @@ func (err OpenGLError) Error() string {
 		case 255:
 			message += "..."
 		default:
-			message += fmt.Sprintf("Unknown error %i ", val)
+			message += fmt.Sprintf("Unknown error %v ", val)
 		}
 	}
 
