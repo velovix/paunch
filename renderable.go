@@ -166,6 +166,9 @@ func NewRenderableFromRenderable(renderable *Renderable) *Renderable {
 	return newRenderable
 }
 
+// SetScaling sets the scaling factor of the Renderable object. For instance,
+// an x and y scale value of two will make the Renderable object twice as
+// large.
 func (renderable *Renderable) SetScaling(xScale, yScale float64) {
 
 	verticies := make([]float32, len(renderable.verticies))

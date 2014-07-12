@@ -230,6 +230,7 @@ const (
 	ShapePolygon       = Shape(gl.POLYGON)
 )
 
+// Version is a value that represents an OpenGL version.
 type Version int
 
 // OpenGL Version Management

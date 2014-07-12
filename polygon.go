@@ -182,25 +182,25 @@ func (polygon *Polygon) OnPoint(point *Point) bool {
 			if intersectPnt == nil {
 				c <- 0
 				return
-			} else {
-				intersectCnt := 0
-				isOnVertex := false
-				if intersectPnt.OnPoint(val.Start) && val.End.Y < intersectPnt.Y {
-					intersectCnt++
-					isOnVertex = true
-				} else if intersectPnt.OnPoint(val.End) && val.Start.Y < intersectPnt.Y {
-					intersectCnt++
-					isOnVertex = true
-				} else if intersectPnt.OnPoint(val.End) || intersectPnt.OnPoint(val.Start) {
-					isOnVertex = true
-				}
-
-				if !isOnVertex {
-					intersectCnt++
-				}
-
-				c <- intersectCnt
 			}
+
+			intersectCnt := 0
+			isOnVertex := false
+			if intersectPnt.OnPoint(val.Start) && val.End.Y < intersectPnt.Y {
+				intersectCnt++
+				isOnVertex = true
+			} else if intersectPnt.OnPoint(val.End) && val.Start.Y < intersectPnt.Y {
+				intersectCnt++
+				isOnVertex = true
+			} else if intersectPnt.OnPoint(val.End) || intersectPnt.OnPoint(val.Start) {
+				isOnVertex = true
+			}
+
+			if !isOnVertex {
+				intersectCnt++
+			}
+
+			c <- intersectCnt
 		}()
 	}
 
