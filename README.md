@@ -1,6 +1,7 @@
 Paunch
 ======
 
+[![GoDoc](https://godoc.org/github.com/velovix/paunch?status.svg)](https://godoc.org/github.com/velovix/paunch)
 Paunch is a 2D game engine written in Go.
 
 Development Status
@@ -28,6 +29,14 @@ Installation
 Once you have the dependencies installed, just run go get!
 
 	go get github.com/velovix/paunch
+
+Usage
+-----
+Please take a look at the files in the examples directory if you are looking
+for help with getting started. The automatically generated documentation found
+[here](https://godoc.org/github.com/velovix/paunch) is also a very helpful
+reference. I will make an official guide to Paunch when I finish a stable
+release, but in the mean time, feel free to email me with any questions!
 
 Notes
 -----
