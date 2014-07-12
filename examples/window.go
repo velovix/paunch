@@ -15,7 +15,7 @@ func main() {
 	paunch.SetWindowTitle("Test Window")
 
 	// Starts Paunch, initializing things and opening the window
-	_, err := paunch.Start(paunch.VersionAutomatic)
+	err := paunch.Start(paunch.VersionAutomatic)
 	if err != nil {
 		panic(err)
 	}

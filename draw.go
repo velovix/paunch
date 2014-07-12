@@ -71,6 +71,13 @@ func initDraw(version Version) error {
 	return checkForErrors()
 }
 
+// GetVersion returns the current OpenGL version being used, which would either
+// be VersionOld or VersionNew.
+func GetVersion() Version {
+
+	return paunchGLVersion
+}
+
 // Clear clears the pixels on screen. This should probably be called before
 // every new frame.
 func Clear() error {

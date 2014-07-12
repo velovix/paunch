@@ -18,7 +18,7 @@ func main() {
 	paunch.SetWindowSize(640, 480)
 	paunch.SetWindowTitle("Test Window")
 
-	_, err := paunch.Start(paunch.VersionAutomatic)
+	err := paunch.Start(paunch.VersionAutomatic)
 	if err != nil {
 		panic(err)
 	}

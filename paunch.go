@@ -15,9 +15,8 @@ func init() {
 // Paunch functionalities are not avaliable in this version. VersionNew
 // initializes OpenGL 3.0, where all functionalities are avaliable.
 // VersionAutomatic initializes the highest OpenGL version that the graphics
-// chip will support. Start returns the resulting version and an error, if any.
-// The returned version may not be accurate if Start results in an error.
-func Start(version Version) (Version, error) {
+// chip will support.
+func Start(version Version) error {
 
 	var err error
 

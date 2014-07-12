@@ -60,7 +60,7 @@ func main() {
 	paunch.SetWindowSize(640, 480)
 	paunch.SetWindowTitle("Use the arrow keys to move the object!")
 
-	_, err := paunch.Start(paunch.VersionAutomatic)
+	err := paunch.Start(paunch.VersionAutomatic)
 	if err != nil {
 		panic(err)
 	}
