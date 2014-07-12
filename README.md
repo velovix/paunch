@@ -1,7 +1,5 @@
-Paunch
+Paunch [![GoDoc](https://godoc.org/github.com/velovix/paunch?status.svg)](https://godoc.org/github.com/velovix/paunch)
 ======
-
-[![GoDoc](https://godoc.org/github.com/velovix/paunch?status.svg)](https://godoc.org/github.com/velovix/paunch)
 Paunch is a 2D game engine written in Go.
 
 Development Status
