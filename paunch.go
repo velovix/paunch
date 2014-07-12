@@ -22,24 +22,24 @@ func Start(version Version) error {
 
 	err = initWindows()
 	if err != nil {
-		return VersionOld, err
+		return err
 	}
 	err = paunchWindow.open()
 	if err != nil {
-		return VersionOld, err
+		return err
 	}
 
 	err = initDraw(version)
 	if err != nil {
-		return VersionOld, err
+		return err
 	}
 
 	err = startAudio()
 	if err != nil {
-		return paunchGLVersion, err
+		return err
 	}
 
-	return paunchGLVersion, nil
+	return nil
 }
 
 // Stop safely closes the Paunch instance.
