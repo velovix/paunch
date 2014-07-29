@@ -9,8 +9,7 @@ import (
 
 const dpi = 72
 
-// Text is an object that represents drawable text. Text is used similarly to
-// Renderable objects.
+// Text is an object that represents drawable text.
 type Text struct {
 	message string
 
@@ -22,8 +21,8 @@ type Text struct {
 	width  float64
 	height float64
 
-	renderable *Renderable
-	fontColor  *image.Uniform
+	sprite    *Sprite
+	fontColor *image.Uniform
 }
 
 // NewText creates a new Text object. The x and y positions represent the left
@@ -57,7 +56,7 @@ func NewText(x, y float64, font *Font, fontSize float64, message string) (*Text,
 // Draw draws the Text object.
 func (text *Text) Draw() {
 
-	text.renderable.Draw(0)
+	text.sprite.Draw(0)
 }
 
 // SetMessage changes the message displayed by the Text object.
@@ -110,7 +109,7 @@ func (text *Text) Move(x, y float64) {
 	text.x += x
 	text.y += y
 
-	text.renderable.Move(x, y)
+	text.sprite.Move(x, y)
 }
 
 // SetPosition sets the Text object's position to the specified point.
@@ -119,7 +118,7 @@ func (text *Text) SetPosition(x, y float64) {
 	text.x = x
 	text.y = y - text.fontSize
 
-	text.renderable.SetPosition(x, y-text.fontSize)
+	text.sprite.SetPosition(x, y-text.fontSize)
 }
 
 func flipRGBA(src *image.RGBA) {
@@ -163,7 +162,7 @@ func (text *Text) updateText() error {
 		var err error
 		rgba := image.NewRGBA(image.Rect(0, 0, 1, 1))
 		draw.Draw(rgba, rgba.Bounds(), image.White, image.ZP, draw.Src)
-		text.renderable, err = NewRenderableFromData(text.x, text.y+text.fontSize, 1, 1, rgba.Pix, 1)
+		text.sprite, err = NewSprite(text.x, text.y+text.fontSize, 1, 1, rgba.Pix, 1)
 		if err != nil {
 			return err
 		}
@@ -186,7 +185,7 @@ func (text *Text) updateText() error {
 	}
 
 	flipRGBA(rgba)
-	text.renderable, err = NewRenderableFromData(text.x, text.y, float64(width), float64(height), rgba.Pix, 1)
+	text.sprite, err = NewSprite(text.x, text.y, float64(width), float64(height), rgba.Pix, 1)
 	if err != nil {
 		return err
 	}

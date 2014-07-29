@@ -215,19 +215,19 @@ const (
 	notShader = -1
 )
 
-// Shape is a value that represents a shape type.
-type Shape int
+// ShapeType is a value that represents a shape type.
+type ShapeType int
 
 // Shape IDs
 const (
-	ShapePoints        = Shape(gl.POINTS)
-	ShapeLines         = Shape(gl.LINES)
-	ShapeLineStrip     = Shape(gl.LINE_STRIP)
-	ShapeLineLoop      = Shape(gl.LINE_LOOP)
-	ShapeTriangles     = Shape(gl.TRIANGLES)
-	ShapeTriangleStrip = Shape(gl.TRIANGLE_STRIP)
-	ShapeTriangleFan   = Shape(gl.TRIANGLE_FAN)
-	ShapePolygon       = Shape(gl.POLYGON)
+	ShapePoints        = ShapeType(gl.POINTS)
+	ShapeLines         = ShapeType(gl.LINES)
+	ShapeLineStrip     = ShapeType(gl.LINE_STRIP)
+	ShapeLineLoop      = ShapeType(gl.LINE_LOOP)
+	ShapeTriangles     = ShapeType(gl.TRIANGLES)
+	ShapeTriangleStrip = ShapeType(gl.TRIANGLE_STRIP)
+	ShapeTriangleFan   = ShapeType(gl.TRIANGLE_FAN)
+	ShapePolygon       = ShapeType(gl.POLYGON)
 )
 
 // Version is a value that represents an OpenGL version.
