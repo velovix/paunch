@@ -18,7 +18,7 @@ var (
 // A game object. The Player object will display test.png and be movable with
 // the arrow keys.
 type Player struct {
-	image *paunch.Renderable
+	image *paunch.Sprite
 }
 
 func NewPlayer(x, y float64) Player {
@@ -26,7 +26,7 @@ func NewPlayer(x, y float64) Player {
 	var player Player
 	var err error
 
-	player.image, err = paunch.NewRenderableFromImage(x, y, "./test.png", 1)
+	player.image, err = paunch.NewSpriteFromImage(x, y, "./test.png", 1)
 	if err != nil {
 		panic(err)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	image  *paunch.Renderable
+	image  *paunch.Sprite
 	effect *paunch.Effect
 )
 
@@ -32,8 +32,8 @@ func main() {
 	}
 	paunch.UseEffect(effect) // Set the Effect object to be used
 
-	// Create a new Renderable object for drawing test.png at x=288 y=208
-	image, err = paunch.NewRenderableFromImage(288, 208, "./test.png", 1)
+	// Create a new Sprite object for drawing test.png at x=288 y=208
+	image, err = paunch.NewSpriteFromImage(288, 208, "./test.png", 1)
 	if err != nil {
 		panic(err)
 	}
@@ -48,7 +48,7 @@ func main() {
 		// drawn.
 		paunch.Clear()
 
-		// Draws the Renderable object
+		// Draws the Sprite object
 		image.Draw(0)
 
 		paunch.UpdateDisplay()
