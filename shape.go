@@ -39,7 +39,7 @@ func NewShapeFromShape(copyShape *Shape) (*Shape, error) {
 	copy(shape.verticies, copyShape.verticies)
 
 	gl.GenBuffers(1, &shape.vertexBuffer)
-	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(shape.vertexBuffer))
+	gl.BindBuffer(gl.ARRAY_BUFFER, shape.vertexBuffer)
 	gl.BufferData(gl.ARRAY_BUFFER, gl.Sizeiptr(len(shape.verticies)*4), gl.Pointer(&shape.verticies[0]), gl.DYNAMIC_DRAW)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
@@ -74,16 +74,16 @@ func (shape *Shape) SetScaling(xScale, yScale float64) {
 func (shape *Shape) Draw() error {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, shape.vertexBuffer)
-	gl.VertexAttribPointer(gl.Uint(0), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
-	gl.BindAttribLocation(paunchEffect.program, gl.Uint(0), gl.GLString("position"))
+	vertexAttribLoc := gl.GetAttribLocation(paunchEffect.program, gl.GLString("position"))
+	gl.VertexAttribPointer(gl.Uint(vertexAttribLoc), 2, gl.FLOAT, gl.FALSE, 0, gl.Offset(nil, 0))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
-	gl.EnableVertexAttribArray(gl.Uint(0))
-	gl.DrawArrays(shape.mode, 0, gl.Sizei(shape.size))
-	gl.DisableVertexAttribArray(gl.Uint(0))
-	gl.DisableVertexAttribArray(gl.Uint(1))
+	gl.EnableVertexAttribArray(gl.Uint(vertexAttribLoc))
+	gl.DrawArrays(shape.mode, 0, gl.Sizei(shape.size/2))
+	gl.DisableVertexAttribArray(gl.Uint(vertexAttribLoc))
+	//gl.DisableVertexAttribArray(gl.Uint(1))
 
-	gl.BindTexture(gl.TEXTURE_2D, 0)
+	//gl.BindTexture(gl.TEXTURE_2D, 0)
 
 	return checkForErrors()
 }
