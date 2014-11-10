@@ -7,7 +7,7 @@ import (
 // Shape is an object that represents a vector shape, such as a triangle or
 // other polygon, that can be drawn on screen.
 type Shape struct {
-	mode         int
+	mode         gl.Enum
 	size         int
 	vertexBuffer gl.Uint
 	verticies    []float32
@@ -21,7 +21,7 @@ func NewShape(shapeType ShapeType, verticies []float64) (*Shape, error) {
 		verticies32[i] = float32(val)
 	}
 
-	shape := &Shape{mode: int(shapeType), size: len(verticies), vertexBuffer: 0, verticies: verticies32}
+	shape := &Shape{mode: gl.Enum(shapeType), size: len(verticies), vertexBuffer: 0, verticies: verticies32}
 
 	gl.GenBuffers(1, &shape.vertexBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(shape.vertexBuffer))
@@ -79,7 +79,7 @@ func (shape *Shape) Draw() error {
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
 	gl.EnableVertexAttribArray(gl.Uint(0))
-	gl.DrawArrays(gl.TRIANGLES, 0, gl.Sizei(shape.size))
+	gl.DrawArrays(shape.mode, 0, gl.Sizei(shape.size))
 	gl.DisableVertexAttribArray(gl.Uint(0))
 	gl.DisableVertexAttribArray(gl.Uint(1))
 
