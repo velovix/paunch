@@ -1,8 +1,8 @@
 package paunch
 
 import (
+	gl "github.com/chsc/gogl/gl21"
 	glfw "github.com/go-gl/glfw3"
-	"github.com/velovix/gl"
 	al "github.com/vova616/go-openal/openal"
 )
 
@@ -228,15 +228,4 @@ const (
 	ShapeTriangleStrip = ShapeType(gl.TRIANGLE_STRIP)
 	ShapeTriangleFan   = ShapeType(gl.TRIANGLE_FAN)
 	ShapePolygon       = ShapeType(gl.POLYGON)
-)
-
-// Version is a value that represents an OpenGL version.
-type Version int
-
-// OpenGL Version Management
-const (
-	_ Version = iota
-	VersionNew
-	VersionOld
-	VersionAutomatic
 )

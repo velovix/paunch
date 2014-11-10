@@ -8,13 +8,8 @@ func init() {
 
 // Start starts the Paunch system by opening the window and beginning to
 // recieve input. Some Paunch operations may fail if this function has not yet
-// been called, including all drawing commands. The version variable sets how
-// Paunch initializes OpenGL. VersionOld initializes OpenGL 2.1. A few
-// Paunch functionalities are not avaliable in this version. VersionNew
-// initializes OpenGL 3.0, where all functionalities are avaliable.
-// VersionAutomatic initializes the highest OpenGL version that the graphics
-// chip will support.
-func Start(version Version) error {
+// been called, including all drawing commands.
+func Start() error {
 
 	var err error
 
@@ -27,7 +22,7 @@ func Start(version Version) error {
 		return err
 	}
 
-	err = initDraw(version)
+	err = initDraw()
 	if err != nil {
 		return err
 	}

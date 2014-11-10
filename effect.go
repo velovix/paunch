@@ -3,7 +3,7 @@ package paunch
 import (
 	"errors"
 	"fmt"
-	"github.com/velovix/gl"
+	gl "github.com/chsc/gogl/gl21"
 	"io/ioutil"
 	"strings"
 )
@@ -92,90 +92,6 @@ func (effect *Effect) SetVariable4i(variable string, val1 int, val2 int, val3 in
 	effect.checkUniformVariable(variable)
 
 	gl.Uniform4i(effect.uniforms[variable], gl.Int(val1), gl.Int(val2), gl.Int(val3), gl.Int(val4))
-	return nil
-}
-
-// SetVariableui sets a specified variable to the supplied integer to be passed
-// into an effect. This functionality is not avaliable if Paunch is initialized
-// with VersionOld.
-func (effect *Effect) SetVariableui(variable string, val uint) error {
-
-	if paunchGLVersion == VersionOld {
-		return errors.New("cannot use SetVariableui with the current OpenGL version")
-	}
-
-	var currEffect gl.Int
-	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
-	if gl.Uint(currEffect) != effect.program {
-		return errors.New("effect is not currently in use")
-	}
-
-	effect.checkUniformVariable(variable)
-
-	gl.Uniform1ui(effect.uniforms[variable], gl.Uint(val))
-	return nil
-}
-
-// SetVariable2ui sets a specified variable to the two supplied integers to be
-// passed into an effect. This functionality is not avaliable if Paunch is
-// initialized with VersionOld.
-func (effect *Effect) SetVariable2ui(variable string, val1 uint, val2 uint) error {
-
-	if paunchGLVersion == VersionOld {
-		return errors.New("cannot use SetVariable2ui with the current OpenGL version")
-	}
-
-	var currEffect gl.Int
-	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
-	if gl.Uint(currEffect) != effect.program {
-		return errors.New("effect is not currently in use")
-	}
-
-	effect.checkUniformVariable(variable)
-
-	gl.Uniform2ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2))
-	return nil
-}
-
-// SetVariable3ui sets a specified variable to the three supplied integers to
-// be passed into an effect. This functionality is not avaliable if Paunch is
-// initialized with VersionOld.
-func (effect *Effect) SetVariable3ui(variable string, val1 uint, val2 uint, val3 uint) error {
-
-	if paunchGLVersion == VersionOld {
-		return errors.New("cannot use SetVariable3ui with the current OpenGL version")
-	}
-
-	var currEffect gl.Int
-	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
-	if gl.Uint(currEffect) != effect.program {
-		return errors.New("effect is not currently in use")
-	}
-
-	effect.checkUniformVariable(variable)
-
-	gl.Uniform3ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2), gl.Uint(val3))
-	return nil
-}
-
-// SetVariable4ui sets a specified variable to the four supplied integers to
-// be passed into an effect. This functionality is not avaliable if Paunch is
-// initialized with VersionOld.
-func (effect *Effect) SetVariable4ui(variable string, val1 uint, val2 uint, val3 uint, val4 uint) error {
-
-	if paunchGLVersion == VersionOld {
-		return errors.New("cannot use SetVariable4ui with the current OpenGL version")
-	}
-
-	var currEffect gl.Int
-	gl.GetIntegerv(gl.CURRENT_PROGRAM, &currEffect)
-	if gl.Uint(currEffect) != effect.program {
-		return errors.New("effect is not currently in use")
-	}
-
-	effect.checkUniformVariable(variable)
-
-	gl.Uniform4ui(effect.uniforms[variable], gl.Uint(val1), gl.Uint(val2), gl.Uint(val3), gl.Uint(val4))
 	return nil
 }
 

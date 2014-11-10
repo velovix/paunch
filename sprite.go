@@ -1,7 +1,7 @@
 package paunch
 
 import (
-	"github.com/velovix/gl"
+	gl "github.com/chsc/gogl/gl21"
 	"image"
 	"image/png"
 	"os"

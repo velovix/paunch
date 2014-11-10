@@ -2,7 +2,7 @@ package paunch
 
 import (
 	"fmt"
-	"github.com/velovix/gl"
+	gl "github.com/chsc/gogl/gl21"
 )
 
 // LineGetPointFromErrorType are the types of errors a LineGetPointFromError
@@ -62,8 +62,6 @@ func (err OpenGLError) Error() string {
 			message += "STACK_UNDERFLOW "
 		case gl.OUT_OF_MEMORY:
 			message += "OUT_OF_MEMORY "
-		case gl.INVALID_FRAMEBUFFER_OPERATION:
-			message += "INVALID_FRAMEBUFFER_OPERATION "
 		case 255:
 			message += "..."
 		default:

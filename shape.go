@@ -1,7 +1,7 @@
 package paunch
 
 import (
-	"github.com/velovix/gl"
+	gl "github.com/chsc/gogl/gl21"
 )
 
 // Shape is an object that represents a vector shape, such as a triangle or
