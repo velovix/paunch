@@ -11,6 +11,8 @@ type Shape struct {
 	size         int
 	vertexBuffer gl.Uint
 	verticies    []float32
+	scaleX       float64
+	scaleY       float64
 }
 
 // NewShape creates a new Shape object based on the verticies and shape type.
@@ -48,19 +50,22 @@ func NewShapeFromShape(copyShape *Shape) (*Shape, error) {
 
 // SetScaling sets the scaling factor of the Shape object. For instance, an x
 // and y scale value of two will make the Shape object twice as large.
-func (shape *Shape) SetScaling(xScale, yScale float64) {
+func (shape *Shape) SetScaling(scaleX, scaleY float64) {
+
+	shape.scaleX = scaleX
+	shape.scaleY = scaleY
 
 	verticies := make([]float32, len(shape.verticies))
 
-	xTransform := shape.verticies[0] - (shape.verticies[0] * float32(xScale))
-	yTransform := shape.verticies[1] - (shape.verticies[1] * float32(yScale))
+	xTransform := shape.verticies[0] - (shape.verticies[0] * float32(scaleX))
+	yTransform := shape.verticies[1] - (shape.verticies[1] * float32(scaleY))
 
 	for i := range verticies {
 		if i%2 == 0 {
-			verticies[i] = shape.verticies[i] * float32(xScale)
+			verticies[i] = shape.verticies[i] * float32(scaleX)
 			verticies[i] += xTransform
 		} else {
-			verticies[i] = shape.verticies[i] * float32(yScale)
+			verticies[i] = shape.verticies[i] * float32(scaleY)
 			verticies[i] += yTransform
 		}
 	}
@@ -91,13 +96,34 @@ func (shape *Shape) Draw() error {
 // Move moves the Shape object a specified distance.
 func (shape *Shape) Move(x, y float64) {
 
+	var verticies []float32
+
 	for i := 0; i < len(shape.verticies); i += 2 {
 		shape.verticies[i] += float32(x)
 		shape.verticies[i+1] += float32(y)
 	}
 
+	if shape.scaleX != 1 || shape.scaleY != 1 {
+		verticies = make([]float32, len(shape.verticies))
+
+		xTransform := shape.verticies[0] - (shape.verticies[0] * float32(shape.scaleX))
+		yTransform := shape.verticies[1] - (shape.verticies[1] * float32(shape.scaleY))
+
+		for i := range verticies {
+			if i%2 == 0 {
+				verticies[i] = shape.verticies[i] * float32(shape.scaleX)
+				verticies[i] += xTransform
+			} else {
+				verticies[i] = shape.verticies[i] * float32(shape.scaleY)
+				verticies[i] += yTransform
+			}
+		}
+	} else {
+		verticies = shape.verticies
+	}
+
 	gl.BindBuffer(gl.ARRAY_BUFFER, shape.vertexBuffer)
-	gl.BufferSubData(gl.ARRAY_BUFFER, 0, gl.Sizeiptr(len(shape.verticies)*4), gl.Pointer(&shape.verticies[0]))
+	gl.BufferSubData(gl.ARRAY_BUFFER, 0, gl.Sizeiptr(len(verticies)*4), gl.Pointer(&verticies[0]))
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 }
 
