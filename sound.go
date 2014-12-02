@@ -261,6 +261,14 @@ func (sound *Sound) SetGain(gain float32) {
 	sound.source.SetGain(gain)
 }
 
+// SetPitch sets the pitch modulation of the Sound object. 1 is the default
+// value. A reduction in pitch by half is equal to lowering the sound by one
+// octave, and vice versa when doubling pitch.
+func (sound *Sound) SetPitch(pitch float32) {
+
+	sound.source.SetPitch(pitch)
+}
+
 // Destroy cleans up the Sound object, which will no longer be playable. This
 // should be done after the Sound object is no longer needed.
 func (sound *Sound) Destroy() {
