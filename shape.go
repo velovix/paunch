@@ -23,7 +23,8 @@ func NewShape(shapeType ShapeType, verticies []float64) (*Shape, error) {
 		verticies32[i] = float32(val)
 	}
 
-	shape := &Shape{mode: gl.Enum(shapeType), size: len(verticies), vertexBuffer: 0, verticies: verticies32}
+	shape := &Shape{mode: gl.Enum(shapeType), size: len(verticies), vertexBuffer: 0, verticies: verticies32,
+		scaleX: 1, scaleY: 1}
 
 	gl.GenBuffers(1, &shape.vertexBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, gl.Uint(shape.vertexBuffer))
@@ -36,7 +37,8 @@ func NewShape(shapeType ShapeType, verticies []float64) (*Shape, error) {
 // NewShapeFromShape creates a copy of an existing Shape object.
 func NewShapeFromShape(copyShape *Shape) (*Shape, error) {
 
-	shape := &Shape{mode: copyShape.mode, size: copyShape.size, verticies: make([]float32, len(copyShape.verticies))}
+	shape := &Shape{mode: copyShape.mode, size: copyShape.size, verticies: make([]float32, len(copyShape.verticies)),
+		scaleX: copyShape.scaleX, scaleY: copyShape.scaleY}
 
 	copy(shape.verticies, copyShape.verticies)
 
