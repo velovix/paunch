@@ -1,124 +1,114 @@
 package paunch
 
-// Bounding is an object that represents a bounding box.
-type Bounding struct {
-	Start *Point
-	End   *Point
+// bounding is an object that represents a bounding box. It is meant to be
+// used through the Collider interface.
+type bounding struct {
+	start *point
+	end   *point
 }
 
-// NewBounding creates a new Bounding object.
-func NewBounding(start *Point, end *Point) *Bounding {
+func newBounding(start *point, end *point) *bounding {
 
-	var checkStart, checkEnd Point
-	if start.X >= end.X {
-		checkEnd.X = start.X
-		checkStart.X = end.X
+	var checkStart, checkEnd point
+	if start.x >= end.x {
+		checkEnd.x = start.x
+		checkStart.x = end.x
 	} else {
-		checkEnd.X = end.X
-		checkStart.X = start.X
+		checkEnd.x = end.x
+		checkStart.x = start.x
 	}
-	if start.Y >= end.Y {
-		checkEnd.Y = start.Y
-		checkStart.Y = end.Y
+	if start.y >= end.y {
+		checkEnd.y = start.y
+		checkStart.y = end.y
 	} else {
-		checkEnd.Y = end.Y
-		checkStart.Y = start.Y
+		checkEnd.y = end.y
+		checkStart.y = start.y
 	}
 
-	return &Bounding{Start: &checkStart, End: &checkEnd}
+	return &bounding{start: &checkStart, end: &checkEnd}
 }
 
-// Move moves the Bounding object a specified distance.
-func (bounding *Bounding) Move(x, y float64) {
+func (b *bounding) Move(x, y float64) {
 
-	bounding.Start.Move(x, y)
-	bounding.End.Move(x, y)
+	b.start.Move(x, y)
+	b.end.Move(x, y)
 }
 
-// SetPosition sets the position of the Bounding object with the start point as
-// the reference point.
-func (bounding *Bounding) SetPosition(x, y float64) {
+func (b *bounding) SetPosition(x, y float64) {
 
-	width := bounding.End.X - bounding.Start.X
-	height := bounding.End.Y - bounding.Start.Y
+	width := b.end.x - b.start.x
+	height := b.end.y - b.start.y
 
-	newBounding := NewBounding(NewPoint(x, y), NewPoint(x+width, y+height))
-	*bounding = *newBounding
+	newBounding := newBounding(newPoint(x, y), newPoint(x+width, y+height))
+	*b = *newBounding
 }
 
-// GetPosition returns the bottom left position of the Bounding object.
-func (bounding *Bounding) GetPosition() (x, y float64) {
+func (b *bounding) GetPosition() (x, y float64) {
 
-	return bounding.Start.X, bounding.Start.Y
+	return b.start.x, b.start.y
 }
 
-// DistanceToTangentPoint returns a Point with values equal to the distance
-// a given Point is from the closest tangent Point on the given side of the
-// Bounding.
-func (bounding *Bounding) DistanceToTangentPoint(point *Point, side Direction) (float64, float64) {
+func (b *bounding) DistanceToTangentPoint(x, y float64, side Direction) (float64, float64) {
 
 	switch side {
 	case Up:
-		x := point.X
-		if point.X < bounding.Start.X {
-			x = bounding.Start.X
-		} else if point.X > bounding.End.X {
-			x = bounding.End.X
+		sideX := x
+		if x < b.start.x {
+			sideX = b.start.x
+		} else if x > b.end.x {
+			sideX = b.end.x
 		}
-		return getPointDistance(point, NewPoint(x, bounding.End.Y))
+		return getPointDistance(newPoint(x, y), newPoint(sideX, b.end.y))
 	case Down:
-		x := point.X
-		if point.X < bounding.Start.X {
-			x = bounding.Start.X
-		} else if point.X > bounding.End.X {
-			x = bounding.End.X
+		sideX := x
+		if x < b.start.x {
+			sideX = b.start.x
+		} else if x > b.end.x {
+			sideX = b.end.x
 		}
-		return getPointDistance(point, NewPoint(x, bounding.Start.Y))
+		return getPointDistance(newPoint(x, y), newPoint(sideX, b.start.y))
 	case Left:
-		y := point.Y
-		if point.Y < bounding.Start.Y {
-			y = bounding.Start.Y
-		} else if point.Y > bounding.End.Y {
-			y = bounding.End.Y
+		sideY := y
+		if y < b.start.y {
+			sideY = b.start.y
+		} else if y > b.end.y {
+			sideY = b.end.y
 		}
-		return getPointDistance(point, NewPoint(bounding.Start.X, y))
+		return getPointDistance(newPoint(x, y), newPoint(b.start.x, sideY))
 	case Right:
-		y := point.Y
-		if point.Y < bounding.Start.Y {
-			y = bounding.Start.Y
-		} else if point.Y > bounding.End.Y {
-			y = bounding.End.Y
+		sideY := y
+		if y < b.start.y {
+			sideY = b.start.y
+		} else if y > b.end.y {
+			sideY = b.end.y
 		}
-		return getPointDistance(point, NewPoint(bounding.End.X, y))
+		return getPointDistance(newPoint(x, y), newPoint(b.end.x, sideY))
 	default:
 		return 0, 0
 	}
 }
 
-// OnPoint checks if a Point is on the Bounding object.
-func (bounding *Bounding) OnPoint(point *Point) bool {
+func (b *bounding) onPoint(p *point) bool {
 
-	if point.X >= bounding.Start.X && point.X <= bounding.End.X &&
-		point.Y >= bounding.Start.Y && point.Y <= bounding.End.Y {
+	if p.x >= b.start.x && p.x <= b.end.x &&
+		p.y >= b.start.y && p.y <= b.end.y {
 		return true
 	}
 
 	return false
 }
 
-// OnBounding checks if a Bounding is on the Bounding object.
-func (bounding *Bounding) OnBounding(bounding2 *Bounding) bool {
+func (b *bounding) onBounding(b2 *bounding) bool {
 
-	if bounding.Start.X > bounding2.End.X || bounding.End.X < bounding2.Start.X ||
-		bounding.Start.Y > bounding2.End.Y || bounding.End.Y < bounding2.Start.Y {
+	if b.start.x > b2.end.x || b.end.x < b2.start.x ||
+		b.start.y > b2.end.y || b.end.y < b2.start.y {
 		return false
 	}
 
 	return true
 }
 
-// OnBounding checks if a Bounding is on the Point object.
-func (point *Point) OnBounding(bounding *Bounding) bool {
+func (p *point) onBounding(b *bounding) bool {
 
-	return bounding.OnPoint(point)
+	return b.onPoint(p)
 }

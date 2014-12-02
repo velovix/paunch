@@ -4,181 +4,160 @@ import (
 	"math"
 )
 
-// Line is an object that represents a line segment.
-type Line struct {
-	Start  *Point
-	End    *Point
-	bounds *Bounding
+// line is an object that represents a line segment. It is meant to be used
+// through the collider interface.
+type line struct {
+	start  *point
+	end    *point
+	bounds *bounding
 
-	M float64
-	B float64
+	m float64
+	b float64
 }
 
-// NewLine creates a new line object. This is absolutely necissary before use.
-func NewLine(start, end *Point) *Line {
+func newLine(start, end *point) *line {
 
-	var calcStart, calcEnd *Point
-	if start.X > end.X {
-		calcStart = NewPoint(end.X, end.Y)
-		calcEnd = NewPoint(start.X, start.Y)
+	var calcStart, calcEnd *point
+	if start.x > end.x {
+		calcStart = newPoint(end.x, end.y)
+		calcEnd = newPoint(start.x, start.y)
 	} else {
-		calcStart = NewPoint(start.X, start.Y)
-		calcEnd = NewPoint(end.X, end.Y)
+		calcStart = newPoint(start.x, start.y)
+		calcEnd = newPoint(end.x, end.y)
 	}
 
-	line := &Line{Start: calcStart, End: calcEnd}
+	l := &line{start: calcStart, end: calcEnd}
 
-	line.bounds = NewBounding(line.Start, line.End)
+	l.bounds = newBounding(l.start, l.end)
 
-	line.M = getSlope(line.Start.X, line.Start.Y, line.End.X, line.End.Y)
-	line.B = line.Start.Y - (line.M * line.Start.X)
+	l.m = getSlope(l.start.x, l.start.y, l.end.x, l.end.y)
+	l.b = l.start.y - (l.m * l.start.x)
 
-	return line
+	return l
 }
 
-// Move moves the Line object a specified distance.
-func (line *Line) Move(x, y float64) {
+func (l *line) Move(x, y float64) {
 
-	line.Start.Move(x, y)
-	line.End.Move(x, y)
+	l.start.Move(x, y)
+	l.end.Move(x, y)
 
-	line.bounds.Move(x, y)
+	l.bounds.Move(x, y)
 
-	line.B = line.Start.Y - (line.M * line.Start.X)
+	l.b = l.start.y - (l.m * l.start.x)
 }
 
-// SetPosition sets the position of the Line object with the start point as the
-// reference point.
-func (line *Line) SetPosition(x, y float64) {
+func (l *line) SetPosition(x, y float64) {
 
-	xDisp := x - line.Start.X
-	yDisp := y - line.Start.Y
+	xDisp := x - l.start.x
+	yDisp := y - l.start.y
 
-	line.Move(xDisp, yDisp)
+	l.Move(xDisp, yDisp)
 }
 
-// GetPosition returns the starting position of the Line object.
-func (line *Line) GetPosition() (x, y float64) {
+func (l *line) GetPosition() (x, y float64) {
 
-	return line.Start.X, line.Start.Y
+	return l.start.x, l.start.y
 }
 
-// GetPointFromX returns a Point on the Line that corresponds to the given X
-// value. If the given X value is outside the area of the line, the method will
-// return the nearest Point and an error. If the slope of the line is
-// undefined, the method will return the highest Point on the Line and an
-// error.
-func (line *Line) GetPointFromX(x float64) (*Point, error) {
+func (l *line) getPointFromX(x float64) (*point, error) {
 
-	if x < line.bounds.Start.X {
-		return NewPoint(line.Start.X, line.Start.Y), LineGetPointFromError{x, line, OutsideLineRangeError}
-	} else if x > line.bounds.End.X {
-		return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{x, line, OutsideLineRangeError}
+	if x < l.bounds.start.x {
+		return newPoint(l.start.x, l.start.y), lineGetPointFromError{x, l, outsideLineRangeError}
+	} else if x > l.bounds.end.x {
+		return newPoint(l.end.x, l.end.y), lineGetPointFromError{x, l, outsideLineRangeError}
 	}
 
-	if math.IsInf(line.M, 0) {
-		return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{x, line, UndefinedSlopeError}
+	if math.IsInf(l.m, 0) {
+		return newPoint(l.end.x, l.end.y), lineGetPointFromError{x, l, undefinedSlopeError}
 	}
 
-	return NewPoint(x, (line.M*x)+line.B), nil
+	return newPoint(x, (l.m*x)+l.b), nil
 }
 
-// GetPointFromY returns a Point on the Line that corresponds to the given Y
-// value. If the given Y value is outside the area of the line, the method will
-// return the nearest Point and an error.
-func (line *Line) GetPointFromY(y float64) (*Point, error) {
+func (l *line) getPointFromY(y float64) (*point, error) {
 
-	if y < line.bounds.Start.Y || y > line.bounds.End.Y {
-		if math.Abs(line.Start.Y-y) < math.Abs(line.End.Y-y) {
-			return NewPoint(line.Start.X, line.Start.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
+	if y < l.bounds.start.y || y > l.bounds.end.y {
+		if math.Abs(l.start.y-y) < math.Abs(l.end.y-y) {
+			return newPoint(l.start.x, l.start.y), lineGetPointFromError{y, l, outsideLineRangeError}
 		}
 
-		return NewPoint(line.End.X, line.End.Y), LineGetPointFromError{y, line, OutsideLineRangeError}
+		return newPoint(l.end.x, l.end.y), lineGetPointFromError{y, l, outsideLineRangeError}
 	}
 
-	if math.IsInf(line.M, 0) {
-		return NewPoint(line.Start.X, y), nil
+	if math.IsInf(l.m, 0) {
+		return newPoint(l.start.x, y), nil
 	}
 
-	return NewPoint((y-line.B)/line.M, y), nil
+	return newPoint((y-l.b)/l.m, y), nil
 }
 
-// DistanceToTangentPoint returns a Point with values equal to the distance
-// a given Point is from the closest tangent Point on the given side of the
-// Line.
-func (line *Line) DistanceToTangentPoint(point *Point, side Direction) (float64, float64) {
+func (l *line) DistanceToTangentPoint(x, y float64, side Direction) (float64, float64) {
 
 	switch side {
 	case Up:
-		x := point.X
-		tangent, _ := line.GetPointFromX(x)
-		return getPointDistance(point, tangent)
+		tangent, _ := l.getPointFromX(x)
+		return getPointDistance(newPoint(x, y), tangent)
 	case Down:
-		x := point.X
-		tangent, _ := line.GetPointFromX(x)
-		return getPointDistance(point, tangent)
+		tangent, _ := l.getPointFromX(x)
+		return getPointDistance(newPoint(x, y), tangent)
 	case Left:
-		y := point.Y
-		tangent, _ := line.GetPointFromY(y)
-		return getPointDistance(point, tangent)
+		tangent, _ := l.getPointFromY(y)
+		return getPointDistance(newPoint(x, y), tangent)
 	case Right:
-		y := point.Y
-		tangent, _ := line.GetPointFromY(y)
-		return getPointDistance(point, tangent)
+		tangent, _ := l.getPointFromY(y)
+		return getPointDistance(newPoint(x, y), tangent)
 	default:
 		return 0, 0
 	}
 }
 
-func (bounding *Bounding) getLines() []*Line {
+func (b *bounding) getLines() []*line {
 
-	line := make([]*Line, 4)
+	line := make([]*line, 4)
 
-	line[0] = NewLine(NewPoint(bounding.Start.X, bounding.Start.Y), NewPoint(bounding.End.X, bounding.Start.Y))
-	line[1] = NewLine(NewPoint(bounding.End.X, bounding.Start.Y), NewPoint(bounding.End.X, bounding.End.Y))
-	line[2] = NewLine(NewPoint(bounding.End.X, bounding.End.Y), NewPoint(bounding.Start.X, bounding.End.Y))
-	line[3] = NewLine(NewPoint(bounding.Start.X, bounding.End.Y), NewPoint(bounding.Start.X, bounding.Start.Y))
+	line[0] = newLine(newPoint(b.start.x, b.start.y), newPoint(b.end.x, b.start.y))
+	line[1] = newLine(newPoint(b.end.x, b.start.y), newPoint(b.end.x, b.end.y))
+	line[2] = newLine(newPoint(b.end.x, b.end.y), newPoint(b.start.x, b.end.y))
+	line[3] = newLine(newPoint(b.start.x, b.end.y), newPoint(b.start.x, b.start.y))
 
 	return line
 }
 
-// OnPoint checks if a Point is on the Line object.
-func (line *Line) OnPoint(point *Point) bool {
+func (l *line) onPoint(p *point) bool {
 
-	if math.IsInf(line.M, 0) {
-		if point.Y >= line.bounds.Start.Y && point.Y <= line.bounds.End.Y &&
-			math.Abs(point.X-line.Start.X) < tolerance {
+	if math.IsInf(l.m, 0) {
+		if p.y >= l.bounds.start.y && p.y <= l.bounds.end.y &&
+			math.Abs(p.x-l.start.x) < tolerance {
 			return true
 		}
 
 		return false
 	}
 
-	if !point.OnBounding(line.bounds) {
+	if !p.onBounding(l.bounds) {
 		return false
 	}
 
-	if math.Abs(point.Y-((line.M*point.X)+line.B)) < tolerance {
+	if math.Abs(p.y-((l.m*p.x)+l.b)) < tolerance {
 		return true
 	}
 
 	return false
 }
 
-// OnBounding checks if a Bounding is on the Line object.
-func (line *Line) OnBounding(bounding *Bounding) bool {
+func (l *line) onBounding(b *bounding) bool {
 
-	if !bounding.OnBounding(line.bounds) {
+	if !b.onBounding(l.bounds) {
 		return false
 	}
 
-	if line.Start.OnBounding(bounding) || line.End.OnBounding(bounding) {
+	if l.start.onBounding(b) || l.end.onBounding(b) {
 		return true
 	}
 
-	boundLines := bounding.getLines()
-	for _, val := range boundLines {
-		if line.OnLine(val) {
+	boundlines := b.getLines()
+	for _, val := range boundlines {
+		if l.onLine(val) {
 			return true
 		}
 	}
@@ -186,58 +165,55 @@ func (line *Line) OnBounding(bounding *Bounding) bool {
 	return false
 }
 
-func getLineIntersection(line1, line2 *Line) *Point {
+func getLineIntersection(l1, l2 *line) *point {
 
-	if !line1.bounds.OnBounding(line2.bounds) {
+	if !l1.bounds.onBounding(l2.bounds) {
 		return nil
 	}
 
-	if line1.M == line2.M {
+	if l1.m == l2.m {
 		return nil
 	}
 
-	line1A := line1.End.Y - line1.Start.Y
-	line1B := line1.Start.X - line1.End.X
-	line1C := line1A*line1.Start.X + line1B*line1.Start.Y
+	l1A := l1.end.y - l1.start.y
+	l1B := l1.start.x - l1.end.x
+	l1C := l1A*l1.start.x + l1B*l1.start.y
 
-	line2A := line2.End.Y - line2.Start.Y
-	line2B := line2.Start.X - line2.End.X
-	line2C := line2A*line2.Start.X + line2B*line2.Start.Y
+	l2A := l2.end.y - l2.start.y
+	l2B := l2.start.x - l2.end.x
+	l2C := l2A*l2.start.x + l2B*l2.start.y
 
-	determinate := line1A*line2B - line2A*line1B
+	determinate := l1A*l2B - l2A*l1B
 
-	x := (line2B*line1C - line1B*line2C) / determinate
-	y := (line1A*line2C - line2A*line1C) / determinate
+	x := (l2B*l1C - l1B*l2C) / determinate
+	y := (l1A*l2C - l2A*l1C) / determinate
 
-	if x >= line1.Start.X && x <= line1.End.X && y >= line1.Start.Y && y <= line1.End.Y {
-		return NewPoint(x, y)
+	if x >= l1.start.x && x <= l1.end.x && y >= l1.start.y && y <= l1.end.y {
+		return newPoint(x, y)
 	}
 
 	return nil
 }
 
-// OnLine checks if a line is on the Line object.
-func (line *Line) OnLine(line2 *Line) bool {
+func (l *line) onLine(l2 *line) bool {
 
-	if !line.bounds.OnBounding(line2.bounds) {
+	if !l.bounds.onBounding(l2.bounds) {
 		return false
 	}
 
-	if intersection := getLineIntersection(line, line2); intersection != nil {
+	if intersection := getLineIntersection(l, l2); intersection != nil {
 		return true
 	}
 
 	return false
 }
 
-// OnLine checks if a Line is on the Bounding object.
-func (bounding *Bounding) OnLine(line *Line) bool {
+func (b *bounding) onLine(l *line) bool {
 
-	return line.OnBounding(bounding)
+	return l.onBounding(b)
 }
 
-// OnLine checks if a Line is on the Point object.
-func (point *Point) OnLine(line *Line) bool {
+func (p *point) onLine(l *line) bool {
 
-	return line.OnPoint(point)
+	return l.onPoint(p)
 }

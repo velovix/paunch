@@ -13,9 +13,9 @@ type force struct {
 	active    bool
 }
 
-// Physics is an object meant to make the movement of multiple related movers,
+// Physics is an object meant to make the Movement of multiple related Movers,
 // such as a Renderable and a Collision, easier. It also allows for easy
-// management of multiple forces of movement at once.
+// management of multiple forces of Movement at once.
 type Physics struct {
 	Movers []Mover
 
@@ -66,13 +66,13 @@ func (physics *Physics) DisableForce(name string) {
 	}
 }
 
-// DeleteForce removes a constant force from the Physics object.
+// DeleteForce reMoves a constant force from the Physics object.
 func (physics *Physics) DeleteForce(name string) {
 
 	delete(physics.forces, name)
 }
 
-// Move moves all the members of the Physics object a specified distance.
+// Move Moves all the members of the Physics object a specified distance.
 func (physics *Physics) Move(x, y float64) {
 
 	for _, val := range physics.Movers {
@@ -164,14 +164,14 @@ func (physics *Physics) SetMinAcceleration(force float64, axis Axis) {
 }
 
 // SetFriction sets the friction value of the Physics object. Friction is a
-// force that enfluences acceleration to move toward zero. This might be used
+// force that enfluences acceleration to Move toward zero. This might be used
 // to simulate the natural slowdown of an object rubbing against a surface.
 func (physics *Physics) SetFriction(forceX, forceY float64) {
 
 	physics.friction = physicsPoint{forceX, forceY}
 }
 
-// Calculate moves the Physics object given any specified constant forces,
+// Calculate Moves the Physics object given any specified constant forces,
 // calls to the Accelerate method, and any leftover acceleration. Then,
 // friction is applied to the resulting acceleration value.
 func (physics *Physics) Calculate() {

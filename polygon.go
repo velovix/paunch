@@ -4,178 +4,168 @@ import (
 	"math"
 )
 
-// Polygon is an object that represents a series of connected Lines that form
-// a shape.
-type Polygon struct {
-	Lines  []*Line
-	bounds *Bounding
+// polygon is an object that represents a series of connected lines that form
+// a shape. It is meant to be used through the Collider interface.
+type polygon struct {
+	lines  []*line
+	bounds *bounding
 }
 
-// NewPolygon creates a new Polygon object.
-func NewPolygon(points []*Point) *Polygon {
+func newPolygon(points []*point) *polygon {
 
-	var polygon Polygon
-	polygon.Lines = make([]*Line, len(points))
+	var poly polygon
+	poly.lines = make([]*line, len(points))
 
-	min := NewPoint(math.Inf(1), math.Inf(1))
-	max := NewPoint(math.Inf(-1), math.Inf(-1))
+	min := newPoint(math.Inf(1), math.Inf(1))
+	max := newPoint(math.Inf(-1), math.Inf(-1))
 
 	for i := 0; i < len(points); i++ {
 		if i < len(points)-1 {
-			polygon.Lines[i] = NewLine(points[i], points[i+1])
+			poly.lines[i] = newLine(points[i], points[i+1])
 		} else {
-			polygon.Lines[i] = NewLine(points[i], points[0])
+			poly.lines[i] = newLine(points[i], points[0])
 		}
 
-		if points[i].X > max.X {
-			max.X = points[i].X
+		if points[i].x > max.x {
+			max.x = points[i].x
 		}
-		if points[i].Y > max.Y {
-			max.Y = points[i].Y
+		if points[i].y > max.y {
+			max.y = points[i].y
 		}
-		if points[i].X < min.X {
-			min.X = points[i].X
+		if points[i].x < min.x {
+			min.x = points[i].x
 		}
-		if points[i].Y < min.Y {
-			min.Y = points[i].Y
+		if points[i].y < min.y {
+			min.y = points[i].y
 		}
 	}
 
-	polygon.bounds = NewBounding(min, max)
-	return &polygon
+	poly.bounds = newBounding(min, max)
+	return &poly
 }
 
-// Move moves the Polygon object a specified distance.
-func (polygon *Polygon) Move(x, y float64) {
+func (poly *polygon) Move(x, y float64) {
 
-	for _, val := range polygon.Lines {
+	for _, val := range poly.lines {
 		val.Move(x, y)
 	}
 
-	polygon.bounds.Move(x, y)
+	poly.bounds.Move(x, y)
 }
 
-// SetPosition sets the position of the Polygon object with the first specified
-// vertex as the start point.
-func (polygon *Polygon) SetPosition(x, y float64) {
+func (poly *polygon) SetPosition(x, y float64) {
 
-	xDisp := x - polygon.Lines[0].Start.X
-	yDisp := y - polygon.Lines[0].Start.Y
+	xDisp := x - poly.lines[0].start.x
+	yDisp := y - poly.lines[0].start.y
 
-	polygon.Move(xDisp, yDisp)
+	poly.Move(xDisp, yDisp)
 }
 
-// GetPosition returns the starting position of the first line of the Polygon
-// object.
-func (polygon *Polygon) GetPosition() (x, y float64) {
+func (poly *polygon) GetPosition() (x, y float64) {
 
-	return polygon.Lines[0].Start.X, polygon.Lines[0].Start.Y
+	return poly.lines[0].start.x, poly.lines[0].start.y
 }
 
-// DistanceToTangentPoint returns a Point with values equal to the distance
-// a given Point is from the closest tangent Point on the given side of the
-// Polygon.
-func (polygon *Polygon) DistanceToTangentPoint(point *Point, side Direction) (float64, float64) {
+func (poly *polygon) DistanceToTangentPoint(x, y float64, side Direction) (float64, float64) {
 
 	switch side {
 	case Up:
-		top := NewPoint(point.X, math.Inf(-1))
-		for _, val := range polygon.Lines {
-			linePnt, err := val.GetPointFromX(point.X)
-			if gpfErr, ok := err.(LineGetPointFromError); linePnt.Y > top.Y && (!ok || gpfErr.Type != OutsideLineRangeError) {
+		top := newPoint(x, math.Inf(-1))
+		for _, val := range poly.lines {
+			linePnt, err := val.getPointFromX(x)
+			if gpfErr, ok := err.(lineGetPointFromError); linePnt.y > top.y && (!ok || gpfErr.Type != outsideLineRangeError) {
 				top = linePnt
 			}
 		}
 
-		if !math.IsInf(top.Y, 0) {
-			return getPointDistance(point, top)
+		if !math.IsInf(top.y, 0) {
+			return getPointDistance(newPoint(x, y), top)
 		}
 
-		for _, val := range polygon.Lines {
-			linePnt, _ := val.GetPointFromX(point.X)
-			if linePnt.Y > top.Y {
+		for _, val := range poly.lines {
+			linePnt, _ := val.getPointFromX(x)
+			if linePnt.y > top.y {
 				top = linePnt
 			}
 		}
-		return getPointDistance(point, top)
+		return getPointDistance(newPoint(x, y), top)
 	case Down:
-		bottom := NewPoint(point.X, math.Inf(1))
-		for _, val := range polygon.Lines {
-			linePnt, err := val.GetPointFromX(point.X)
-			if gpfErr, ok := err.(LineGetPointFromError); linePnt.Y < bottom.Y && (!ok || gpfErr.Type != OutsideLineRangeError) {
+		bottom := newPoint(x, math.Inf(1))
+		for _, val := range poly.lines {
+			linePnt, err := val.getPointFromX(x)
+			if gpfErr, ok := err.(lineGetPointFromError); linePnt.y < bottom.y && (!ok || gpfErr.Type != outsideLineRangeError) {
 				bottom = linePnt
 			}
 		}
 
-		if !math.IsInf(bottom.Y, 0) {
-			return getPointDistance(point, bottom)
+		if !math.IsInf(bottom.y, 0) {
+			return getPointDistance(newPoint(x, y), bottom)
 		}
 
-		for _, val := range polygon.Lines {
-			linePnt, _ := val.GetPointFromX(point.X)
-			if linePnt.Y < bottom.Y {
+		for _, val := range poly.lines {
+			linePnt, _ := val.getPointFromX(x)
+			if linePnt.y < bottom.y {
 				bottom = linePnt
 			}
 		}
-		return getPointDistance(point, bottom)
+		return getPointDistance(newPoint(x, y), bottom)
 	case Left:
-		left := NewPoint(math.Inf(1), point.Y)
-		for _, val := range polygon.Lines {
-			linePnt, err := val.GetPointFromY(point.Y)
-			if gpfErr, ok := err.(LineGetPointFromError); linePnt.X < left.X && (!ok || gpfErr.Type != OutsideLineRangeError) {
+		left := newPoint(math.Inf(1), y)
+		for _, val := range poly.lines {
+			linePnt, err := val.getPointFromY(y)
+			if gpfErr, ok := err.(lineGetPointFromError); linePnt.x < left.x && (!ok || gpfErr.Type != outsideLineRangeError) {
 				left = linePnt
 			}
 		}
 
-		if !math.IsInf(left.X, 0) {
-			return getPointDistance(point, left)
+		if !math.IsInf(left.x, 0) {
+			return getPointDistance(newPoint(x, y), left)
 		}
 
-		for _, val := range polygon.Lines {
-			linePnt, _ := val.GetPointFromY(point.Y)
-			if linePnt.X < left.X {
+		for _, val := range poly.lines {
+			linePnt, _ := val.getPointFromY(y)
+			if linePnt.x < left.x {
 				left = linePnt
 			}
 		}
-		return getPointDistance(point, left)
+		return getPointDistance(newPoint(x, y), left)
 	case Right:
-		right := NewPoint(math.Inf(-1), point.Y)
-		for _, val := range polygon.Lines {
-			linePnt, err := val.GetPointFromY(point.Y)
-			if gpfErr, ok := err.(LineGetPointFromError); linePnt.X > right.X && (!ok || gpfErr.Type != OutsideLineRangeError) {
+		right := newPoint(math.Inf(-1), y)
+		for _, val := range poly.lines {
+			linePnt, err := val.getPointFromY(y)
+			if gpfErr, ok := err.(lineGetPointFromError); linePnt.x > right.x && (!ok || gpfErr.Type != outsideLineRangeError) {
 				right = linePnt
 			}
 		}
 
-		if !math.IsInf(right.X, 0) {
-			return getPointDistance(point, right)
+		if !math.IsInf(right.x, 0) {
+			return getPointDistance(newPoint(x, y), right)
 		}
 
-		for _, val := range polygon.Lines {
-			linePnt, _ := val.GetPointFromY(point.Y)
-			if linePnt.X > right.X {
+		for _, val := range poly.lines {
+			linePnt, _ := val.getPointFromY(y)
+			if linePnt.x > right.x {
 				right = linePnt
 			}
 		}
-		return getPointDistance(point, right)
+		return getPointDistance(newPoint(x, y), right)
 	default:
 		return 0, 0
 	}
 }
 
-// OnPoint checks if a Point is on the Polygon object.
-func (polygon *Polygon) OnPoint(point *Point) bool {
+func (poly *polygon) onPoint(p *point) bool {
 
-	if !point.OnBounding(polygon.bounds) {
+	if !p.onBounding(poly.bounds) {
 		return false
 	}
 
-	ray := NewLine(NewPoint(math.Floor(point.X), math.Floor(point.Y)),
-		NewPoint(math.Floor(point.X+(polygon.bounds.End.X-polygon.bounds.Start.X)), math.Floor(point.Y)))
+	ray := newLine(newPoint(math.Floor(p.x), math.Floor(p.y)),
+		newPoint(math.Floor(p.x+(poly.bounds.end.x-poly.bounds.start.x)), math.Floor(p.y)))
 
-	c := make(chan int, len(polygon.Lines))
+	c := make(chan int, len(poly.lines))
 	intersects := 0
-	for _, val := range polygon.Lines {
+	for _, val := range poly.lines {
 		val := val
 		go func() {
 			intersectPnt := getLineIntersection(ray, val)
@@ -186,13 +176,13 @@ func (polygon *Polygon) OnPoint(point *Point) bool {
 
 			intersectCnt := 0
 			isOnVertex := false
-			if intersectPnt.OnPoint(val.Start) && val.End.Y < intersectPnt.Y {
+			if intersectPnt.onPoint(val.start) && val.end.y < intersectPnt.y {
 				intersectCnt++
 				isOnVertex = true
-			} else if intersectPnt.OnPoint(val.End) && val.Start.Y < intersectPnt.Y {
+			} else if intersectPnt.onPoint(val.end) && val.start.y < intersectPnt.y {
 				intersectCnt++
 				isOnVertex = true
-			} else if intersectPnt.OnPoint(val.End) || intersectPnt.OnPoint(val.Start) {
+			} else if intersectPnt.onPoint(val.end) || intersectPnt.onPoint(val.start) {
 				isOnVertex = true
 			}
 
@@ -204,7 +194,7 @@ func (polygon *Polygon) OnPoint(point *Point) bool {
 		}()
 	}
 
-	for i := 0; i < len(polygon.Lines); i++ {
+	for i := 0; i < len(poly.lines); i++ {
 		intersects += <-c
 	}
 
@@ -215,22 +205,21 @@ func (polygon *Polygon) OnPoint(point *Point) bool {
 	return true
 }
 
-// OnBounding checks if a Bounding is on the Polygon object.
-func (polygon *Polygon) OnBounding(bounding *Bounding) bool {
+func (poly *polygon) onBounding(b *bounding) bool {
 
-	if !bounding.OnBounding(polygon.bounds) {
+	if !b.onBounding(poly.bounds) {
 		return false
 	}
 
-	if polygon.OnPoint(bounding.Start) || polygon.OnPoint(bounding.End) ||
-		polygon.OnPoint(NewPoint(bounding.Start.X, bounding.End.Y)) ||
-		polygon.OnPoint(NewPoint(bounding.End.X, bounding.Start.Y)) {
+	if poly.onPoint(b.start) || poly.onPoint(b.end) ||
+		poly.onPoint(newPoint(b.start.x, b.end.y)) ||
+		poly.onPoint(newPoint(b.end.x, b.start.y)) {
 		return true
 	}
 
-	boundLines := bounding.getLines()
+	boundLines := b.getLines()
 	for _, val := range boundLines {
-		if polygon.OnLine(val) {
+		if poly.onLine(val) {
 			return true
 		}
 	}
@@ -238,15 +227,14 @@ func (polygon *Polygon) OnBounding(bounding *Bounding) bool {
 	return false
 }
 
-// OnLine checks if a Line is on the Polygon object.
-func (polygon *Polygon) OnLine(line *Line) bool {
+func (poly *polygon) onLine(l *line) bool {
 
-	if !line.bounds.OnBounding(polygon.bounds) {
+	if !l.bounds.onBounding(poly.bounds) {
 		return false
 	}
 
-	for _, val := range polygon.Lines {
-		if line.OnLine(val) {
+	for _, val := range poly.lines {
+		if l.onLine(val) {
 			return true
 		}
 	}
@@ -254,15 +242,14 @@ func (polygon *Polygon) OnLine(line *Line) bool {
 	return false
 }
 
-// OnPolygon checks if a Polygon is on the Polygon object.
-func (polygon *Polygon) OnPolygon(polygon2 *Polygon) bool {
+func (poly *polygon) onPolygon(poly2 *polygon) bool {
 
-	if !polygon.bounds.OnBounding(polygon2.bounds) {
+	if !poly.bounds.onBounding(poly2.bounds) {
 		return false
 	}
 
-	for _, val := range polygon.Lines {
-		if polygon2.OnLine(val) {
+	for _, val := range poly.lines {
+		if poly2.onLine(val) {
 			return true
 		}
 	}
@@ -270,20 +257,17 @@ func (polygon *Polygon) OnPolygon(polygon2 *Polygon) bool {
 	return false
 }
 
-// OnPolygon checks if a Polygon is on the Line object.
-func (line *Line) OnPolygon(polygon *Polygon) bool {
+func (l *line) onPolygon(poly *polygon) bool {
 
-	return polygon.OnLine(line)
+	return poly.onLine(l)
 }
 
-// OnPolygon checks if a Polygon is on the Bounding object.
-func (bounding *Bounding) OnPolygon(polygon *Polygon) bool {
+func (b *bounding) onPolygon(poly *polygon) bool {
 
-	return polygon.OnBounding(bounding)
+	return poly.onBounding(b)
 }
 
-// OnPolygon checks if a Polygon is on the Point object.
-func (point *Point) OnPolygon(polygon *Polygon) bool {
+func (p *point) onPolygon(poly *polygon) bool {
 
-	return polygon.OnPoint(point)
+	return poly.onPoint(p)
 }

@@ -1,59 +1,51 @@
 package paunch
 
-// Point is an object that represents an X and Y position in 2D space.
-type Point struct {
-	X float64
-	Y float64
+// point is an object that represents an X and Y position in 2D space. It is
+// meant to be used through the Collider interface.
+type point struct {
+	x float64
+	y float64
 }
 
-func getPointDistance(point1, point2 *Point) (float64, float64) {
+func getPointDistance(point1, point2 *point) (float64, float64) {
 
-	x, y := point2.X-point1.X, point2.Y-point1.Y
+	x, y := point2.x-point1.x, point2.y-point1.y
 
 	return x, y
 }
 
-// NewPoint creates a new Point object.
-func NewPoint(x, y float64) *Point {
+func newPoint(x, y float64) *point {
 
-	return &Point{X: x, Y: y}
+	return &point{x: x, y: y}
 }
 
-// Move moves the Point object a specified distance.
-func (point *Point) Move(x, y float64) {
+func (p *point) Move(x, y float64) {
 
-	point.X += x
-	point.Y += y
+	p.x += x
+	p.y += y
 }
 
-// SetPosition sets the position of the Point object.
-func (point *Point) SetPosition(x, y float64) {
+func (p *point) SetPosition(x, y float64) {
 
-	xDisp := x - point.X
-	yDisp := y - point.Y
+	xDisp := x - p.x
+	yDisp := y - p.y
 
-	point.Move(xDisp, yDisp)
+	p.Move(xDisp, yDisp)
 }
 
-// GetPosition returns the X and Y position of the Point object.
-func (point *Point) GetPosition() (x, y float64) {
+func (p *point) GetPosition() (x, y float64) {
 
-	return point.X, point.Y
+	return p.x, p.y
 }
 
-// DistanceToTangentPoint returns a Point with values equal to the distance
-// a given Point is from the closest tangent Point on the given side of the
-// Point. However, for a Point, this doesn't mean much. All this method returns
-// is the distance between a given Point and the Point itself.
-func (point *Point) DistanceToTangentPoint(point2 *Point, side Direction) (float64, float64) {
+func (p *point) DistanceToTangentPoint(x, y float64, side Direction) (float64, float64) {
 
-	return getPointDistance(point, point2)
+	return getPointDistance(newPoint(x, y), p)
 }
 
-// OnPoint checks if a Point is on the Point object.
-func (point *Point) OnPoint(point2 *Point) bool {
+func (p *point) onPoint(p2 *point) bool {
 
-	if point.X == point2.X && point.Y == point2.Y {
+	if p.x == p2.x && p.y == p2.y {
 		return true
 	}
 

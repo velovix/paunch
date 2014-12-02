@@ -5,33 +5,27 @@ import (
 	gl "github.com/chsc/gogl/gl21"
 )
 
-// LineGetPointFromErrorType are the types of errors a LineGetPointFromError
-// can represent.
-type LineGetPointFromErrorType int
+type lineGetPointFromErrorType int
 
-// LineGetPointFromError error type IDs.
 const (
-	_ LineGetPointFromErrorType = iota
-	OutsideLineRangeError
-	UndefinedSlopeError
+	_ lineGetPointFromErrorType = iota
+	outsideLineRangeError
+	undefinedSlopeError
 )
 
-// LineGetPointFromError is an error-implementing object returned by methods
-// GetPointFromX and GetPointFromY.
-type LineGetPointFromError struct {
+type lineGetPointFromError struct {
 	Number float64
-	Line   *Line
-	Type   LineGetPointFromErrorType
+	line   *line
+	Type   lineGetPointFromErrorType
 }
 
-// Error returns a descriptive string.
-func (err LineGetPointFromError) Error() string {
+func (err lineGetPointFromError) Error() string {
 
 	switch err.Type {
-	case OutsideLineRangeError:
+	case outsideLineRangeError:
 		return fmt.Sprintf("value %f is outside line range", err.Number)
-	case UndefinedSlopeError:
-		return "no valid Point found on Line with undefined slope"
+	case undefinedSlopeError:
+		return "no valid point found on line with undefined slope"
 	default:
 		return fmt.Sprintf("unknown error %v", err.Type)
 	}
