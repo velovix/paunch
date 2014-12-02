@@ -12,9 +12,16 @@ type Collider interface {
 	onLine(*line) bool
 	onPolygon(*polygon) bool
 
+	// Move moves the Collider object the specified distance.
 	Move(x, y float64)
+	// SetPosition sets the position of the Collider.
 	SetPosition(x, y float64)
+	// GetPosition returns the x, y coordinates of the Collider object's
+	// current position.
 	GetPosition() (float64, float64)
+	// DistanceToTangentPoint returns the x, y coordinates of the nearest point
+	// tangent to the Collider object. This method is useful for position
+	// correction when objects have sunk into each other.
 	DistanceToTangentPoint(float64, float64, Direction) (float64, float64)
 }
 
