@@ -93,7 +93,7 @@ func (sceneDecoder *SceneDecoder) Load() error {
 		}
 	}
 
-	data := make([]map[string]interface{}, 0)
+	var data []map[string]interface{}
 
 	for i := 0; ; i++ {
 		data = append(data, make(map[string]interface{}))
