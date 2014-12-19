@@ -61,7 +61,7 @@ func (poly *polygon) SetPosition(x, y float64) {
 	poly.Move(xDisp, yDisp)
 }
 
-func (poly *polygon) GetPosition() (x, y float64) {
+func (poly *polygon) Position() (x, y float64) {
 
 	return poly.lines[0].start.x, poly.lines[0].start.y
 }

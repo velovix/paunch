@@ -33,7 +33,7 @@ func (p *point) SetPosition(x, y float64) {
 	p.Move(xDisp, yDisp)
 }
 
-func (p *point) GetPosition() (x, y float64) {
+func (p *point) Position() (x, y float64) {
 
 	return p.x, p.y
 }

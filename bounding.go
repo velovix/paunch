@@ -43,7 +43,7 @@ func (b *bounding) SetPosition(x, y float64) {
 	*b = *newBounding
 }
 
-func (b *bounding) GetPosition() (x, y float64) {
+func (b *bounding) Position() (x, y float64) {
 
 	return b.start.x, b.start.y
 }

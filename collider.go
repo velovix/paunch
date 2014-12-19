@@ -16,9 +16,9 @@ type Collider interface {
 	Move(x, y float64)
 	// SetPosition sets the position of the Collider.
 	SetPosition(x, y float64)
-	// GetPosition returns the x, y coordinates of the Collider object's
+	// Position returns the x, y coordinates of the Collider object's
 	// current position.
-	GetPosition() (float64, float64)
+	Position() (float64, float64)
 	// DistanceToTangentPoint returns the x, y coordinates of the nearest point
 	// tangent to the Collider object. This method is useful for position
 	// correction when objects have sunk into each other.

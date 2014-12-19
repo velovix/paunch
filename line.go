@@ -54,7 +54,7 @@ func (l *line) SetPosition(x, y float64) {
 	l.Move(xDisp, yDisp)
 }
 
-func (l *line) GetPosition() (x, y float64) {
+func (l *line) Position() (x, y float64) {
 
 	return l.start.x, l.start.y
 }
