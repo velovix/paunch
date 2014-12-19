@@ -139,9 +139,9 @@ func (shape *Shape) SetPosition(x, y float64) {
 	shape.Move(xDisp, yDisp)
 }
 
-// GetPosition returns the X and Y position relative to the first specified
+// Position returns the X and Y position relative to the first specified
 // vertex.
-func (shape *Shape) GetPosition() (x, y float64) {
+func (shape *Shape) Position() (x, y float64) {
 
 	return float64(shape.verticies[0]), float64(shape.verticies[1])
 }

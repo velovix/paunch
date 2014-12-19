@@ -97,9 +97,9 @@ func (menu *Menu) SelectItem(name string) error {
 	return nil
 }
 
-// GetSelection returns the currently selected item's name, or a blank string
+// Selection returns the currently selected item's name, or a blank string
 // if nothing is selected.
-func (menu *Menu) GetSelection() string {
+func (menu *Menu) Selection() string {
 
 	return menu.currItem
 }

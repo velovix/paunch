@@ -189,9 +189,9 @@ func (sprite *Sprite) SetPosition(x, y float64) {
 	sprite.shape.SetPosition(x, y)
 }
 
-// GetPosition returns the X and Y position of the bottom-left corner of the
+// Position returns the X and Y position of the bottom-left corner of the
 // Sprite object.
-func (sprite *Sprite) GetPosition() (x, y float64) {
+func (sprite *Sprite) Position() (x, y float64) {
 
 	return sprite.shape.GetPosition()
 }

@@ -242,15 +242,15 @@ func (sound *Sound) SetLoop(willLoop bool) {
 	sound.source.SetLooping(willLoop)
 }
 
-// GetPlaying returns a SoundState value reflecting the playing state of the
+// Playing returns a SoundState value reflecting the playing state of the
 // Sound object.
-func (sound *Sound) GetPlaying() SoundState {
+func (sound *Sound) Playing() SoundState {
 
 	return SoundState(sound.source.State())
 }
 
-// GetGain returns the gain (volume) of the Sound object.
-func (sound *Sound) GetGain() float32 {
+// Gain returns the gain (volume) of the Sound object.
+func (sound *Sound) Gain() float32 {
 
 	return sound.source.GetGain()
 }

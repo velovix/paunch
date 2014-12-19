@@ -59,8 +59,8 @@ func NewSceneDecoder(r io.Reader) *SceneDecoder {
 	return sceneDecoder
 }
 
-// GetHeader returns the header information from the file.
-func (sceneDecoder *SceneDecoder) GetHeader() (map[string]interface{}, error) {
+// Header returns the header information from the file.
+func (sceneDecoder *SceneDecoder) Header() (map[string]interface{}, error) {
 
 	defer func() { sceneDecoder.hasHeaderLoaded = true }()
 

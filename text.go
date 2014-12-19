@@ -71,8 +71,8 @@ func (text *Text) SetMessage(message string) error {
 	return nil
 }
 
-// GetMessage returns the current message displayed by the Text object.
-func (text *Text) GetMessage() string {
+// Message returns the current message displayed by the Text object.
+func (text *Text) Message() string {
 
 	return text.message
 }
@@ -91,14 +91,14 @@ func (text *Text) SetColor(r, g, b, a uint8) error {
 	return nil
 }
 
-// GetPosition returns the position of the Text object.
-func (text *Text) GetPosition() (float64, float64) {
+// Position returns the position of the Text object.
+func (text *Text) Position() (float64, float64) {
 
 	return text.x, text.y + text.fontSize
 }
 
-// GetSize returns the width and height of the Text object.
-func (text *Text) GetSize() (float64, float64) {
+// Size returns the width and height of the Text object.
+func (text *Text) Size() (float64, float64) {
 
 	return text.width, text.height
 }
