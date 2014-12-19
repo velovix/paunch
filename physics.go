@@ -88,7 +88,7 @@ func (physics *Physics) SetPosition(x, y float64) {
 		return
 	}
 
-	xDisp, yDisp := physics.Movers[0].GetPosition()
+	xDisp, yDisp := physics.Movers[0].Position()
 	xDisp = x - xDisp
 	yDisp = y - yDisp
 
@@ -104,7 +104,7 @@ func (physics *Physics) Position() (x, y float64) {
 		return 0, 0
 	}
 
-	return physics.Movers[0].GetPosition()
+	return physics.Movers[0].Position()
 }
 
 // Acceleration returns the X and Y acceleration of the Physics object.
