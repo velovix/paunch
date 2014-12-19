@@ -87,7 +87,7 @@ func (sceneDecoder *SceneDecoder) Header() (map[string]interface{}, error) {
 func (sceneDecoder *SceneDecoder) Load() error {
 
 	if !sceneDecoder.hasHeaderLoaded {
-		_, err := sceneDecoder.GetHeader()
+		_, err := sceneDecoder.Header()
 		if err != nil {
 			return err
 		}

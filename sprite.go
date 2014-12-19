@@ -193,5 +193,5 @@ func (sprite *Sprite) SetPosition(x, y float64) {
 // Sprite object.
 func (sprite *Sprite) Position() (x, y float64) {
 
-	return sprite.shape.GetPosition()
+	return sprite.shape.Position()
 }
