@@ -2,7 +2,7 @@ package paunch
 
 import (
 	gl "github.com/chsc/gogl/gl21"
-	glfw "github.com/go-gl/glfw3"
+	glfw "github.com/go-gl/glfw/v3.0/glfw"
 	al "github.com/vova616/go-openal/openal"
 )
 

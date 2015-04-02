@@ -3,7 +3,7 @@ package paunch
 import (
 	"errors"
 	gl "github.com/chsc/gogl/gl21"
-	glfw "github.com/go-gl/glfw3"
+	glfw "github.com/go-gl/glfw/v3.0/glfw"
 )
 
 type _Window struct {
