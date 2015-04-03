@@ -35,6 +35,14 @@ type MousePositionEventResponder interface {
 	OnMousePosition(x, y float64)
 }
 
+// ScrollResponder is an interface that requires methods that allow an
+// EventManager to call the OnScroll method of an object when a scrolling event
+// happens. Objects that implement this interface will automatically be called
+// when appropriate after being added to an EventManager.
+type ScrollResponder interface {
+	OnScroll(xOffset, yOffset float64)
+}
+
 // MouseEnterWindowResponder is an interface that requires methods that allow
 // an EventManager to call on the OnMouseEnterWindow method of an object when a
 // mouse enters or leaves a window. Objects that implement this interface will

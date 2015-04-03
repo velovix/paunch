@@ -202,6 +202,7 @@ func (window *_Window) open() error {
 	window.glfwWindow.SetMouseButtonCallback(mouseButtonCallback)
 	window.glfwWindow.SetCursorPositionCallback(mousePositionCallback)
 	window.glfwWindow.SetCursorEnterCallback(mouseEnterWindowCallback)
+	window.glfwWindow.SetScrollCallback(scrollCallback)
 	window.glfwWindow.SetFocusCallback(windowFocusCallback)
 	window.glfwWindow.SetSizeCallback(windowResizeCallback)
 	window.glfwWindow.SetCharacterCallback(windowCharacterCallback)
@@ -291,6 +292,13 @@ func mouseEnterWindowCallback(window *glfw.Window, entered bool) {
 
 	for _, eventManager := range paunchWindow.eventManagers {
 		eventManager.RunMouseEnterWindowEvent(x, float64(windHeight)-y, entered)
+	}
+}
+
+func scrollCallback(window *glfw.Window, xOffset, yOffset float64) {
+
+	for _, eventManager := range paunchWindow.eventManagers {
+		eventManager.RunScrollEvent(xOffset, yOffset)
 	}
 }
 

@@ -56,6 +56,15 @@ func (eventManager *EventManager) RunMouseEnterWindowEvent(x, y float64, entered
 	}
 }
 
+func (eventManager *EventManager) RunScrollEvent(xOffset, yOffset float64) {
+
+	for i := range eventManager.Objects {
+		if val, ok := eventManager.Objects[i].(ScrollResponder); ok {
+			val.OnScroll(xOffset, yOffset)
+		}
+	}
+}
+
 // RunWindowFocusEvent simulates a window focus event, triggering the
 // expected response from the EventManager's objects.
 func (eventManager *EventManager) RunWindowFocusEvent(focused bool) {
