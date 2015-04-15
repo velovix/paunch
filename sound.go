@@ -269,6 +269,47 @@ func (sound *Sound) SetPitch(pitch float32) {
 	sound.source.SetPitch(pitch)
 }
 
+// SetOffset sets the playing position of the Sound object in seconds.
+func (sound *Sound) SetOffset(seconds float32) {
+
+	sound.source.SetOffsetSeconds(seconds)
+}
+
+// Offset returns the current playing position of the Sound object in seconds.
+func (sound *Sound) Offset() float32 {
+
+	return float32(sound.source.GetOffsetSeconds())
+}
+
+// Length returns the total length of the Sound object in seconds.
+func (sound *Sound) Length() float32 {
+
+	size := sound.buffer.GetSize()
+	channels := sound.buffer.GetChannels()
+	bits := sound.buffer.GetBits()
+	frequency := sound.buffer.GetFrequency()
+
+	return float32(((float64(size) * 8.0) / (float64(channels) * float64(bits))) / float64(frequency))
+}
+
+// Size returns the size of the sound data in bytes.
+func (sound *Sound) Size() uint {
+
+	return uint(sound.buffer.GetSize())
+}
+
+// Frequency returns the frequency of the sound in Hertz.
+func (sound *Sound) Frequency() uint {
+
+	return uint(sound.buffer.GetFrequency())
+}
+
+// Channels returns the number of channels.
+func (sound *Sound) Channels() uint {
+
+	return uint(sound.buffer.GetChannels())
+}
+
 // Destroy cleans up the Sound object, which will no longer be playable. This
 // should be done after the Sound object is no longer needed.
 func (sound *Sound) Destroy() {
